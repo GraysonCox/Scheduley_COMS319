@@ -1,5 +1,10 @@
 package project;
 
+/**
+ * 
+ * @author watis
+ *
+ */
 public class UserProfile {
 	
 	private String email;

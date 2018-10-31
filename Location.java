@@ -9,4 +9,5 @@ public class Location {
 	private String designatedName;
 	private Rectangle size;
 	private ArrayList<Meeting> meetings;
+	
 }

@@ -8,12 +8,13 @@ public class Meeting {
 
 	private String name;
 	private ArrayList<UserProfile> members;
-	private ArrayList<String> shortDescription; // optional
+	private String shortDescription; // optional
 	private int duration; //Need better data type
-	
-	
+
 	public Meeting() {
-		name = "";
+		name = "Unspecified";
 		duration = 0;
 	}
+	
+	
 }

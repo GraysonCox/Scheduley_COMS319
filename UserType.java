@@ -6,7 +6,6 @@ import java.util.Map;
 /**
  * This is an enum type for Users, which helps define what the user will be able to do.
  * @author watis
- *
  */
 public enum UserType {
 	ADMIN,
@@ -27,5 +26,4 @@ public enum UserType {
 	public static UserType getValueOf(String value) {
 		return enumMap.containsKey(value) ? enumMap.get(value) : UNKNOWN;
 	}
-	
 }
