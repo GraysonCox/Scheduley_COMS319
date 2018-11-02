@@ -42,10 +42,8 @@ public class Controller implements Initializable {
 	private void initializeTree() {
 		Floor floor1 = new Floor(new Image("main/floorplan1.jpg"));
 		floor1.setName("Floor 1");
-		Floor floor2 = new Floor(new Image("main/Blanche.jpg"));
-		floor2.setName("Floor 2");
 		tree.setRoot(new TreeItem<Location>(null));
-		tree.getRoot().getChildren().addAll(new TreeItem<Location>(floor1), new TreeItem<Location>(floor2));
+		tree.getRoot().getChildren().add(new TreeItem<Location>(floor1));
 		tree.getRoot().setExpanded(true);
 		tree.setShowRoot(false);
 		tree.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> onItemSelected());
@@ -111,6 +109,7 @@ public class Controller implements Initializable {
 		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		}
-		tree.getRoot().getChildren().add(new TreeItem<Location>(new Floor(new Image(s))));
+		TreeItem<Location> t = new TreeItem<Location>(new Floor(new Image(s)));
+		tree.getRoot().getChildren().add(t);
 	}
 }
