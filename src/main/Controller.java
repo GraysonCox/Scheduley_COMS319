@@ -51,7 +51,7 @@ public class Controller implements Initializable {
 	
 	public void onItemSelected() {
 		System.out.println("Item selected");
-		if (tree.getSelectionModel().getSelectedItem().getValue().getRectangle() == null) { // Item is a floor
+		if (isFloor(tree)) { // Item is a floor
 			currentFloor = tree.getSelectionModel().getSelectedItem();
 			basis.getChildren().clear();
 			basis.getChildren().add(currentFloor.getValue().getPane());
@@ -111,5 +111,9 @@ public class Controller implements Initializable {
 		}
 		TreeItem<Location> t = new TreeItem<Location>(new Floor(new Image(s)));
 		tree.getRoot().getChildren().add(t);
+	}
+	
+	private boolean isFloor(TreeView<Location> t) { // Checks if the currently selected item in the param tree is a Floor
+		return t.getSelectionModel().getSelectedItem().getValue().getRectangle() == null;
 	}
 }
