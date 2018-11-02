@@ -15,6 +15,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
+//this class is dumb
 public class Controller implements Initializable {
 	
 	@FXML
