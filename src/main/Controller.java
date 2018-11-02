@@ -89,9 +89,9 @@ public class Controller implements Initializable {
             }
         });
 		currentFloor.getValue().getPane().setOnMouseReleased(e -> {
-			basis.setOnMousePressed(null);
-			basis.setOnMouseDragged(null);
-			basis.setOnMouseReleased(null);
+			currentFloor.getValue().getPane().setOnMousePressed(null);
+			currentFloor.getValue().getPane().setOnMouseDragged(null);
+			currentFloor.getValue().getPane().setOnMouseReleased(null);
 			MeetingSpace m = new MeetingSpace(tempRect);
 			tempRect = null;
 			currentFloor.getValue().addMeetingSpace(m);
