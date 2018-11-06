@@ -2,16 +2,22 @@ package main;
 
 import java.sql.*;
 
+/**
+ * This is jsut a temp class. I am using it to understand and develop the UserDAO and DAOFactory
+ * @author watis
+ *
+ */
 public class MySqlCon {
 	public static void main(String args[]){  
+		//Load and register the driver
 		try {
-			// Load the driver (registers itself)
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (Exception E) {
 			System.err.println("Unable to load driver.");
 			E.printStackTrace();
 		}
 		try{  
+			//Establish a connection to the DBvv
 			Connection conn1;
 			String dbUrl = "jdbc:mysql://proj-319-080.misc.iastate.edu/group29";
 			String user = "group29";
@@ -44,6 +50,7 @@ public class MySqlCon {
 					+ "values(\"wasartin@iastate.edu\", \"group29\", \"Will Sartin\", 0);");
 			*/
 			
+			//close connection
 			statement.close();
 			rs.close();
 			conn1.close();
