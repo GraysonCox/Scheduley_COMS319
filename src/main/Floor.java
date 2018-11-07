@@ -8,7 +8,7 @@ import javafx.scene.shape.Rectangle;
 
 public class Floor extends Location {
 	private final Pane pane;
-	private final ImageView image;
+	public final ImageView image; //public for testing purposes TODO: change to private
 	private Group rectGroup;
 	
 	public Floor(Image image) {
