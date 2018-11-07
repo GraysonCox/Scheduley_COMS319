@@ -1,5 +1,8 @@
 package main;
 
+/**
+ * make sure javax.mail.jar is imported
+ */
 import java.util.*; 
 import javax.mail.*; 
 import javax.mail.internet.*; 
@@ -11,6 +14,11 @@ public class EmailSender {
 	private String subject;
 	private String body;
 	
+	/**
+	 * Constructor
+	 * @param subject a String containing the subject
+	 * @param body a String containing the whole body
+	 */
 	public EmailSender(String subject, String body) {
 		
 		this.subject = subject;
@@ -30,6 +38,10 @@ public class EmailSender {
 		});
 	}
 	
+	/**
+	 * Sends an email (from 319proj@gmail.com) to a single recipient
+	 * @param email the email address in String
+	 */
 	public void send(String email) {
 
 		try {
@@ -46,6 +58,10 @@ public class EmailSender {
 		}
 	}
 	
+	/**
+	 * Sends an email (from 319proj@gmail.com) to multiple recipients
+	 * @param emails and array of email Strings
+	 */
 	public void sendAll(String[] emails) {
 		
 		for (int i=0; i<emails.length; i++) {
@@ -64,18 +80,34 @@ public class EmailSender {
 		}
 	}
 	
+	/**
+	 * Changes the subject of the email
+	 * @param subject
+	 */
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
 	
+	/**
+	 * Changes the body of the email
+	 * @param body
+	 */
 	public void setBody(String body) {
 		this.body = body;
 	}
 	
+	/**
+	 * Get the subject of the email
+	 * @return subject
+	 */
 	public String getSubject() {
 		return subject;
 	}
 	
+	/**
+	 * Get the body of the email
+	 * @return body
+	 */
 	public String getBody() {
 		return body;
 	}
