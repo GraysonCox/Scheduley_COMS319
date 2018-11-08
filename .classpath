@@ -4,6 +4,8 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_152"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Grayson/Downloads/javax.mail.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Grayson/Downloads/mysql-connector-java-8.0.13/mysql-connector-java-8.0.13/mysql-connector-java-8.0.13.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
