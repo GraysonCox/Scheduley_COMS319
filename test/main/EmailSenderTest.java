@@ -12,6 +12,8 @@ public class EmailSenderTest {
 	EmailSender email1 = new EmailSender("Class", str1);
 	EmailSender email2 = new EmailSender("GirlScoutCookies", str2);
 	
+	
+	//Looking into java.mail testing 
 	@Test
 	public void testSend() {
 		
