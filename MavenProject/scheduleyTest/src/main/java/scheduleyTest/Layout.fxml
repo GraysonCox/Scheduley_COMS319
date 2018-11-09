@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+			fx:controller="scheduleyTest.Controller">
+	<left>
+		<TreeView fx:id="tree" >
+			<contextMenu>
+				<ContextMenu fx:id="treeContextMenu">
+					<items>
+						<Menu text="New">
+							<items>
+								<MenuItem text="Meeting Space" onAction="#onNewMeetingSpace" />
+								<MenuItem text="Floor" onAction="#onNewFloor" />
+							</items>
+						</Menu>
+						<MenuItem text="Rename" onAction="#onRename" />
+						<MenuItem text="Delete" onAction="#onDelete" />
+					</items>
+				</ContextMenu>
+			</contextMenu>
+		</TreeView>
+	</left>
+	<center>
+		<Pane fx:id="basis">
+		</Pane>
+	</center>
+</BorderPane>
