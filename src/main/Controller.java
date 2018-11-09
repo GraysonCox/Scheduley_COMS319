@@ -128,9 +128,11 @@ public class Controller implements Initializable {
 		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		}
-		floorHashMap.put(newTreeItem, new Floor(new Image(s)));
-		tree.getRoot().getChildren().add(newTreeItem);
-		tree.getSelectionModel().select(newTreeItem);
+		if (s != null) {
+			floorHashMap.put(newTreeItem, new Floor(new Image(s)));
+			tree.getRoot().getChildren().add(newTreeItem);
+			tree.getSelectionModel().select(newTreeItem);
+		}
 	}
 	
 	@FXML
