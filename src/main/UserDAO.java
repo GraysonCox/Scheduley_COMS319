@@ -11,9 +11,9 @@ public interface UserDAO {
 	//void and throw an exception. Exception throwing is much
 	//better and easer to understand than just true/false.
 	void insertUser(UserProfile newUser) throws SQLException;
-	boolean insertUser(String email, String name, UserType userType) throws SQLException;
+	void insertUser(String email, String name, UserType userType) throws SQLException;
 	boolean updateUser(UserProfile user);
-	boolean deleteUser(UserProfile user);
-	boolean findUser(UserProfile user);
-	boolean changeUserPassword(UserProfile user);
+	void deleteUser(String email) throws SQLException;
+	boolean verifyUser(String email, String password);
+	UserProfile findUser(String email);
 }
