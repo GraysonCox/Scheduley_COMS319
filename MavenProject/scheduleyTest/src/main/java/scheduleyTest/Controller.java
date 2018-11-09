@@ -1,4 +1,4 @@
-package main;
+package scheduleyTest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,7 +58,7 @@ public class Controller implements Initializable {
 	 */
 	private void setUpDefaultTree() {
 		TreeItem<String> tempTreeItem = new TreeItem<String>("Floor 1");
-		Floor tempFloor = new Floor(new Image("main/floorplan1.jpg"));
+		Floor tempFloor = new Floor(new Image("scheduleyTest/floorplan1.jpg"));
 		floorHashMap.put(tempTreeItem, tempFloor);
 		tree.getRoot().getChildren().add(tempTreeItem);
 		tempFloor.addMeetingSpace(new MeetingSpace(new Rectangle(88,40,213,113)));

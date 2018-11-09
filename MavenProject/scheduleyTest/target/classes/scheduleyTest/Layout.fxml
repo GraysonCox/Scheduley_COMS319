@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
-			fx:controller="main.Controller">
+			fx:controller="scheduleyTest.Controller">
 	<left>
 		<TreeView fx:id="tree" >
 			<contextMenu>
