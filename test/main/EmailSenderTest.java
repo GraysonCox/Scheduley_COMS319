@@ -1,6 +1,17 @@
 package main;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.Properties;
+
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import javax.mail.Session;
+import javax.mail.Store;
 
 import org.junit.Test;
 
@@ -15,7 +26,24 @@ public class EmailSenderTest {
 	
 	//Looking into java.mail testing 
 	@Test
-	public void testSend() {
+	public void testSend() throws MessagingException, IOException {
+		//TODO fix
+		email1.send("smkazun@iastate.edu");
+		
+		Session session = Session.getDefaultInstance(new Properties());
+		Store store = session.getStore("pop3");
+		store.connect("test.com", "test.dest", "pass");
+		
+		Folder folder = store.getFolder("inbox");
+		
+		folder.open(Folder.READ_ONLY);
+		Message[] msg = folder.getMessages();
+		
+		assertTrue(msg.length == 1);
+		assertEquals("Class", msg[0].getSubject());
+		assertEquals(str1, msg[0].getContent());
+		folder.close(true);
+		store.close();
 		
 	}
 	
