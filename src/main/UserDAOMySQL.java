@@ -14,7 +14,7 @@ public class UserDAOMySQL implements UserDAO{
 	private static final String INSERT_NEW_USER = "INSERT into Users(email, password, name, userType)" 
 			+ "VALUES(?, ?, ?, ?)";
 	
-	private static final String UPDATE_USER = "UPDATE User";
+	private static final String UPDATE_USER = "UPDATE Users set ";
 	
 	private static final String DELETE_USER = "DELETE FROM Users WHERE email = ?;";
 	
@@ -39,7 +39,10 @@ public class UserDAOMySQL implements UserDAO{
 			rs = statement.executeQuery(GET_ALL_USERS);
 		
 			while (rs.next()) {
+<<<<<<< HEAD
 				//get value of salary from each tuple
+=======
+>>>>>>> adminMakeUserDBMethods
 				String email = rs.getString("email");	
 				String name = rs.getString("name");
 				int type = rs.getInt("userType");
@@ -63,6 +66,7 @@ public class UserDAOMySQL implements UserDAO{
 	
 	@Override
 	public void insertUser(String email, String name, UserType userType) throws SQLException {
+<<<<<<< HEAD
 		// TODO Auto-generated method stub
 		UserProfile newUser = new UserProfile(email, name, userType);
 		insertUser(newUser);
@@ -90,12 +94,38 @@ public class UserDAOMySQL implements UserDAO{
 				dbConnection.close();
 			}
 		}
+=======
+		UserProfile newUser = new UserProfile(email, name, userType);
+		insertUser(newUser);
+>>>>>>> adminMakeUserDBMethods
 	}
 
 	@Override
-	public boolean updateUser(UserProfile user) {
+	public void insertUser(UserProfile newUser) throws SQLException {
+		Connection dbConnection = null;
+		PreparedStatement pStatement = null;
+		try {
+			dbConnection = dao.getConnection();
+			pStatement = dbConnection.prepareStatement(INSERT_NEW_USER);
+			
+			pStatement.setString(1, newUser.getEmail());
+			pStatement.setString(2, DEFAULT_PASSWORD);
+			pStatement.setString(3, newUser.getName());
+			pStatement.setInt(4, newUser.getUserType());
+			pStatement.executeUpdate();	
+			
+		}finally {
+			if(pStatement != null) {
+				pStatement.close();
+			}
+			if(dbConnection != null) {
+				dbConnection.close();
+			}
+		}
+	}
+
+	public void updateUser(String email) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
@@ -121,6 +151,7 @@ public class UserDAOMySQL implements UserDAO{
 
 	@Override
 	public boolean verifyUser(String email, String password) {
+<<<<<<< HEAD
 		ArrayList<UserProfile> currentUsers;
 		try {
 			currentUsers = findAllUsers();
@@ -134,6 +165,9 @@ public class UserDAOMySQL implements UserDAO{
 			System.out.print(e.getStackTrace());
 		}
 		return false;
+=======
+		return (findUser(email) != null) ? true : false;
+>>>>>>> adminMakeUserDBMethods
 	}
 
 	@Override
