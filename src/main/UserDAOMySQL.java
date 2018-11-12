@@ -39,10 +39,6 @@ public class UserDAOMySQL implements UserDAO{
 			rs = statement.executeQuery(GET_ALL_USERS);
 		
 			while (rs.next()) {
-<<<<<<< HEAD
-				//get value of salary from each tuple
-=======
->>>>>>> adminMakeUserDBMethods
 				String email = rs.getString("email");	
 				String name = rs.getString("name");
 				int type = rs.getInt("userType");
@@ -60,44 +56,13 @@ public class UserDAOMySQL implements UserDAO{
 				rs.close();
 			}
 		}
-		// Close all statements and connections
 		return users;
 	}
 	
 	@Override
 	public void insertUser(String email, String name, UserType userType) throws SQLException {
-<<<<<<< HEAD
-		// TODO Auto-generated method stub
 		UserProfile newUser = new UserProfile(email, name, userType);
 		insertUser(newUser);
-	}
-
-	@Override
-	public void insertUser(UserProfile newUser) throws SQLException {
-		Connection dbConnection = null;
-		PreparedStatement pStatement = null;
-		try {
-			dbConnection = dao.getConnection();
-			pStatement = dbConnection.prepareStatement(INSERT_NEW_USER);
-			
-			pStatement.setString(1, newUser.getEmail());
-			pStatement.setString(2, DEFAULT_PASSWORD);
-			pStatement.setString(3, newUser.getName());
-			pStatement.setInt(4, newUser.getUserType());
-			pStatement.executeUpdate();	
-			
-		}finally {
-			if(pStatement != null) {
-				pStatement.close();
-			}
-			if(dbConnection != null) {
-				dbConnection.close();
-			}
-		}
-=======
-		UserProfile newUser = new UserProfile(email, name, userType);
-		insertUser(newUser);
->>>>>>> adminMakeUserDBMethods
 	}
 
 	@Override
@@ -151,23 +116,7 @@ public class UserDAOMySQL implements UserDAO{
 
 	@Override
 	public boolean verifyUser(String email, String password) {
-<<<<<<< HEAD
-		ArrayList<UserProfile> currentUsers;
-		try {
-			currentUsers = findAllUsers();
-			for(UserProfile u : currentUsers) {
-				if(email.equals(u.getEmail()) && password.equals(u.getPassword())) {
-					return true;
-				}
-			}
-		}
-		catch(SQLException e) {
-			System.out.print(e.getStackTrace());
-		}
-		return false;
-=======
 		return (findUser(email) != null) ? true : false;
->>>>>>> adminMakeUserDBMethods
 	}
 
 	@Override
