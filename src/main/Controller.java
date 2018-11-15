@@ -22,6 +22,7 @@ public class Controller implements Initializable {
 	private TreeView<String> tree;
 	
 	private HashMap<TreeItem<String>, Floor> floorHashMap; // Maps each Floor to a TreeItem
+	private HashMap<TreeItem<String>, MeetingSpace> meetingSpaceHashMap;
 	
 	@FXML
 	private Pane basis;
@@ -38,6 +39,7 @@ public class Controller implements Initializable {
 		
 		// Set up tree
 		floorHashMap = new HashMap<TreeItem<String>, Floor>();
+		meetingSpaceHashMap = new HashMap<TreeItem<String>, MeetingSpace>();
 		initializeTree();
 	}
 	
@@ -61,9 +63,15 @@ public class Controller implements Initializable {
 		Floor tempFloor = new Floor(new Image("main/floorplan1.jpg"));
 		floorHashMap.put(tempTreeItem, tempFloor);
 		tree.getRoot().getChildren().add(tempTreeItem);
-		tempFloor.addMeetingSpace(new MeetingSpace(new Rectangle(88,40,213,113)));
-		tempFloor.addMeetingSpace(new MeetingSpace(new Rectangle(88,153,139,119)));
-		tempTreeItem.getChildren().addAll(new TreeItem<String>("Room 1"), new TreeItem<String>("Room 2"));
+		MeetingSpace m1 = new MeetingSpace(new Rectangle(88,40,213,113), tempFloor);
+		tempFloor.addMeetingSpace(m1);
+		TreeItem<String> m1Item = new TreeItem<String>("Room 101");
+		meetingSpaceHashMap.put(m1Item, m1);
+		MeetingSpace m2 = new MeetingSpace(new Rectangle(88,153,139,119), tempFloor);
+		tempFloor.addMeetingSpace(m2);
+		TreeItem<String> m2Item = new TreeItem<String>("Room 102");
+		meetingSpaceHashMap.put(m2Item, m2);
+		tempTreeItem.getChildren().addAll(m1Item, m2Item);
 	}
 	
 	public void onItemSelected(TreeItem<String> target) {
@@ -79,7 +87,7 @@ public class Controller implements Initializable {
 	@FXML
 	public void onNewMeetingSpace() {
 		Floor currentFloor = floorHashMap.get(currentFloorTreeItem);
-		TreeItem<String> newTreeItem = new TreeItem<String>("New Meeting Space");
+		TreeItem<String> newTreeItem = new TreeItem<String>("New meeting space");
 		currentFloor.setOnMousePressed(e -> {
             x1 = e.getX();
             y1 = e.getY();
@@ -108,9 +116,13 @@ public class Controller implements Initializable {
 			currentFloor.setOnMousePressed(null);
 			currentFloor.setOnMouseDragged(null);
 			currentFloor.setOnMouseReleased(null);
-			MeetingSpace newMeetingSpace = new MeetingSpace(tempRect);
+			MeetingSpace newMeetingSpace = new MeetingSpace(tempRect, currentFloor);
+			newMeetingSpace.setFloor(currentFloor);
+			basis.getChildren().remove(tempRect);
 			tempRect = null;
+			newMeetingSpace.nameProperty().bindBidirectional(newTreeItem.valueProperty());
 			currentFloor.addMeetingSpace(newMeetingSpace);
+			meetingSpaceHashMap.put(newTreeItem, newMeetingSpace);
 			currentFloorTreeItem.getChildren().add(newTreeItem);
 			tree.getSelectionModel().select(newTreeItem);
 		});
@@ -119,7 +131,7 @@ public class Controller implements Initializable {
 	@FXML
 	public void onNewFloor() {
 		FileChooser fileChooser = new FileChooser();
-		TreeItem<String> newTreeItem = new TreeItem<String>("New Floor");
+		TreeItem<String> newTreeItem = new TreeItem<String>("New floor");
 		fileChooser.setTitle("Choose Image");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
 		String s = null;
@@ -129,7 +141,9 @@ public class Controller implements Initializable {
 			e1.printStackTrace();
 		}
 		if (s != null) {
-			floorHashMap.put(newTreeItem, new Floor(new Image(s)));
+			Floor newFloor = new Floor(new Image(s));
+			newFloor.nameProperty().bindBidirectional(newTreeItem.valueProperty());
+			floorHashMap.put(newTreeItem, newFloor);
 			tree.getRoot().getChildren().add(newTreeItem);
 			tree.getSelectionModel().select(newTreeItem);
 		}
@@ -145,7 +159,14 @@ public class Controller implements Initializable {
 	@FXML
 	public void onDelete() {
 		TreeItem<String> currentTreeItem = tree.getSelectionModel().getSelectedItem(); // Reference to currently selected item in tree
-		currentTreeItem.getParent().getChildren().remove(currentTreeItem);
+		if (isFloor(currentTreeItem)) {
+			currentTreeItem.getParent().getChildren().remove(currentTreeItem);
+			floorHashMap.remove(currentTreeItem);
+		} else {
+			currentTreeItem.getParent().getChildren().remove(currentTreeItem);
+			meetingSpaceHashMap.get(currentTreeItem).removeFromFloor();
+			meetingSpaceHashMap.remove(currentTreeItem);
+		}
 	}
 	
 	private boolean isFloor(TreeItem<String> item) {
