@@ -14,7 +14,7 @@ public class UserDAOMySQL implements UserDAO{
 	private static final String INSERT_NEW_USER = "INSERT into Users(email, password, name, userType)" 
 			+ "VALUES(?, ?, ?, ?)";
 	
-	private static final String UPDATE_USER = "UPDATE User";
+	private static final String UPDATE_USER = "UPDATE Users set ";
 	
 	private static final String DELETE_USER = "DELETE FROM Users WHERE email = ?;";
 	
@@ -39,7 +39,6 @@ public class UserDAOMySQL implements UserDAO{
 			rs = statement.executeQuery(GET_ALL_USERS);
 		
 			while (rs.next()) {
-				//get value of salary from each tuple
 				String email = rs.getString("email");	
 				String name = rs.getString("name");
 				int type = rs.getInt("userType");
@@ -57,13 +56,11 @@ public class UserDAOMySQL implements UserDAO{
 				rs.close();
 			}
 		}
-		// Close all statements and connections
 		return users;
 	}
 	
 	@Override
 	public void insertUser(String email, String name, UserType userType) throws SQLException {
-		// TODO Auto-generated method stub
 		UserProfile newUser = new UserProfile(email, name, userType);
 		insertUser(newUser);
 	}
@@ -92,10 +89,8 @@ public class UserDAOMySQL implements UserDAO{
 		}
 	}
 
-	@Override
-	public boolean updateUser(UserProfile user) {
+	public void updateUser(String email) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
@@ -121,19 +116,7 @@ public class UserDAOMySQL implements UserDAO{
 
 	@Override
 	public boolean verifyUser(String email, String password) {
-		ArrayList<UserProfile> currentUsers;
-		try {
-			currentUsers = findAllUsers();
-			for(UserProfile u : currentUsers) {
-				if(email.equals(u.getEmail()) && password.equals(u.getPassword())) {
-					return true;
-				}
-			}
-		}
-		catch(SQLException e) {
-			System.out.print(e.getStackTrace());
-		}
-		return false;
+		return (findUser(email) != null) ? true : false;
 	}
 
 	@Override

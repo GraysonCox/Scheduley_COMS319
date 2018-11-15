@@ -1,30 +1,30 @@
 package main;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 public abstract class Location {
-	private String name;
+	private StringProperty name;
 	
 	public Location(String name) {
-		this.name = name;
+		this.name = new SimpleStringProperty(name);
+	}
+	
+	public StringProperty nameProperty() {
+		return name;
 	}
 	
 	public String getName() {
-		return this.name;
+		return name.get();
 	}
 	
 	public void setName(String name) {
-		this.name = name;
+		this.name.set(name);;
 	}
 	
-	abstract Pane getPane();
-	
-	abstract Rectangle getRectangle();
-	
-	abstract void addMeetingSpace(MeetingSpace m);
-	
 	public String toString() {
-		return this.name;
+		return name.get();
 	}
 }

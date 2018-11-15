@@ -60,7 +60,6 @@ public class UserProfile {
 		return userType.ordinal();
 	}
 	
-	//TODO add equals6
 	@Override
 	public boolean equals(Object other) {
 		if(this.email.equals(((UserProfile) other).getEmail())) {
@@ -68,8 +67,4 @@ public class UserProfile {
 		}
 		return false;
 	}
-	
-	
-	//add info to a database
 }
-

@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,16 +31,11 @@ class UserDAOMySQLTest {
 		UserProfile two = new UserProfile("wasartin@iastate.edu", "Will Sartin", 0);
 		expectedUsers.add(two);
 		
-		for(UserProfile u : users) {
-			System.out.println(u.getEmail());
-		}
-		
 		Assert.assertTrue(expectedUsers.equals(users));
 	}
 	
 	@Test
 	void insertUser() throws SQLException {
-		System.out.println("Testing insertUser");
 		String inputEmail = "tomDodge@tom.com";
 		String inputName = "Tom Dodge";
 		UserType inputType = UserType.ADMIN;
@@ -86,7 +80,6 @@ class UserDAOMySQLTest {
 		Assert.assertTrue(dataSource.verifyUser(sampleEmail, password));
 	}
 	
-	
 	@Test
 	void updateUser() {
 		
@@ -96,5 +89,4 @@ class UserDAOMySQLTest {
 	void findUser() {
 		
 	}
-	
 }

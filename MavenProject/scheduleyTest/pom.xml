@@ -18,7 +18,21 @@
 	    <version>4.0.15-alpha</version>
 	    <scope>test</scope>
 	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+	<dependency>
+	    <groupId>javax.mail</groupId>
+	    <artifactId>mail</artifactId>
+	    <version>1.4</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+	<dependency>
+   	 	<groupId>mysql</groupId>
+    	<artifactId>mysql-connector-java</artifactId>
+    	<version>8.0.13</version>
+	</dependency>
+	
   </dependencies>
-  
   
 </project>
