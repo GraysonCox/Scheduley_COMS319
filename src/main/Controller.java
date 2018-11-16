@@ -6,11 +6,14 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.TextFieldTreeCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -20,6 +23,9 @@ public class Controller implements Initializable {
 	
 	@FXML
 	private TreeView<String> tree;
+	
+	@FXML
+	private Label userTypeLabel;
 	
 	private HashMap<TreeItem<String>, Floor> floorHashMap; // Maps each Floor to a TreeItem
 	private HashMap<TreeItem<String>, MeetingSpace> meetingSpaceHashMap;
@@ -31,16 +37,38 @@ public class Controller implements Initializable {
 	
 	private Rectangle tempRect;
 	private double x1, y1, x2, y2;
+	
+	private UserProfile currentUser;
+	
+	@FXML
+	private TextField email;
+	
+	@FXML
+	private TextField password;
+	
+	@FXML
+	private VBox adminTools;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
-		
 		
 		// Set up tree
 		floorHashMap = new HashMap<TreeItem<String>, Floor>();
 		meetingSpaceHashMap = new HashMap<TreeItem<String>, MeetingSpace>();
 		initializeTree();
+	}
+	
+	public void setUser(UserProfile currentUser) {
+		this.currentUser = currentUser;
+		String inputLabel = (currentUser.getName() != null) ? currentUser.getName() : "John Doe";
+		userTypeLabel.setText(inputLabel);
+		if(currentUser.getUserType() != UserType.ADMIN) {
+			adminTools = null;
+		}
+	}
+	
+	public UserProfile getUser() {
+		return currentUser;
 	}
 	
 	private void initializeTree() {
@@ -52,6 +80,12 @@ public class Controller implements Initializable {
 		tree.setCellFactory(TextFieldTreeCell.forTreeView());
 		
 		setUpDefaultTree();
+	}
+	
+	@FXML
+	public void clearTextFields() {
+		email.clear();
+		password.clear();
 	}
 	
 	/**
@@ -172,4 +206,5 @@ public class Controller implements Initializable {
 	private boolean isFloor(TreeItem<String> item) {
 		return tree.getRoot().equals(item.getParent());
 	}
+	
 }
