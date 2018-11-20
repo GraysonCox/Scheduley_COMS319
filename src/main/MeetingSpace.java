@@ -9,13 +9,12 @@ public class MeetingSpace extends Rectangle {
 	private StringProperty name;
 	private Floor floor;
 	
-	public MeetingSpace(Rectangle rect, Floor parent) {
-		super(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
-		this.name = new SimpleStringProperty();
-		floor = parent;
+	public MeetingSpace(String name, double x, double y, double w, double h) {
+		super(x, y, w, h);
+		this.name = new SimpleStringProperty(name);
 		setFill(new Color(0, 0, 0.75, 0.25));
         setStroke(Color.BLACK);
-        
+        floor = null;
         setOnMouseEntered(e -> setFill(new Color(0.75, 0, 0, 0.25)));
         setOnMouseExited(e -> setFill(new Color(0, 0, 0.75, 0.25)));
 	}

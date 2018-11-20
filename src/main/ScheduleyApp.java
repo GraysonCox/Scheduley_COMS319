@@ -1,34 +1,31 @@
 package main;
-
+	
 import java.io.IOException;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
+import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+
 
 public class ScheduleyApp extends Application {
 	private boolean loginSuccessful;
 	
-
-	public static void main(String args[]) {
-		launch(args);
-	}
-
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Scheduley");
@@ -63,19 +60,33 @@ public class ScheduleyApp extends Application {
         	}
         });
 		btn.setOnAction(e -> {
-			ServerConnection conn = new ServerConnection();
-			UserDAOMySQL dataSource = new UserDAOMySQL(conn);
+			UserDAOMySQL dataSource = new UserDAOMySQL(new ServerConnection());
 			loginSuccessful = dataSource.verifyUser(userTextField.getText(), pwBox.getText());
-			String temp = userTextField.getText();
 			if (loginSuccessful) {
 				try {
-					UserProfile currentUser = dataSource.findUser(temp);
-					FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Layout.fxml"));  
-					Parent root = (Parent)fxmlLoader.load();
-					Controller controller = fxmlLoader.<Controller>getController();
-					controller.setUser(currentUser);
-					Scene x = new Scene(root);
-					primaryStage.setScene(x);
+					UserProfile currentUser = dataSource.findUser(userTextField.getText());
+					
+					BorderPane root = new BorderPane();
+			        FXMLLoader treeLoader = new FXMLLoader(getClass().getResource("Tree.fxml"));
+			        root.setLeft(treeLoader.load());
+			        TreeController treeController = treeLoader.getController();
+
+			        FXMLLoader basisLoader = new FXMLLoader(getClass().getResource("Basis.fxml"));
+			        root.setCenter(basisLoader.load());
+			        BasisController basisController = basisLoader.getController();
+			        
+			        FXMLLoader scheduleLoader = new FXMLLoader(getClass().getResource("Schedule.fxml"));
+			        root.setRight(scheduleLoader.load());
+			        ScheduleController scheduleController = scheduleLoader.getController();
+
+			        DataModel model = new DataModel(currentUser);
+			        treeController.initModel(model);
+			        basisController.initModel(model);
+			        scheduleController.initModel(model);
+			        
+			        primaryStage.setTitle("Scheduley");
+			        primaryStage.setScene(new Scene(root));
+			        primaryStage.setMaximized(true);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -85,9 +96,13 @@ public class ScheduleyApp extends Application {
 				actionTarget.setText("Invalid login");
 			}
 		});
+		
 		primaryStage.setScene(scene);
 		primaryStage.setMaximized(false);
-		primaryStage.show();
+        primaryStage.show();
 	}
-
+	
+	public static void main(String[] args) {
+		launch(args);
+	}
 }

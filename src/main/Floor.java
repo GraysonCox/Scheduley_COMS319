@@ -1,31 +1,37 @@
 package main;
 
+import java.util.ArrayList;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
+import main.MeetingSpace;
 
 public class Floor extends Pane {
 	public StringProperty name;
 	public final ImageView image; //public for testing purposes TODO: change to private
-	private Group rectGroup;
+	private ArrayList<MeetingSpace> meetingSpaces;
 	
-	public Floor(Image image) {
-		name = new SimpleStringProperty();
+	public Floor(String name, Image image) {
+		this.name = new SimpleStringProperty(name);
 		this.image = new ImageView(image);
-		rectGroup = new Group();
-		getChildren().addAll(this.image, rectGroup);
+		meetingSpaces = new ArrayList<MeetingSpace>();
+		getChildren().add(this.image);
 	}
 	
 	public void addMeetingSpace(MeetingSpace m) {
-		rectGroup.getChildren().add(m);
+		m.setFloor(this);
+		meetingSpaces.add(m);
 	}
 	
 	public void removeMeetingSpace(MeetingSpace m) {
-		rectGroup.getChildren().remove(m);
+		meetingSpaces.remove(m);
+	}
+	
+	public MeetingSpace[] getMeetingSpaces() {
+		return meetingSpaces.toArray(new MeetingSpace[0]);
 	}
 	
 	public StringProperty nameProperty() {
