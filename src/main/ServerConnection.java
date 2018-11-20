@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class ServerConnection {
 	
-	private static final String DB_URL = "jdbc:mysql://proj-319-080.misc.iastate.edu/group29";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/group29";
 	private static final String USER = "group29";
 	private static final String PASSWORD = "Password!23";
 
