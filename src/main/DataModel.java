@@ -27,7 +27,7 @@ public class DataModel {
 		Floor newFloor = null;
 		MeetingSpace m1 = null, m2 = null;
 		for (int i = 5; i >= 1; i--) {
-			newFloor = new Floor("Floor " + i, new Image("application/floorplan1.jpg"));
+			newFloor = new Floor("Floor " + i, new Image("main/floorplan1.jpg"));
 			m1 = new MeetingSpace("Room " + i + "0" + 1, 88, 40, 213, 113);
 			m2 = new MeetingSpace("Room " + i + "0" + 2, 88, 153, 139, 119);
 			newFloor.addMeetingSpace(m1);
