@@ -93,11 +93,12 @@ public class Controller implements Initializable {
 	 * It won't be in the final project.
 	 */
 	private void setUpDefaultTree() {
+		/*
 		TreeItem<String> tempTreeItem = new TreeItem<String>("Floor 1");
-		Floor tempFloor = new Floor(new Image("main/floorplan1.jpg"));
+		Floor tempFloor = new Floor("", new Image("main/floorplan1.jpg"));
 		floorHashMap.put(tempTreeItem, tempFloor);
 		tree.getRoot().getChildren().add(tempTreeItem);
-		MeetingSpace m1 = new MeetingSpace(new Rectangle(88,40,213,113), tempFloor);
+		MeetingSpace m1 = new MeetingSpace("", new Rectangle(88,40,213,113));
 		tempFloor.addMeetingSpace(m1);
 		TreeItem<String> m1Item = new TreeItem<String>("Room 101");
 		meetingSpaceHashMap.put(m1Item, m1);
@@ -106,6 +107,7 @@ public class Controller implements Initializable {
 		TreeItem<String> m2Item = new TreeItem<String>("Room 102");
 		meetingSpaceHashMap.put(m2Item, m2);
 		tempTreeItem.getChildren().addAll(m1Item, m2Item);
+		*/
 	}
 	
 	public void onItemSelected(TreeItem<String> target) {
@@ -150,7 +152,8 @@ public class Controller implements Initializable {
 			currentFloor.setOnMousePressed(null);
 			currentFloor.setOnMouseDragged(null);
 			currentFloor.setOnMouseReleased(null);
-			MeetingSpace newMeetingSpace = new MeetingSpace(tempRect, currentFloor);
+			
+			/*MeetingSpace newMeetingSpace = new MeetingSpace(tempRect, currentFloor);
 			newMeetingSpace.setFloor(currentFloor);
 			basis.getChildren().remove(tempRect);
 			tempRect = null;
@@ -158,7 +161,7 @@ public class Controller implements Initializable {
 			currentFloor.addMeetingSpace(newMeetingSpace);
 			meetingSpaceHashMap.put(newTreeItem, newMeetingSpace);
 			currentFloorTreeItem.getChildren().add(newTreeItem);
-			tree.getSelectionModel().select(newTreeItem);
+			tree.getSelectionModel().select(newTreeItem); */
 		});
 	}
 	
@@ -175,11 +178,11 @@ public class Controller implements Initializable {
 			e1.printStackTrace();
 		}
 		if (s != null) {
-			Floor newFloor = new Floor(new Image(s));
+			/*Floor newFloor = new Floor(new Image(s));
 			newFloor.nameProperty().bindBidirectional(newTreeItem.valueProperty());
 			floorHashMap.put(newTreeItem, newFloor);
 			tree.getRoot().getChildren().add(newTreeItem);
-			tree.getSelectionModel().select(newTreeItem);
+			tree.getSelectionModel().select(newTreeItem);*/
 		}
 	}
 	
