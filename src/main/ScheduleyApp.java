@@ -56,6 +56,11 @@ public class ScheduleyApp extends Application {
 		grid.add(hbBtn, 1, 4);
 		final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 6);
+        pwBox.setOnKeyPressed( event ->{
+            if(event.getCode() == KeyCode.ENTER) {
+        		btn.fire();
+        	}
+        });
 		btn.setOnAction(e -> {
 			ServerConnection conn = new ServerConnection();
 			UserDAOMySQL dataSource = new UserDAOMySQL(conn);
