@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.TreeController">
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.TreeController">
 	<TreeView fx:id="tree">
 		<contextMenu>
 			<ContextMenu fx:id="adminContextMenu">
