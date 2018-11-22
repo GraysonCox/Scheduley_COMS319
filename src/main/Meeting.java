@@ -16,6 +16,10 @@ public class Meeting {
 		this.meetingSpaceID = meetingSpaceID;
 	}
 	
+	public Meeting(String name) {
+		this(name, null, 0, 0);
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -46,5 +50,13 @@ public class Meeting {
 	
 	public int getMeetingSpaceID() {
 		return meetingSpaceID;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(other instanceof Meeting && this.name.equals(((Meeting) other).getName())){
+			return true;
+		}
+		return false;
 	}
 }

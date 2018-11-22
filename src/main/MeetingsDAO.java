@@ -1,17 +1,16 @@
 package main;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 
-import org.json.JSONException;
+import org.json.simple.JSONArray;
 
 public interface MeetingsDAO {
 
-	public void insertMeeting(Meeting newMeeting);
-	public void insertMeeting(String name, Timestamp startTime, int duration, int meetingSpaceID);
-	public void deleteMeeting(String name) throws JSONException;
-	public ArrayList<Meeting> getAllMeetings() throws JSONException;
-	public Meeting getMeetingByMeetingSpaceID(int meetingSpaceID) throws JSONException;//'locationId in table'
-	public Meeting getMeetingByStartTime(Timestamp startTime) throws JSONException;	
-	public String getMeetingByName(String name);
+	public int insertMeeting(Meeting newMeeting);
+	public int insertMeeting(String name, Timestamp startTime, int duration, int meetingSpaceID);
+	public int deleteMeeting(String name);
+	public JSONArray getAllMeetings();
+	public JSONArray getMeetingsByMeetingSpaceID(int meetingSpaceID);//'locationId in table'
+	public Meeting getMeetingByStartTime(Timestamp startTime);	
+	public Meeting getMeetingByName(String name);
 }

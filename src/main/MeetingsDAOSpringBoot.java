@@ -1,98 +1,169 @@
 package main;
 
 import java.io.BufferedReader;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.CharsetUtils;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	
 	private static final String  MEETING_NAME = "meetingName";
 	private static final String DATE_TIME = "dateTime";
 	private static final String DURATION = "duration";
-	private static final String LOCATION = "location";
+	private static final String MEETING_SPACE_ID = "location";
 	
 	public MeetingsDAOSpringBoot() {}
 
 	@Override
-	public void insertMeeting(Meeting newMeeting) {
-		// TODO Auto-generated method stub
-		
+	public int insertMeeting(Meeting newMeeting) {
 		try {
+			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+			HttpPut putRequest = new HttpPut("http://10.26.43.141:8080/meetings/create");
 			JSONObject jsnObj = new JSONObject();
 			jsnObj.put(MEETING_NAME, newMeeting.getName());
-			jsnObj.put(DATE_TIME, newMeeting.getStartTime());
+			char[] c = newMeeting.getStartTime().toString().toCharArray();
+			char[] d = Arrays.copyOfRange(c, 0, 19);
+			d[10] = 'T';
+			String inputTime = new String(d);
+			jsnObj.put(DATE_TIME, inputTime);
 			jsnObj.put(DURATION, newMeeting.getDuration());
-			jsnObj.put(LOCATION, newMeeting.getMeetingSpaceID());
+			jsnObj.put(MEETING_SPACE_ID, newMeeting.getMeetingSpaceID());
+	
+		    String jsonString = jsnObj.toString();
+			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			putRequest.setEntity(new StringEntity(jsonString));
 			
-			String url = "http://10.26.43.141:8080/meetings/create";
-			
-			/*
-			 // GET
-		      HttpResponse<String> response = client.send(
-		          HttpRequest
-		              .newBuilder(new URI("http://www.foo.com/"))
-		              .headers("Foo", "foovalue", "Bar", "barvalue")
-		              .GET()
-		              .build(),
-		          BodyHandler.asString()
-		      );
-		      int statusCode = response.statusCode();
-		      String body = response.body();
-		      
-		
-			HttpClient client = HttpClient.newHttpClient();
-		    HttpResponse<JSONObject> response = client.send
-		    StringEntity params =new StringEntity("details={\"name\":\"myname\",\"age\":\"20\"} ");
-		    request.addHeader("content-type", "application/x-www-form-urlencoded");
-		    request.setEntity(params);
-		    HttpResponse response = httpClient.execute(request);
-	*/
-			
-		}catch(Exception e) {
-			System.out.println(e.getStackTrace());
-		}
-		
+			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
+			String res = EntityUtils.toString(httpResponse.getEntity());
+			JSONParser parser = new JSONParser();
+			JSONObject obj = (JSONObject) parser.parse(res);
+			int status = Integer.valueOf(obj.get("status").toString());
+			httpResponse.close();
+			httpClient.close();
+			return status;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return -1;
 	}
 	
 
 	@Override
-	public void insertMeeting(String name, Timestamp startTime, int duration, int meetingSpaceID) {
-		// TODO Auto-generated method stub
+	public int insertMeeting(String name, Timestamp startTime, int duration, int meetingSpaceID) {
+		Meeting newMeeting = new Meeting(name, startTime, duration, meetingSpaceID);
+		return insertMeeting(newMeeting);
 
 	}
 
 	@Override
-	public void deleteMeeting(String name) {
-		// TODO Auto-generated method stub
+	public int deleteMeeting(String name) {
+		try {
+			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+			HttpPost postRequest = new HttpPost("http://10.26.43.141:8080/meetings/delete");
+			JSONObject jsnObj = new JSONObject();
+			jsnObj.put(MEETING_NAME, name);
 
+		    String jsonString = jsnObj.toString();
+			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			postRequest.setEntity(new StringEntity(jsonString));
+			
+			CloseableHttpResponse httpResponse = httpClient.execute(postRequest);
+			String res = EntityUtils.toString(httpResponse.getEntity());
+			JSONParser parser = new JSONParser();
+			JSONObject obj = (JSONObject) parser.parse(res);
+			int status = Integer.valueOf(obj.get("status").toString());
+			httpResponse.close();
+			httpClient.close();
+			return status;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return -1;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONArray getAllMeetings() {
+		JSONArray result = new JSONArray();
+		try {
+			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+			HttpGet putRequest = new HttpGet("http://10.26.43.141:8080/meetings/search/all");
+			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			
+			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
+
+			InputStream responseContent = httpResponse.getEntity().getContent();
+			JSONParser jsonParser = new JSONParser();
+			JSONArray tempArr = (JSONArray)jsonParser.parse(new InputStreamReader(responseContent, "UTF-8"));
+			
+			for(int i = 0; i < tempArr.size(); i ++) {
+				JSONObject obj = (JSONObject) tempArr.get(i);
+				Timestamp ts = parseTime((String) obj.get(DATE_TIME));
+				//json.put("dateTime", "2018-11-22T13:00:00"); //WHen I put I need date time to be a string like this
+				Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
+				result.add(temp);
+			}
+			httpResponse.close();
+			httpClient.close();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return result;
 	}
 
 	@Override
-	public ArrayList<Meeting> getAllMeetings() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Meeting getMeetingByMeetingSpaceID(int meetingSpaceID) {
-		// TODO Auto-generated method stub
-		return null;
+	public JSONArray getMeetingsByMeetingSpaceID(int meetingSpaceID) {
+		JSONArray allMeetings = getAllMeetings();
+		JSONArray result = new JSONArray();
+		for(int i = 0; i < allMeetings.size(); i++) {
+			if(((Meeting) allMeetings.get(i)).getMeetingSpaceID() == meetingSpaceID) {
+				result.add(allMeetings.get(i));
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -102,37 +173,43 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	}
 
 
-	@Override //TODO Change this to return Meeting
-	public String getMeetingByName(String name) {
-		String result = null;
+	@Override
+	public Meeting getMeetingByName(String name) {
+		Meeting result = null;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost putRequest = new HttpPost("http://10.26.43.141:8080/meetings/search/name");
-//			Timestamp datetime = new Timestamp(2018,11,20,13,0,0,0);
+			HttpPost postRequest = new HttpPost("http://10.26.43.141:8080/meetings/search/name");
 			JSONObject json = new JSONObject();
 			json.put(MEETING_NAME, name);
-//			json.put("dateTime", datetime);
-//			json.put("duration", 120);
-//			json.put("location", 2);
 		    String jsonString = json.toString();
-		    //System.out.println(jsonString);
-			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-			putRequest.setEntity((HttpEntity) new StringEntity(jsonString));
+			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			postRequest.setEntity(new StringEntity(jsonString));
 			
-			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
+			CloseableHttpResponse httpResponse = httpClient.execute(postRequest);
 			String res = EntityUtils.toString(httpResponse.getEntity());
-			result = res.toString();
-			
+			JSONParser parser = new JSONParser();
+			JSONObject obj = (JSONObject) parser.parse(res);
+			Timestamp ts = parseTime((String) obj.get(DATE_TIME));
+			//json.put("dateTime", "2018-11-22T13:00:00"); //WHen I put I need date time to be a string like this
+			result = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
+			httpResponse.close();
+			httpClient.close();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch(IOException e) {
 			e.printStackTrace();
-		} catch (JSONException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 	
 		return result;
+	}
+	
+	private Timestamp parseTime(String time) {
+		char[] c = time.toCharArray();
+		char[] d = Arrays.copyOfRange(c, 0, 19);
+		d[10] = ' ';
+		return Timestamp.valueOf(String.copyValueOf(d));
 	}
 
 }
