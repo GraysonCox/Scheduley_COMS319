@@ -25,7 +25,6 @@ import javafx.geometry.Pos;
 public class ScheduleyApp extends Application {
 	private boolean loginSuccessful;
 	
-	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Scheduley");

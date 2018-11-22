@@ -1,12 +1,22 @@
 package main;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +26,8 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	private static final String DATE_TIME = "dateTime";
 	private static final String DURATION = "duration";
 	private static final String LOCATION = "location";
+	
+	public MeetingsDAOSpringBoot() {}
 
 	@Override
 	public void insertMeeting(Meeting newMeeting) {
@@ -87,6 +99,40 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	public Meeting getMeetingByStartTime(Timestamp startTime) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override //TODO Change this to return Meeting
+	public String getMeetingByName(String name) {
+		String result = null;
+		try {
+			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+			HttpPost putRequest = new HttpPost("http://10.26.43.141:8080/meetings/search/name");
+//			Timestamp datetime = new Timestamp(2018,11,20,13,0,0,0);
+			JSONObject json = new JSONObject();
+			json.put(MEETING_NAME, name);
+//			json.put("dateTime", datetime);
+//			json.put("duration", 120);
+//			json.put("location", 2);
+		    String jsonString = json.toString();
+		    //System.out.println(jsonString);
+			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			putRequest.setEntity((HttpEntity) new StringEntity(jsonString));
+			
+			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
+			String res = EntityUtils.toString(httpResponse.getEntity());
+			result = res.toString();
+			
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }
