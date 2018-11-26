@@ -12,7 +12,7 @@ import main.UserDAOMySQL;
 import main.UserProfile;
 import main.UserType;
 
-class UserDAOMySQLTest {
+public class UserDAOMySQLTest {
 
 	private UserDAOMySQL dataSource;
 	
