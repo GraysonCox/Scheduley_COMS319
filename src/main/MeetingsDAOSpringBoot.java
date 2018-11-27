@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -41,7 +42,8 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	private static final String DURATION = "duration";
 	private static final String MEETING_SPACE_ID = "location";
 	
-	private static final String URL = "";
+	private static final String BASE_URL = "http://proj-319-080.misc.iastate.edu:8080";
+	private static final String MEDIA_TYPE = "application/json";
 	
 	public MeetingsDAOSpringBoot() {}
 
@@ -49,7 +51,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	public int insertMeeting(Meeting newMeeting) {
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPut putRequest = new HttpPut("http://proj-319-080.misc.iastate.edu:8080/meetings/create");
+			HttpPut putRequest = new HttpPut(BASE_URL + "/meetings/create");
 			JSONObject jsnObj = new JSONObject();
 			jsnObj.put(MEETING_NAME, newMeeting.getName());
 			char[] c = newMeeting.getStartTime().toString().toCharArray();
@@ -61,7 +63,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 			jsnObj.put(MEETING_SPACE_ID, newMeeting.getMeetingSpaceID());
 	
 		    String jsonString = jsnObj.toString();
-			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 			putRequest.setEntity(new StringEntity(jsonString));
 			
 			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
@@ -95,12 +97,12 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	public int deleteMeeting(String name) {
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost postRequest = new HttpPost("http://proj-319-080.misc.iastate.edu:8080/meetings/delete");
+			HttpPost postRequest = new HttpPost(BASE_URL + "/meetings/delete");
 			JSONObject jsnObj = new JSONObject();
 			jsnObj.put(MEETING_NAME, name);
 
 		    String jsonString = jsnObj.toString();
-			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 			postRequest.setEntity(new StringEntity(jsonString));
 			
 			CloseableHttpResponse httpResponse = httpClient.execute(postRequest);
@@ -116,20 +118,18 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		} catch(IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return -1;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public JSONArray getAllMeetings() {
 		JSONArray result = new JSONArray();
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpGet putRequest = new HttpGet("http://proj-319-080.misc.iastate.edu:8080/meetings/search/all");
-			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			HttpGet putRequest = new HttpGet(BASE_URL + "/meetings/search/all");
+			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 			
 			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
 
@@ -140,7 +140,6 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 			for(int i = 0; i < tempArr.size(); i ++) {
 				JSONObject obj = (JSONObject) tempArr.get(i);
 				Timestamp ts = parseTime((String) obj.get(DATE_TIME));
-				//json.put("dateTime", "2018-11-22T13:00:00"); //WHen I put I need date time to be a string like this
 				Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
 				result.add(temp);
 			}
@@ -151,7 +150,6 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		} catch(IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return result;
@@ -170,22 +168,15 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	}
 
 	@Override
-	public Meeting getMeetingByStartTime(Timestamp startTime) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
 	public Meeting getMeetingByName(String name) {
 		Meeting result = null;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost postRequest = new HttpPost("http://proj-319-080.misc.iastate.edu:8080/meetings/search/name");
+			HttpPost postRequest = new HttpPost(BASE_URL + "/meetings/search/name");
 			JSONObject json = new JSONObject();
 			json.put(MEETING_NAME, name);
 		    String jsonString = json.toString();
-			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 			postRequest.setEntity(new StringEntity(jsonString));
 			
 			CloseableHttpResponse httpResponse = httpClient.execute(postRequest);
@@ -193,7 +184,6 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 			JSONParser parser = new JSONParser();
 			JSONObject obj = (JSONObject) parser.parse(res);
 			Timestamp ts = parseTime((String) obj.get(DATE_TIME));
-			//json.put("dateTime", "2018-11-22T13:00:00"); //WHen I put I need date time to be a string like this
 			result = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
 			httpResponse.close();
 			httpClient.close();
@@ -202,7 +192,6 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		} catch(IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 	
 		return result;
@@ -215,17 +204,50 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		return Timestamp.valueOf(String.copyValueOf(d));
 	}
 
-	@Override
-	public JSONArray getAllMeetingsByWeek(int meetingSpaceID, DayOfWeek selectedDay) {
-		/*JSONArray temp =  getMeetingsByMeetingSpaceID(meetingSpaceID);
-			for(int i = 0; i < allM.size(); i++) {
-				if(((Meeting) allMeetings.get(i)).getMeetingSpaceID() == meetingSpaceID) {
-					result.add(allMeetings.get(i));
+	public JSONArray getAllMeetingsByWeek(int meetingSpaceID, LocalDateTime targetTime) {
+		JSONArray tempArrList =  getMeetingsByMeetingSpaceID(meetingSpaceID);
+		JSONArray result = new JSONArray();
+		for(int i = 0; i < tempArrList.size(); i++) {
+			Meeting currMeeting = (Meeting) tempArrList.get(i);
+			LocalDateTime currTime = currMeeting.getStartTime().toLocalDateTime();
+			if(currTime.getMonth().equals(targetTime.getMonth())) {
+				if(currTime.getDayOfMonth() == targetTime.getDayOfMonth()){
+					result.add(i);
 				}
 			}
-			return result;
-		}*/
-		return null;
+		}
+		return result;
 	}
 
+	@Override
+	public Meeting[] getAllMeetings2() {
+		JSONArray tempArr = getAllMeetings();
+		Meeting[] result = JSONArrayToMeetingArray(tempArr);
+		return result;
+	}
+
+	@Override
+	public Meeting[] getMeetingsByMeetingSpaceID2(int meetingSpaceID) {
+		JSONArray tempArr = getMeetingsByMeetingSpaceID(meetingSpaceID);
+		Meeting[] result = JSONArrayToMeetingArray(tempArr);
+		return result;
+	}
+
+	@Override
+	public Meeting[] getAllMeetingsByWeek2(int meetingSpaceID, LocalDateTime targetTime) {
+		JSONArray tempArr = getAllMeetingsByWeek(meetingSpaceID, targetTime);
+		Meeting[] result = JSONArrayToMeetingArray(tempArr);
+		return result;
+	}
+	
+	private Meeting[] JSONArrayToMeetingArray(JSONArray inputArr) {
+		Meeting[] result = new Meeting[inputArr.size()];
+		for(int i = 0; i < inputArr.size(); i++) {
+			Meeting obj = (Meeting) inputArr.get(i);
+			//Timestamp ts = parseTime((String) obj.get(DATE_TIME));
+			//Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
+			result[i] = obj;
+		}
+		return result;
+	}
 }

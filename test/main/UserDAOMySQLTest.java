@@ -32,7 +32,7 @@ public class UserDAOMySQLTest {
 		
 		//Clean up
 		dataSource.deleteUser("tomDodge@tom.com");	
-}
+	}
 	
 	@Test
 	void findAllUserTest() throws SQLException {

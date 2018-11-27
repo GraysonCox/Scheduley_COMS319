@@ -15,7 +15,6 @@ public class ServerConnection {
 	}
 	
 	public Connection getConnection() throws SQLException {
-		//if(con != null) return  con;
 		return  getConnection(DB_URL, USER, PASSWORD);
 	}
 	

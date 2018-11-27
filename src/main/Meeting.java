@@ -9,6 +9,10 @@ public class Meeting {
 	private int duration;
 	private int meetingSpaceID;
 	
+	public Meeting() {
+		
+	}
+	
 	public Meeting(String name, Timestamp startTime, int duration, int meetingSpaceID) {
 		this.name = name;
 		this.startTime = startTime;

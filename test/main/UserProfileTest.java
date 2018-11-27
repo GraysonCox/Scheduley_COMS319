@@ -6,10 +6,10 @@ import org.junit.Test;
 
 public class UserProfileTest {
 	
-	UserProfile user1 = new UserProfile(2, "superSaiyanBAWS@gmail.com", "Sebastian", UserType.ADMIN);
-	UserProfile user2 = new UserProfile(3, "superSaiyan1999@gmail.com", "Benn", "Admin");
-	UserProfile user3 = new UserProfile(4, "superduper@gmail.com", "Lebron", 2);
-	UserProfile user4 = new UserProfile(5, "superduper@gmail.com", "Lebron", "ADMIN");
+	UserProfile user1 = new UserProfile("superSaiyanBAWS@gmail.com", "Sebastian", UserType.ADMIN);
+	UserProfile user2 = new UserProfile("superSaiyan1999@gmail.com", "Benn", "Admin");
+	UserProfile user3 = new UserProfile("superduper@gmail.com", "Lebron", 2);
+	UserProfile user4 = new UserProfile("superduper@gmail.com", "Lebron", "ADMIN");
 	
 	@Test
 	public void testGetEmail()
