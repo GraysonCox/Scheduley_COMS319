@@ -11,15 +11,14 @@ public class UserDAOMySQL implements UserDAO{
 	
 	private static final String GET_ALL_USERS = "SELECT * FROM users;";
 	
-	private static final String INSERT_NEW_USER = "INSERT into users(user_id, email, name, password, user_type)" 
-			+ "VALUES(?, ?, ?, ?, ?)";
+	private static final String INSERT_NEW_USER = "INSERT into users(email, name, password, user_type)" 
+			+ "VALUES(?, ?, ?, ?)";
 	
 	private static final String UPDATE_USER = "UPDATE users set ";
 	
 	private static final String DELETE_USER = "DELETE FROM users WHERE email = ?;";
 	
 	private static final String DEFAULT_PASSWORD = "group29";
-	private static final int UNIQUE_ID = 29;
 	
 	private static ServerConnection dao;
 	
@@ -40,11 +39,12 @@ public class UserDAOMySQL implements UserDAO{
 			rs = statement.executeQuery(GET_ALL_USERS);
 		
 			while (rs.next()) {
-				int id = rs.getInt("user_id");
 				String email = rs.getString("email");	
 				String name = rs.getString("name");
+				int id = rs.getInt("user_id");
 				String type = rs.getString("user_type");
-				UserProfile temp = new UserProfile(id, email, name, type);
+				UserProfile temp = new UserProfile(email, name, type);
+				temp.setUniqueID(id);
 				users.add(temp);
 			}
 		} finally {
@@ -62,14 +62,14 @@ public class UserDAOMySQL implements UserDAO{
 	}
 	
 	@Override
-	public void insertUser(int id, String email, String name, UserType userType) throws SQLException {
-		UserProfile newUser = new UserProfile(id, email, name, userType);
+	public void insertUser(String email, String name, UserType userType) throws SQLException {
+		UserProfile newUser = new UserProfile(email, name, userType);
 		insertUser(newUser);
 	}
 	
 	@Override
-	public void insertUser(int id, String email, String name, String userType) throws SQLException {
-		UserProfile newUser = new UserProfile(id, email, name, userType);
+	public void insertUser(String email, String name, String userType) throws SQLException {
+		UserProfile newUser = new UserProfile(email, name, userType);
 		insertUser(newUser);
 		
 	}
@@ -81,12 +81,10 @@ public class UserDAOMySQL implements UserDAO{
 		try {
 			dbConnection = dao.getConnection();
 			pStatement = dbConnection.prepareStatement(INSERT_NEW_USER);
-			//id
-			pStatement.setInt(1, newUser.getUniqueID());
-			pStatement.setString(2, newUser.getEmail());
-			pStatement.setString(3, newUser.getName());
-			pStatement.setString(4, DEFAULT_PASSWORD);
-			pStatement.setString(5, newUser.getUserType().toString());
+			pStatement.setString(1, newUser.getEmail());
+			pStatement.setString(2, newUser.getName());
+			pStatement.setString(3, DEFAULT_PASSWORD);
+			pStatement.setString(4, newUser.getUserType().toString());
 			pStatement.executeUpdate();	
 			
 		}finally {

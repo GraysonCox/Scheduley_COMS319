@@ -14,27 +14,25 @@ public class UserProfile {
 	private UserType userType;
 	
 	public UserProfile(){
-		uniqueID = 0;
 		email = "";
 		name = "";
 		userType = UserType.UNKNOWN;
 		password = "group29";
 	}
 	
-	public UserProfile(int id, String email, String name, UserType type){
-		uniqueID = id;
+	public UserProfile(String email, String name, UserType type){
 		if(isValidEmail(email)) this.email = email;
 		if(isValidName(name)) this.name = name;
 		password = "group29";
 		this.userType = type;
 	}
 	
-	public UserProfile(int id, String email, String name, String userType){
-		this(id, email, name, UserType.getValueOf(userType));
+	public UserProfile(String email, String name, String userType){
+		this(email, name, UserType.getValueOf(userType));
 	}
 	
-	public UserProfile(int id, String email, String name, int userType){
-		this(id, email, name, UserType.values()[userType]);
+	public UserProfile(String email, String name, int userType){
+		this(email, name, UserType.values()[userType]);
 	}
 	
 	boolean isValidEmail(String inputEmail) {
@@ -65,6 +63,10 @@ public class UserProfile {
 	
 	public UserType getUserType() {
 		return userType;
+	}
+	
+	public void setUniqueID(int id) {
+		uniqueID = id;
 	}
 	
 	public int getUniqueID() {

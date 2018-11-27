@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -40,13 +41,15 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	private static final String DURATION = "duration";
 	private static final String MEETING_SPACE_ID = "location";
 	
+	private static final String URL = "";
+	
 	public MeetingsDAOSpringBoot() {}
 
 	@Override
 	public int insertMeeting(Meeting newMeeting) {
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPut putRequest = new HttpPut("http://10.26.43.141:8080/meetings/create");
+			HttpPut putRequest = new HttpPut("http://proj-319-080.misc.iastate.edu:8080/meetings/create");
 			JSONObject jsnObj = new JSONObject();
 			jsnObj.put(MEETING_NAME, newMeeting.getName());
 			char[] c = newMeeting.getStartTime().toString().toCharArray();
@@ -92,7 +95,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	public int deleteMeeting(String name) {
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost postRequest = new HttpPost("http://10.26.43.141:8080/meetings/delete");
+			HttpPost postRequest = new HttpPost("http://proj-319-080.misc.iastate.edu:8080/meetings/delete");
 			JSONObject jsnObj = new JSONObject();
 			jsnObj.put(MEETING_NAME, name);
 
@@ -125,7 +128,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		JSONArray result = new JSONArray();
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpGet putRequest = new HttpGet("http://10.26.43.141:8080/meetings/search/all");
+			HttpGet putRequest = new HttpGet("http://proj-319-080.misc.iastate.edu:8080/meetings/search/all");
 			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 			
 			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
@@ -178,7 +181,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		Meeting result = null;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost postRequest = new HttpPost("http://10.26.43.141:8080/meetings/search/name");
+			HttpPost postRequest = new HttpPost("http://proj-319-080.misc.iastate.edu:8080/meetings/search/name");
 			JSONObject json = new JSONObject();
 			json.put(MEETING_NAME, name);
 		    String jsonString = json.toString();
@@ -210,6 +213,19 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		char[] d = Arrays.copyOfRange(c, 0, 19);
 		d[10] = ' ';
 		return Timestamp.valueOf(String.copyValueOf(d));
+	}
+
+	@Override
+	public JSONArray getAllMeetingsByWeek(int meetingSpaceID, DayOfWeek selectedDay) {
+		/*JSONArray temp =  getMeetingsByMeetingSpaceID(meetingSpaceID);
+			for(int i = 0; i < allM.size(); i++) {
+				if(((Meeting) allMeetings.get(i)).getMeetingSpaceID() == meetingSpaceID) {
+					result.add(allMeetings.get(i));
+				}
+			}
+			return result;
+		}*/
+		return null;
 	}
 
 }
