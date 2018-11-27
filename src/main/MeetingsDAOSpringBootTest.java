@@ -20,10 +20,8 @@ public class MeetingsDAOSpringBootTest {
 		JSONArray expected = new JSONArray();
 		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting");
 		expected.add(one);
-		Meeting two = new Meeting("Group 29 Thanksgiving");
+		Meeting two = new Meeting("g7 meeting");
 		expected.add(two);
-		Meeting three = new Meeting("Supreme Soviet Meeting");
-		expected.add(three);
 		for(int i = 0; i < actual.size(); i++) {
 			Assert.assertTrue(((Meeting) actual.get(i)).equals(((Meeting) expected.get(i))));
 		}
@@ -32,8 +30,8 @@ public class MeetingsDAOSpringBootTest {
 	@Test 
 	void getMeetingByNameTest_Success() {
 		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
-		Meeting actual = curr.getMeetingByName("Group 29 Thanksgiving");
-		Meeting expected = new Meeting("Group 29 Thanksgiving");
+		Meeting actual = curr.getMeetingByName("g7 meeting");
+		Meeting expected = new Meeting("g7 meeting");
 		Assert.assertTrue(actual.equals(expected));
 	}
 	
@@ -43,7 +41,7 @@ public class MeetingsDAOSpringBootTest {
 		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
 		JSONArray actual = curr.getMeetingsByMeetingSpaceID(3);
 		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", null, 60, 3);
-		Meeting two = new Meeting("Group 29 Thanksgiving", null, 120, 3);
+		Meeting two = new Meeting("g7 meeting", null, 120, 1);
 		JSONArray expected = new JSONArray();
 		expected.add(one);
 		expected.add(two);
@@ -51,7 +49,6 @@ public class MeetingsDAOSpringBootTest {
 			Assert.assertTrue(((Meeting) actual.get(i)).equals(((Meeting) expected.get(i))));
 		}
 	}
-	
 	
 	@Test
 	void insertMeetingTest_Success() {
@@ -63,7 +60,6 @@ public class MeetingsDAOSpringBootTest {
 		
 		curr.deleteMeeting(newMeeting.getName());
 	}
-	
 	
 	@Test
 	void deleteMeeting_Success() {

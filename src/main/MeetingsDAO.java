@@ -1,6 +1,7 @@
 package main;
 
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
 
 import org.json.simple.JSONArray;
 
@@ -13,4 +14,5 @@ public interface MeetingsDAO {
 	public JSONArray getMeetingsByMeetingSpaceID(int meetingSpaceID);//'locationId in table'
 	public Meeting getMeetingByStartTime(Timestamp startTime);	
 	public Meeting getMeetingByName(String name);
+	public JSONArray getAllMeetingsByWeek(int meetingSpaceID, DayOfWeek selectedDay);
 }

@@ -22,69 +22,47 @@ public class UserDAOMySQLTest {
 		dataSource = new UserDAOMySQL(conn);
 	}
 	
-	
-	/*
 	@Test
 	void insertUser() throws SQLException {
-		String inputName = "John Johnson";
-		String inputEmail = "jonathanJohnson@tom.com";
-		dataSource.insertUser(12, inputEmail, inputName, UserType.OTHER);
-		
-	}
-	
-	*/
-	
-	@Test
-	void insertUser() throws SQLException {
-		String inputName = "Tom Dodge";
-		String inputEmail = "tomDodge@tom.com";
-		dataSource.insertUser(5, inputEmail, inputName, UserType.ADMIN);
+		UserProfile tom = new UserProfile("tomDodge@tom.com", "Tom Dodge", UserType.ADMIN);
+		dataSource.insertUser(tom);
 		ArrayList<UserProfile> users = dataSource.findAllUsers();
 		
-		ArrayList<UserProfile> expectedUsers = new ArrayList<UserProfile>();
-		UserProfile one = new UserProfile(1, "nht209@iastate.edu", "Thien Nguyen", 0);
-		expectedUsers.add(one);
-		UserProfile three = new UserProfile(5, inputEmail, inputName, "ADMIN");
-		expectedUsers.add(three);
-		UserProfile two = new UserProfile(29, "wasartin@iastate.edu", "Will Sartin", 0);
-		expectedUsers.add(two);
-
-		Assert.assertTrue(expectedUsers.equals(users));
+		Assert.assertTrue(dataSource.verifyUser(tom.getEmail(), tom.getPassword()));
 		
 		//Clean up
-		dataSource.deleteUser("tomDodge@tom.com");
-		
-		
+		dataSource.deleteUser("tomDodge@tom.com");	
 }
-	
 	
 	@Test
 	void findAllUserTest() throws SQLException {
 		ArrayList<UserProfile> users = dataSource.findAllUsers();
 		ArrayList<UserProfile> expectedUsers = new ArrayList<UserProfile>();
-		UserProfile one = new UserProfile(1, "nht209@iastate.edu", "Thien Nguyen", 0);
+		UserProfile one = new UserProfile("nht209@iastate.edu", "Thien Nguyen", 0);
 		expectedUsers.add(one);
-		UserProfile two = new UserProfile(29, "wasartin@iastate.edu", "Will Sartin", 0);
+		UserProfile three = new UserProfile("jonathanJohnson@tom.com", "John Johnson", UserType.OTHER);
+		expectedUsers.add(three);
+		UserProfile two = new UserProfile("wasartin@iastate.edu", "Will Sartin", 0);
 		expectedUsers.add(two);
-
+		UserProfile four = new UserProfile("putin@iastate.edu", "Vladimir Putin", UserType.OTHER);
+		expectedUsers.add(four);
+		for(UserProfile u : users) {
+			System.out.println(u.getEmail());
+		}
 		Assert.assertTrue(expectedUsers.equals(users));
 	}
 
 	
 	@Test
 	void deleteUser() throws SQLException {
+		UserProfile tom = new UserProfile("tomDodge@tom.com", "Tom Dodge", UserType.ADMIN);
 		//Add User
-		dataSource.insertUser(5, "tomDodge@tom.com", "Tom Dodge", UserType.ADMIN);
+		dataSource.insertUser(tom);
 		//Delete User
-		dataSource.deleteUser("tomDodge@tom.com");
+		dataSource.deleteUser(tom.getEmail());
 		ArrayList<UserProfile> users = dataSource.findAllUsers();
-		ArrayList<UserProfile> expectedUsers = new ArrayList<UserProfile>();
-		UserProfile one = new UserProfile(1, "nht209@iastate.edu", "Thien Nguyen", 0);
-		expectedUsers.add(one);
-		UserProfile two = new UserProfile(29, "wasartin@iastate.edu", "Will Sartin", 0);
-		expectedUsers.add(two);
-		
-		Assert.assertTrue(expectedUsers.equals(users));
+
+		Assert.assertFalse(dataSource.verifyUser(tom.getEmail(), tom.getPassword()));
 	}
 	
 	@Test
@@ -93,16 +71,6 @@ public class UserDAOMySQLTest {
 		String password = "group29";
 		Assert.assertTrue(dataSource.verifyUser(sampleEmail, password));
 	}
-	
-	@Test
-	void updateUser() {
-		
-	}
-	
-	@Test
-	void findUser() {
-		
-	}
-	
 
+	
 }
