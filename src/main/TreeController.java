@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
@@ -49,10 +50,12 @@ public class TreeController implements Initializable {
         	}
         });
         this.model.getMeetingSpaceList().addListener((ListChangeListener<MeetingSpace>)c -> update());
-        this.model.getFloorList().addListener((ListChangeListener<Floor>)c -> update());
+        this.model.getFloorMap().addListener((MapChangeListener<Integer, Floor>)c -> update());
         
         TreeItem<String> newFloorTreeItem, newMeetingSpaceTreeItem;
-        for (Floor f : model.getFloorList()) {
+        Floor f;
+        for (int i = 1; i <= model.getFloorMap().size(); i++) {
+        	f = model.getFloorMap().get(i);
         	newFloorTreeItem = new TreeItem<String>("");
         	newFloorTreeItem.valueProperty().bindBidirectional(f.nameProperty());
         	floorHashMap.put(newFloorTreeItem, f);
@@ -80,7 +83,9 @@ public class TreeController implements Initializable {
 		floorHashMap.clear();
 		
 		TreeItem<String> newFloorTreeItem, newMeetingSpaceTreeItem;
-        for (Floor f : model.getFloorList()) {
+		Floor f;
+        for (int i = 1; i <= model.getFloorMap().size(); i++) {
+        	f = model.getFloorMap().get(i);
         	newFloorTreeItem = new TreeItem<String>("");
         	newFloorTreeItem.valueProperty().bindBidirectional(f.nameProperty());
         	floorHashMap.put(newFloorTreeItem, f);
@@ -128,7 +133,7 @@ public class TreeController implements Initializable {
 		TreeItem<String> t = tree.getSelectionModel().getSelectedItem();
 		if (t != null) {
     		if (isFloor(t)) {
-    			this.model.removeFloor(floorHashMap.get(t));
+    			//this.model.removeFloor(floorHashMap.get(t));
     		} else {
     			this.model.removeMeetingSpace(meetingSpaceHashMap.get(t));
     		}
