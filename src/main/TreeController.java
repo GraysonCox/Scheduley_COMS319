@@ -112,7 +112,7 @@ public class TreeController implements Initializable {
 			e1.printStackTrace();
 		}
 		if (s != null) {
-			model.addFloor(new Floor("New floor", new Image(s)));
+			model.addFloor(new Floor("New floor", s));
 		}
 	}
 	
