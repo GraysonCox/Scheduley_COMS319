@@ -101,7 +101,8 @@ public class BasisController implements Initializable {
 					tempRect.getX(),
 					tempRect.getY(),
 					tempRect.getWidth(),
-					tempRect.getHeight());
+					tempRect.getHeight(),
+					1);
 			pane.getChildren().remove(tempRect);
 			tempRect = null;
 			model.addMeetingSpace(newMeetingSpace);

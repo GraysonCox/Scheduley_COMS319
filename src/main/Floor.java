@@ -14,9 +14,9 @@ public class Floor extends Pane {
 	public final ImageView image; //public for testing purposes TODO: change to private
 	private ArrayList<MeetingSpace> meetingSpaces;
 	
-	public Floor(String name, Image image) {
+	public Floor(String name, String URL) {
 		this.name = new SimpleStringProperty(name);
-		this.image = new ImageView(image);
+		this.image = new ImageView(new Image(URL));
 		meetingSpaces = new ArrayList<MeetingSpace>();
 		getChildren().add(this.image);
 	}
