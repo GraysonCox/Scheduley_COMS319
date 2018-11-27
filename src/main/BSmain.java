@@ -13,7 +13,6 @@ public class BSmain {
 			System.out.println(ms.getY());
 			System.out.println(ms.getHeight());
 			System.out.println(ms.getWidth());
-			System.out.println(ms.getFloor());
 		}
 	}
 

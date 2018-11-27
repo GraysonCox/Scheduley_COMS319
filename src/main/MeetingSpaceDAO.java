@@ -7,5 +7,5 @@ public interface MeetingSpaceDAO {
 	public MeetingSpace[] getAllMeetingSpace();
 	public MeetingSpace[] getMeetingSpaceByFloor(int floorID);
 	public int addMeetingSpace(MeetingSpace meetingSpace);
-	public int deleteMeetingSpace(int id);
+	public int deleteMeetingSpace(int x, int y, int floor);
 }
