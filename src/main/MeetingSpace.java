@@ -10,12 +10,14 @@ import javafx.scene.shape.Rectangle;
 public class MeetingSpace extends Rectangle {
 	private StringProperty name;
 	private Floor floor;
+	private int floor_id;
 	private int uniqueID;
 	private JSONArray meetingsAtThisLocation;
 	
 	public MeetingSpace(String name, double x, double y, double w, double h, int floor_id) {
 		super(x, y, w, h);
 		this.name = new SimpleStringProperty(name);
+		this.floor_id = floor_id;
 		setFill(new Color(0, 0, 0.75, 0.25));
         setStroke(Color.BLACK);
         floor = null;
@@ -26,6 +28,10 @@ public class MeetingSpace extends Rectangle {
 	
 	public Floor getFloor() {
 		return floor;
+	}
+	
+	public int getFloorID() {
+		return floor_id;
 	}
 	
 	public void setFloor(Floor parent) {

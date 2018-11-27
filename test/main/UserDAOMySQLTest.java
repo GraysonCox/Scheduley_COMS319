@@ -71,6 +71,4 @@ public class UserDAOMySQLTest {
 		String password = "group29";
 		Assert.assertTrue(dataSource.verifyUser(sampleEmail, password));
 	}
-
-	
 }

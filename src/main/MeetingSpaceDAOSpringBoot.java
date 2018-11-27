@@ -64,9 +64,9 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 	@Override
 	public MeetingSpace[] getMeetingSpaceByFloor(int floorID) {
 		MeetingSpace[] temp = getAllMeetingSpace();
-		ArrayList<MeetingSpace> arrlist;
+		ArrayList<MeetingSpace> arrlist = null;
 		for(int i=0; i<temp.length; i++) {
-			if(temp[i].getFloor()==floorID)
+			if(temp[i].getFloorID()==floorID)
 				arrlist.add(temp[i]);
 		}
 		MeetingSpace[] arr = (MeetingSpace[]) arrlist.toArray();

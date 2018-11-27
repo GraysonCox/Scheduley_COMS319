@@ -11,9 +11,6 @@ import javafx.scene.image.ImageView;
 
 public class FloorTest {
 	
-
-	
-	
 	//Testing whether an image has been uploaded successfully
 	@Test
 	public void testFloorImageUpload()
@@ -25,14 +22,11 @@ public class FloorTest {
 		System.out.println(!image.isError());
 		
 	}
-	
+
 	/*
 	@Test
 	public void testAddMeetingSpace() 
-	{
 		
 	}
-	
-
 	*/
 }

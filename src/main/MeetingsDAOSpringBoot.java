@@ -1,40 +1,35 @@
 package main;
 
-import java.io.BufferedReader;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.CharsetUtils;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+/**
+ * I interact with the DB through the JSONArray methods, because it is so much easier with them, and then
+ * the Meeting[] methods use them to get a JSONArray and convert them to a Meeting[]. 
+ * 
+ * The user will use the Meeting[] methods, they currently do not have access to the JSONArray methods.
+ * @author watis
+ *
+ */
 public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	
 	private static final String  MEETING_NAME = "meetingName";
@@ -47,6 +42,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	
 	public MeetingsDAOSpringBoot() {}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public int insertMeeting(Meeting newMeeting) {
 		try {
@@ -79,7 +75,6 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		} catch(IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return -1;
@@ -93,6 +88,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public int deleteMeeting(String name) {
 		try {
@@ -123,8 +119,8 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		return -1;
 	}
 
-	@Override
-	public JSONArray getAllMeetings() {
+	@SuppressWarnings("unchecked")
+	private JSONArray getAllMeetings_JSONArray() {
 		JSONArray result = new JSONArray();
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -155,9 +151,9 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		return result;
 	}
 
-	@Override
-	public JSONArray getMeetingsByMeetingSpaceID(int meetingSpaceID) {
-		JSONArray allMeetings = getAllMeetings();
+	@SuppressWarnings("unchecked")
+	private JSONArray getMeetingsByMeetingsSpaceID_JSONArray(int meetingSpaceID) {
+		JSONArray allMeetings = getAllMeetings_JSONArray();
 		JSONArray result = new JSONArray();
 		for(int i = 0; i < allMeetings.size(); i++) {
 			if(((Meeting) allMeetings.get(i)).getMeetingSpaceID() == meetingSpaceID) {
@@ -166,7 +162,24 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		}
 		return result;
 	}
+	
+	@SuppressWarnings("unchecked")
+	private JSONArray getAllMeetingsByWeek_JSONArray(int meetingSpaceID, LocalDateTime targetTime) {
+		JSONArray tempArrList =  getMeetingsByMeetingsSpaceID_JSONArray(meetingSpaceID);
+		JSONArray result = new JSONArray();
+		for(int i = 0; i < tempArrList.size(); i++) {
+			Meeting currMeeting = (Meeting) tempArrList.get(i);
+			LocalDateTime currTime = currMeeting.getStartTime().toLocalDateTime();
+			if(currTime.getMonth().equals(targetTime.getMonth())) {
+				if(currTime.getDayOfMonth() == targetTime.getDayOfMonth()){
+					result.add(currMeeting);
+				}
+			}
+		}
+		return result;
+	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Meeting getMeetingByName(String name) {
 		Meeting result = null;
@@ -204,38 +217,26 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		return Timestamp.valueOf(String.copyValueOf(d));
 	}
 
-	public JSONArray getAllMeetingsByWeek(int meetingSpaceID, LocalDateTime targetTime) {
-		JSONArray tempArrList =  getMeetingsByMeetingSpaceID(meetingSpaceID);
-		JSONArray result = new JSONArray();
-		for(int i = 0; i < tempArrList.size(); i++) {
-			Meeting currMeeting = (Meeting) tempArrList.get(i);
-			LocalDateTime currTime = currMeeting.getStartTime().toLocalDateTime();
-			if(currTime.getMonth().equals(targetTime.getMonth())) {
-				if(currTime.getDayOfMonth() == targetTime.getDayOfMonth()){
-					result.add(i);
-				}
-			}
-		}
-		return result;
-	}
-
 	@Override
-	public Meeting[] getAllMeetings2() {
-		JSONArray tempArr = getAllMeetings();
+	public Meeting[] getAllMeetings() {
+		JSONArray tempArr = getAllMeetings_JSONArray();
 		Meeting[] result = JSONArrayToMeetingArray(tempArr);
 		return result;
 	}
 
 	@Override
-	public Meeting[] getMeetingsByMeetingSpaceID2(int meetingSpaceID) {
-		JSONArray tempArr = getMeetingsByMeetingSpaceID(meetingSpaceID);
+	public Meeting[] getMeetingsByMeetingSpaceID(int meetingSpaceID) {
+		JSONArray tempArr = getMeetingsByMeetingsSpaceID_JSONArray(meetingSpaceID);
 		Meeting[] result = JSONArrayToMeetingArray(tempArr);
 		return result;
 	}
 
+	/**
+	 *This Method will only check by month and day.
+	 */
 	@Override
-	public Meeting[] getAllMeetingsByWeek2(int meetingSpaceID, LocalDateTime targetTime) {
-		JSONArray tempArr = getAllMeetingsByWeek(meetingSpaceID, targetTime);
+	public Meeting[] getAllMeetingsByWeek(int meetingSpaceID, LocalDateTime targetTime) {
+		JSONArray tempArr = getAllMeetingsByWeek_JSONArray(meetingSpaceID, targetTime);
 		Meeting[] result = JSONArrayToMeetingArray(tempArr);
 		return result;
 	}
@@ -244,8 +245,6 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		Meeting[] result = new Meeting[inputArr.size()];
 		for(int i = 0; i < inputArr.size(); i++) {
 			Meeting obj = (Meeting) inputArr.get(i);
-			//Timestamp ts = parseTime((String) obj.get(DATE_TIME));
-			//Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
 			result[i] = obj;
 		}
 		return result;
