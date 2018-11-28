@@ -1,6 +1,10 @@
 package main;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -16,50 +20,65 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class FloorDAOSpringBoot implements FloorDAO {
+import javafx.scene.image.Image;
 
-	public FloorDAOSpringBoot() {}
+public class FloorDAOSpringBoot implements FloorDAO {
+	private Floor floors[];
 	
-	@Override
-	public Floor[] getAllFloors() {
+	public FloorDAOSpringBoot() {
+		loadFloors();
+	}
+
+	public void loadFloors() {
 		Floor[] arr = null;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			HttpGet getRequest = new HttpGet("http://proj-319-080.misc.iastate.edu:8080/floor/search/all");
 			getRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-			
+
 			CloseableHttpResponse httpResponse = httpClient.execute(getRequest);
 			String res = EntityUtils.toString(httpResponse.getEntity());
 			JSONParser parser = new JSONParser();
 			JSONArray result = (JSONArray) parser.parse(res);
 			arr = new Floor[result.size()];
-			
-			for(int i=0; i<result.size(); i++) {
+			System.out.println("Given array size: " + result.size());
+			for (int i = 0; i < result.size(); i++) {
 				JSONObject temp = (JSONObject) result.get(i);
 				long id = (long) temp.get("floorID");
 				String name = (String) temp.get("floorName");
 				String url = (String) temp.get("imgURL");
 				
-				Floor ms = new Floor(name,url);
-				ms.setFloorID((int)id);
+				
+				if(!url.equals("main/floorplan1.jpg")) {
+					System.out.println("Current floor " + name + ", url: " +url);
+					url = "main/MrScheduley.png";
+				}
+				else {
+					System.out.println("DEBUG HERE");
+				}
+				Floor ms = new Floor(name, url);
+				ms.setFloorID((int) id);
 				arr[i] = ms;
 			}
 			httpResponse.close();
 			httpClient.close();
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
 			e.printStackTrace();
-		} 
-		return arr;
+		}
+		floors = arr;
+	}
+	
+	@Override
+	public Floor[] getAllFloors() {
+		return floors;
 	}
 
 	@Override
 	public Floor getFloorByID(int ID) {
-		Floor[] arr = getAllFloors();
-		
-		for(Floor f : arr) {
-			if(f.getFloorID() == ID)
+		for (Floor f : floors) {
+			if (f.getFloorID() == ID)
 				return f;
 		}
 		return null;
@@ -67,12 +86,11 @@ public class FloorDAOSpringBoot implements FloorDAO {
 
 	@Override
 	public Floor getFloorByName(String name) {
-		Floor[] arr = getAllFloors();
-		
-		for(Floor f : arr) {
-			if(f.getName().equalsIgnoreCase(name))
+		for (Floor f : floors) {
+			if (f.getName().equalsIgnoreCase(name))
 				return f;
 		}
+		
 		return null;
 	}
 
@@ -86,15 +104,15 @@ public class FloorDAOSpringBoot implements FloorDAO {
 			JSONObject json = new JSONObject();
 			json.put("floorName", floor.getName());
 			json.put("imgURL", floor.getImageURL());
-		    String jsonString = json.toString();
+			String jsonString = json.toString();
 			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 			putRequest.setEntity(new StringEntity(jsonString));
-		
+
 			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
 			String res = EntityUtils.toString(httpResponse.getEntity());
 			JSONParser parser = new JSONParser();
 			JSONObject obj = (JSONObject) parser.parse(res);
-			code = (int)((long) obj.get("status"));
+			code = (int) ((long) obj.get("status"));
 			httpResponse.close();
 			httpClient.close();
 		} catch (IOException e) {
@@ -114,15 +132,15 @@ public class FloorDAOSpringBoot implements FloorDAO {
 			HttpPost postRequest = new HttpPost("http://proj-319-080.misc.iastate.edu:8080/floor/delete");
 			JSONObject json = new JSONObject();
 			json.put("floorID", ID);
-		    String jsonString = json.toString();
+			String jsonString = json.toString();
 			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 			postRequest.setEntity(new StringEntity(jsonString));
-		
+
 			CloseableHttpResponse httpResponse = httpClient.execute(postRequest);
 			String res = EntityUtils.toString(httpResponse.getEntity());
 			JSONParser parser = new JSONParser();
 			JSONObject obj = (JSONObject) parser.parse(res);
-			code = (int)((long) obj.get("status"));
+			code = (int) ((long) obj.get("status"));
 			httpResponse.close();
 			httpClient.close();
 		} catch (IOException e) {

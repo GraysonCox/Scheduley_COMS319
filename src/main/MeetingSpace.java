@@ -11,7 +11,7 @@ import javafx.scene.shape.Rectangle;
 
 public class MeetingSpace extends AbstractRectangleIcon {
 	private StringProperty name;
-	private Floor floor;
+	private Floor floor; // Reference to this MEetingSpace's Floor for easy retrieval
 	private int floor_id;
 	private int uniqueID;
 	private JSONArray meetingsAtThisLocation;
@@ -22,6 +22,7 @@ public class MeetingSpace extends AbstractRectangleIcon {
 		super(x, y, w, h);
 		this.name = new SimpleStringProperty(name);
 		this.floor_id = floor_id;
+		this.floor = null;
 	}
 	
 	public void addMeeting(Meeting m) {
@@ -45,6 +46,7 @@ public class MeetingSpace extends AbstractRectangleIcon {
 	}
 	
 	public void setFloor(Floor parent) {
+		parent.addMeetingSpace(this);
 		floor = parent;
 	}
 	

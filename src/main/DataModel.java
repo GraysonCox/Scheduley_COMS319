@@ -17,10 +17,12 @@ import main.MeetingSpace;
 public class DataModel {
 	private UserProfile currentUser;
 	
-	
+	private final FloorDAOSpringBoot floorDataSource = new FloorDAOSpringBoot();
+	private final MeetingSpaceDAOSpringBoot meetingSpaceDataSource = new MeetingSpaceDAOSpringBoot();
+	private final MeetingsDAOSpringBoot meetingDataSource = new MeetingsDAOSpringBoot();
 	
 	private final ObservableList<MeetingSpace> meetingSpaceList = FXCollections.observableArrayList();
-	private final ObservableMap<Integer, Floor> floorMap = FXCollections.observableHashMap();
+	private final ObservableList<Floor> floorList = FXCollections.observableArrayList();
 	
 	private final ObjectProperty<MeetingSpace> currentMeetingSpace = new SimpleObjectProperty<>(null);
 	private final ObjectProperty<Floor> currentFloor = new SimpleObjectProperty<>(null);
@@ -32,40 +34,46 @@ public class DataModel {
 		loadData();
 		LocalDate currentDate = new Date(System.currentTimeMillis()).toLocalDate(); // Temporary object to help initialize dateOfSundayDisplayedProperty
 		sundayDisplayedProperty = new SimpleObjectProperty<LocalDate>(currentDate.minusDays((currentDate.getDayOfWeek().ordinal() + 1) % 7));
-		System.out.println("" + floorMap + meetingSpaceList); // For debugging
+		System.out.println("" + floorList + meetingSpaceList); // For debugging
 	}
 	
-	public void loadData() { // TODO : Make this load data from database instead of making dummy values
-		Floor newFloor;
-		MeetingSpace m1, m2, m3, m4;
-		newFloor = new Floor("Floor 2", "main/floorplan1.jpg");
-		m1 = new MeetingSpace("Meetings/Creative Space", 88, 40, 213, 113, 1);
-		m2 = new MeetingSpace("Conference/Lab Room", 88, 153, 139, 119, 1);
-		m3 = new MeetingSpace("Break Area", 307.0, 47.0, 61.0, 101.0, 1);
-		m4 = new MeetingSpace("Retreat", 471.0, 283.0, 115.0, 114.0, 1);
-		meetingSpaceList.addAll(m1, m2, m3, m4);
-		floorMap.put(new Integer(1), newFloor);
+	public void loadData() {
+		floorList.clear();
+		meetingSpaceList.clear();
+		floorList.addAll(floorDataSource.getAllFloors()); // Retrieve all Floors
+		Floor tempFloor;
+		for (MeetingSpace m : meetingSpaceDataSource.getAllMeetingSpace()) { // For every MeetingSpace, use its floorID to add a point to its Floor object
+			tempFloor = floorDataSource.getFloorByID(m.getFloorID());
+			if (tempFloor != null) { // Add to list if it has valid floorID
+				m.setFloor(tempFloor);
+				meetingSpaceList.add(m);
+			}
+		}
+		
+//		Floor newFloor = new Floor("Fuck me", "main/floorplan1.jpg");
+//		newFloor.setFloorID(678);
+//		floorList.add(newFloor);
+		
 	}
 	
-	/**
-	 * Adds MeetingSpace to current floor
-	 * @param m
-	 */
 	public void addMeetingSpace(MeetingSpace m) {
-		currentFloor.get().addMeetingSpace(m);
-		meetingSpaceList.add(m);
+		meetingSpaceDataSource.addMeetingSpace(m);
+		loadData();
 	}
 	
 	public void removeMeetingSpace(MeetingSpace m) {
-		meetingSpaceList.remove(m);
+		meetingSpaceDataSource.deleteMeetingSpace(m);
+		loadData();
 	}
 	
 	public void addFloor(Floor f) {
-		// 
+		floorDataSource.addFloor(f);
+		loadData();
 	}
 	
-	public void removeFloor(int ID, Floor f) {
-		floorMap.remove(ID, f);
+	public void removeFloor(Floor f) {
+		floorDataSource.deleteFloor(f.getFloorID());
+		loadData();
 	}
 	
 	public ObjectProperty<MeetingSpace> currentMeetingSpaceProperty() {
@@ -96,8 +104,8 @@ public class DataModel {
     	currentFloor.set(floor);
     }
 
-    public ObservableMap<Integer, Floor> getFloorMap() {
-        return floorMap;
+    public ObservableList<Floor> getFloorList() {
+        return floorList;
     }
     
     public ObjectProperty<LocalDate> sundayDisplayedProperty() {

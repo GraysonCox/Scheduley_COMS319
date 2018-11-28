@@ -18,11 +18,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
+	private MeetingSpace meetingSpaces[];
 
-	public MeetingSpaceDAOSpringBoot() {}
+	public MeetingSpaceDAOSpringBoot() {
+		loadMeetingSpaces();
+	}
 	
-	@Override
-	public MeetingSpace[] getAllMeetingSpace() {
+	public void loadMeetingSpaces() {
 		MeetingSpace[] arr = null;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -57,16 +59,20 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} 
-		return arr;
+		meetingSpaces = arr;
+	}
+	
+	@Override
+	public MeetingSpace[] getAllMeetingSpace() {
+		return meetingSpaces;
 	}
 
 	@Override
 	public MeetingSpace[] getMeetingSpaceByFloor(int floorID) {
-		MeetingSpace[] temp = getAllMeetingSpace();
 		ArrayList<MeetingSpace> arrlist = new ArrayList<MeetingSpace>();
-		for(int i=0; i<temp.length; i++) {
-			if(temp[i].getFloorID() == floorID)
-				arrlist.add(temp[i]);
+		for(int i=0; i<meetingSpaces.length; i++) {
+			if(meetingSpaces[i].getFloorID() == floorID)
+				arrlist.add(meetingSpaces[i]);
 		}
 		MeetingSpace[] result = new MeetingSpace[arrlist.size()];
 		for(int i = 0; i < arrlist.size(); i++) {
@@ -143,8 +149,7 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 	}
 
 	public MeetingSpace findMeetingSpaceByName(String name) {
-		MeetingSpace [] temp = getAllMeetingSpace();
-		for(MeetingSpace ms : temp) {
+		for(MeetingSpace ms : meetingSpaces) {
 			if(ms.getName() == name || name.equals(ms.getName())) {
 				return ms;
 			}

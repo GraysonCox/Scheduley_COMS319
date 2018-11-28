@@ -39,7 +39,7 @@ public class MeetingsDAOSpringBootTest {
 	@Test
 	void insertMeetingTest_Success() {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
-		Meeting newMeeting = new Meeting("Esoteric Order of Dagon's bi-montly bingo", ts, 120, 1);
+		Meeting newMeeting = new Meeting("Esoteric Order of Dagon's bi-montly bingo", ts, 120, 23);
 		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
 		int actual = curr.insertMeeting(newMeeting);
 		Assert.assertEquals(200, actual);
@@ -50,7 +50,7 @@ public class MeetingsDAOSpringBootTest {
 	@Test
 	void deleteMeeting_Success() {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
-		Meeting newMeeting = new Meeting("Esoteric Order of Dagon's bi-montly bingo", ts, 120, 1);
+		Meeting newMeeting = new Meeting("Esoteric Order of Dagon's bi-montly bingo", ts, 120, 23);
 		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
 		curr.insertMeeting(newMeeting);
 		
@@ -62,7 +62,7 @@ public class MeetingsDAOSpringBootTest {
 	@Test 
 	void deleteMeeting_Fail() {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
-		Meeting newMeeting = new Meeting("Esoteric Order of Dagon's bi-montly bingo", ts, 120, 1);
+		Meeting newMeeting = new Meeting("Esoteric Order of Dagon's bi-montly bingo", ts, 120, 23);
 		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
 		curr.insertMeeting(newMeeting);
 		
@@ -82,7 +82,7 @@ public class MeetingsDAOSpringBootTest {
 	void getMeetingsByID_Success() {
 		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
 		Meeting[] actual = curr.getMeetingsByMeetingSpaceID(3);
-		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", null, 60, 3);
+		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", null, 60, 23);
 		Meeting[] expected = new Meeting[2];
 		expected[0] = one;
 		for(int i = 0; i < actual.length; i++) {
@@ -96,7 +96,7 @@ public class MeetingsDAOSpringBootTest {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		LocalDateTime dateTime = LocalDateTime.parse("2018-11-16 12:30", formatter);
 		Meeting[] actual = curr.getAllMeetingsByWeek(3, dateTime);
-		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", null, 60, 3);
+		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", null, 60, 23);
 		Assert.assertTrue(one.equals((Meeting) actual[0]));
 	}
 }

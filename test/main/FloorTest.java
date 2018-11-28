@@ -11,7 +11,7 @@ public class FloorTest {
 	@Test
 	public void testFloorImageUpload()
 	{
-		Floor tester = new Floor("Basement", "resources/images/floorplan1.jpg"); //error TODO
+		Floor tester = new Floor("Basement", "floorplan1.jpg"); //error TODO
 		ImageView i = tester.image; //change from public to private in floor.java to test
 		Image image = i.getImage();
 		

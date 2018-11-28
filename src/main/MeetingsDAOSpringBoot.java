@@ -31,6 +31,7 @@ import org.json.simple.parser.ParseException;
  *
  */
 public class MeetingsDAOSpringBoot implements MeetingsDAO {
+	private JSONArray meetings;
 	
 	private static final String  MEETING_NAME = "meetingName";
 	private static final String DATE_TIME = "dateTime";
@@ -40,7 +41,40 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	private static final String BASE_URL = "http://proj-319-080.misc.iastate.edu:8080";
 	private static final String MEDIA_TYPE = "application/json";
 	
-	public MeetingsDAOSpringBoot() {}
+	public MeetingsDAOSpringBoot() {
+		loadMeetings();
+	}
+	
+	public void loadMeetings() {
+		JSONArray result = new JSONArray();
+		try {
+			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+			HttpGet putRequest = new HttpGet(BASE_URL + "/meetings/search/all");
+			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
+			
+			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
+
+			InputStream responseContent = httpResponse.getEntity().getContent();
+			JSONParser jsonParser = new JSONParser();
+			JSONArray tempArr = (JSONArray)jsonParser.parse(new InputStreamReader(responseContent, "UTF-8"));
+			
+			for(int i = 0; i < tempArr.size(); i ++) {
+				JSONObject obj = (JSONObject) tempArr.get(i);
+				Timestamp ts = parseTime((String) obj.get(DATE_TIME));
+				Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
+				result.add(temp);
+			}
+			httpResponse.close();
+			httpClient.close();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} 
+		meetings = result;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -121,34 +155,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 
 	@SuppressWarnings("unchecked")
 	private JSONArray getAllMeetings_JSONArray() {
-		JSONArray result = new JSONArray();
-		try {
-			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpGet putRequest = new HttpGet(BASE_URL + "/meetings/search/all");
-			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
-			
-			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
-
-			InputStream responseContent = httpResponse.getEntity().getContent();
-			JSONParser jsonParser = new JSONParser();
-			JSONArray tempArr = (JSONArray)jsonParser.parse(new InputStreamReader(responseContent, "UTF-8"));
-			
-			for(int i = 0; i < tempArr.size(); i ++) {
-				JSONObject obj = (JSONObject) tempArr.get(i);
-				Timestamp ts = parseTime((String) obj.get(DATE_TIME));
-				Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
-				result.add(temp);
-			}
-			httpResponse.close();
-			httpClient.close();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} 
-		return result;
+		return meetings;
 	}
 
 	@SuppressWarnings("unchecked")
