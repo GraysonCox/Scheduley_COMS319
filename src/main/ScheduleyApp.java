@@ -38,12 +38,13 @@ public class ScheduleyApp extends Application {
 	VBox root = new VBox();
 
 	AnchorPane basisRoot = new AnchorPane();
-	Pane menuBar, basis, tree, schedule;
+	Pane menuBar, basis, tree, schedule, newMeetingForm;
 
 	MenuBarController menuBarController;
 	BasisController basisController;
 	TreeController treeController;
 	ScheduleController scheduleController;
+	NewMeetingFormController newMeetingFormController;
 
 	TranslateTransition openTree, closeTree, openSchedule, closeSchedule;
 
@@ -105,6 +106,10 @@ public class ScheduleyApp extends Application {
 					FXMLLoader scheduleLoader = new FXMLLoader(getClass().getResource("Schedule.fxml"));
 					schedule = scheduleLoader.load();
 					scheduleController = scheduleLoader.getController();
+					
+					FXMLLoader newMeetingFormLoader = new FXMLLoader(getClass().getResource("NewMeetingForm.fxml"));
+					newMeetingForm = newMeetingFormLoader.load();
+					newMeetingFormController = newMeetingFormLoader.getController();
 
 					AnchorPane.setTopAnchor(basis, 0.0);
 					AnchorPane.setBottomAnchor(basis, 0.0);
@@ -115,8 +120,10 @@ public class ScheduleyApp extends Application {
 					AnchorPane.setLeftAnchor(schedule, 30.0);
 					AnchorPane.setRightAnchor(schedule, 0.0);
 					AnchorPane.setBottomAnchor(schedule, -440.0);
+					AnchorPane.setTopAnchor(newMeetingForm, 0.0);
+					AnchorPane.setLeftAnchor(newMeetingForm, 30.0);
 
-					basisRoot.getChildren().addAll(basis, tree, schedule);
+					basisRoot.getChildren().addAll(basis, tree, schedule, newMeetingForm);
 					root.getChildren().addAll(menuBar, basisRoot);
 
 					openTree = new TranslateTransition(new Duration(350), basisRoot);
@@ -131,11 +138,15 @@ public class ScheduleyApp extends Application {
 					
 					menuBarController.newMeetingSpaceButton.setOnAction(event -> basisController.createMeetingSpace());
 					menuBarController.newFloorButton.setOnAction(event -> this.createFloor());
+					menuBarController.newMeetingButton.setOnAction(event -> newMeetingFormController.show());
 
 					model = new DataModel(dataSource.findUser(userTextField.getText()));
+					menuBarController.initModel(model);
 					treeController.initModel(model);
 					basisController.initModel(model);
 					scheduleController.initModel(model);
+					newMeetingFormController.initModel(model);
+					
 
 					primaryStage.setTitle("Scheduley");
 					primaryStage.setScene(new Scene(root));

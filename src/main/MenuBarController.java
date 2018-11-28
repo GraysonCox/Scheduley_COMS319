@@ -12,7 +12,7 @@ public class MenuBarController implements Initializable {
 	private DataModel model;
 
 	@FXML
-	public MenuItem newMeetingSpaceButton, newFloorButton;
+	public MenuItem newMeetingButton, newMeetingSpaceButton, newFloorButton;
 
 	@FXML
 	private Menu adminTools;
@@ -31,16 +31,12 @@ public class MenuBarController implements Initializable {
 		}
 
 		switch (this.model.getCurrentUser().getUserType()) { // Set up the tools for the appropriate UserType
-		case ADMIN:
-
-		case MANAGER:
+		case UNKNOWN: // Throw DEBUG symbol
+		case OTHER: // Schedule meetings
+		case EMPLOYEE: // Schedule meetings
+		case MANAGER: // Schedule meetings
 			adminTools.setDisable(true);
-		case EMPLOYEE:
-			
-		case OTHER:
-			
-		case UNKNOWN:
-
+		case ADMIN: // Edit locations and schedule meetings and shit
 		}
 	}
 

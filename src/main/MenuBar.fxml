@@ -12,11 +12,6 @@
 			style="-fx-background-color: skyblue;" AnchorPane.leftAnchor="0.0"
 			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<menus>
-				<Menu text="Meetings">
-					<items>
-
-					</items>
-				</Menu>
 				<Menu fx:id="adminTools" text="Admin Tools">
 					<items>
 						<Menu text="New">
@@ -29,6 +24,12 @@
 						<MenuItem text="Manage users" />
 					</items>
 				</Menu>
+				<Menu text="Meetings">
+					<items>
+						<MenuItem fx:id="newMeetingButton" text="Plan a meeting" />
+					</items>
+				</Menu>
+
 			</menus>
 		</MenuBar>
 	</children>
