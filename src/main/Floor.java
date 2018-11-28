@@ -1,5 +1,6 @@
 package main;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -12,6 +13,9 @@ import main.MeetingSpace;
 public class Floor extends Pane {
 	public StringProperty name;
 	public final ImageView image; //public for testing purposes TODO: change to private
+	private String imageURL;
+	private int floorID;
+	
 	private ArrayList<MeetingSpace> meetingSpaces;
 	private String imageURL;
     private int floorID;
@@ -19,9 +23,18 @@ public class Floor extends Pane {
 	
 	public Floor(String name, String URL) {
 		this.name = new SimpleStringProperty(name);
-		this.image = new ImageView(new Image(URL));
+		this.imageURL = URL;
 		meetingSpaces = new ArrayList<MeetingSpace>();
+		image = null;
+		//NOT DONE, nothing after this works
+		/*
+		ClassLoader k = getClass().getClassLoader();
+		String imageLocation = k.getResource(URL).getFile();
+		Image tempImg = new Image(imageLocation);
+		this.image = new ImageView(tempImg);
 		getChildren().add(this.image);
+		//
+		 */
 	}
 	
 	public void addMeetingSpace(MeetingSpace m) {
@@ -64,4 +77,18 @@ public class Floor extends Pane {
 	public String toString() {
 		return name.get();
 	}
+	
+	public String getImageURL() {
+		return imageURL;
+	}
+	
+	public void setFloorID(int id) {
+		this.floorID = id;
+	}
+	
+	public int getFloorID() {
+		return floorID;
+	}
+	
 }
+
