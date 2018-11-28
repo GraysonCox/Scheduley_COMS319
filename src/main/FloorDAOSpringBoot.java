@@ -1,13 +1,8 @@
 package main;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 import org.apache.http.HttpHeaders;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -21,36 +16,33 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
+public class FloorDAOSpringBoot implements FloorDAO {
 
-	public MeetingSpaceDAOSpringBoot() {}
+	public FloorDAOSpringBoot() {}
 	
 	@Override
-	public MeetingSpace[] getAllMeetingSpace() {
-		MeetingSpace[] arr = null;
+	public Floor[] getAllFloors() {
+		Floor[] arr = null;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpGet getRequest = new HttpGet("http://proj-319-080.misc.iastate.edu:8080/meetingspace/search/all");
+			HttpGet getRequest = new HttpGet("http://proj-319-080.misc.iastate.edu:8080/floor/search/all");
 			getRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 			
 			CloseableHttpResponse httpResponse = httpClient.execute(getRequest);
 			String res = EntityUtils.toString(httpResponse.getEntity());
 			JSONParser parser = new JSONParser();
 			JSONArray result = (JSONArray) parser.parse(res);
-			arr = new MeetingSpace[result.size()];
+			arr = new Floor[result.size()];
 			
 			for(int i=0; i<result.size(); i++) {
 				JSONObject temp = (JSONObject) result.get(i);
-				long x = (long)temp.get("x");
-				long y = (long)temp.get("y");
-				long w = (long)temp.get("width");
-				long h = (long)temp.get("height");
-				long f = (long)temp.get("floorID");
+				long id = (long) temp.get("floorID");
+				String name = (String) temp.get("floorName");
+				String url = (String) temp.get("imgURL");
 				
-				MeetingSpace ms = new MeetingSpace((String)temp.get("meetingSpaceName"),x,y,w,h,(int) f);
+				Floor ms = new Floor(name,url);
 				arr[i] = ms;
 			}
-			
 			httpResponse.close();
 			httpClient.close();
 		} catch(IOException e) {
@@ -62,31 +54,37 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 	}
 
 	@Override
-	public MeetingSpace[] getMeetingSpaceByFloor(int floorID) {
-		MeetingSpace[] temp = getAllMeetingSpace();
-		ArrayList<MeetingSpace> arrlist = new ArrayList<MeetingSpace>();
-		for(int i=0; i<temp.length; i++) {
-			if(temp[i].getFloorID()==floorID)
-				arrlist.add(temp[i]);
+	public Floor getFloorByID(int ID) {
+		Floor[] arr = getAllFloors();
+		
+		for(Floor f : arr) {
+			if(f.getFloorID() == ID)
+				return f;
 		}
-		MeetingSpace[] arr = (MeetingSpace[]) arrlist.toArray();
-		return arr;
+		return null;
+	}
+
+	@Override
+	public Floor getFloorByName(String name) {
+		Floor[] arr = getAllFloors();
+		
+		for(Floor f : arr) {
+			if(f.getName().equalsIgnoreCase(name))
+				return f;
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public int addMeetingSpace(MeetingSpace meetingSpace) {
+	public int addFloor(Floor floor) {
 		int code = 500;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPut putRequest = new HttpPut("http://proj-319-080.misc.iastate.edu:8080/meetingspace/create");
+			HttpPut putRequest = new HttpPut("http://proj-319-080.misc.iastate.edu:8080/floor/create");
 			JSONObject json = new JSONObject();
-			json.put("meetingSpaceName", meetingSpace.getName());
-			json.put("x", meetingSpace.getX());
-			json.put("y", meetingSpace.getY());
-			json.put("width", meetingSpace.getWidth());
-			json.put("height", meetingSpace.getHeight());
-			json.put("floorID", meetingSpace.getFloorID());
+			json.put("floorName", floor.getName());
+			json.put("imgURL", floor.getImageURL());
 		    String jsonString = json.toString();
 			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 			putRequest.setEntity(new StringEntity(jsonString));
@@ -108,15 +106,13 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public int deleteMeetingSpace(int x, int y, int floor) {
+	public int deleteFloor(int ID) {
 		int code = 500;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost postRequest = new HttpPost("http://proj-319-080.misc.iastate.edu:8080/meetingspace/delete");
+			HttpPost postRequest = new HttpPost("http://proj-319-080.misc.iastate.edu:8080/floor/delete");
 			JSONObject json = new JSONObject();
-			json.put("x", x);
-			json.put("y", y);
-			json.put("floorID", floor);
+			json.put("floorID", ID);
 		    String jsonString = json.toString();
 			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 			postRequest.setEntity(new StringEntity(jsonString));
