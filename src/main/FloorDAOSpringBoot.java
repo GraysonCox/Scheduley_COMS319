@@ -41,6 +41,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 				String url = (String) temp.get("imgURL");
 				
 				Floor ms = new Floor(name,url);
+				ms.setFloorID((int)id);
 				arr[i] = ms;
 			}
 			httpResponse.close();
