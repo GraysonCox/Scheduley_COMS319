@@ -145,7 +145,7 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 	public MeetingSpace findMeetingSpaceByName(String name) {
 		MeetingSpace [] temp = getAllMeetingSpace();
 		for(MeetingSpace ms : temp) {
-			if(ms.getName() == name || name.equals(ms.getName())) {
+			if(name.equalsIgnoreCase(ms.getName())) {
 				return ms;
 			}
 		}
