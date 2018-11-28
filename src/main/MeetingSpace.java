@@ -81,4 +81,12 @@ public class MeetingSpace extends Rectangle {
 		//TODO
 		return null;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(other instanceof MeetingSpace && this.uniqueID == ((MeetingSpace) other).getUniqueID()){
+			return true;
+		}
+		return false;
+	}
 }

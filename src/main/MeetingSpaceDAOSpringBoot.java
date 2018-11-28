@@ -1,13 +1,9 @@
 package main;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpHeaders;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -46,8 +42,11 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 				long w = (long)temp.get("width");
 				long h = (long)temp.get("height");
 				long f = (long)temp.get("floorID");
+				long z = (long)temp.get("meetingSpaceID");
+				
 				
 				MeetingSpace ms = new MeetingSpace((String)temp.get("meetingSpaceName"),x,y,w,h,(int) f);
+				ms.setUniqueID((int)z);
 				arr[i] = ms;
 			}
 			
@@ -66,11 +65,14 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 		MeetingSpace[] temp = getAllMeetingSpace();
 		ArrayList<MeetingSpace> arrlist = new ArrayList<MeetingSpace>();
 		for(int i=0; i<temp.length; i++) {
-			if(temp[i].getFloorID()==floorID)
+			if(temp[i].getFloorID() == floorID)
 				arrlist.add(temp[i]);
 		}
-		MeetingSpace[] arr = (MeetingSpace[]) arrlist.toArray();
-		return arr;
+		MeetingSpace[] result = new MeetingSpace[arrlist.size()];
+		for(int i = 0; i < arrlist.size(); i++) {
+			result[i] = arrlist.get(i);
+		}
+		return result;
 	}
 
 	@Override
@@ -132,5 +134,23 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 			e.printStackTrace();
 		}
 		return code;
+	}
+	
+	public int deleteMeetingSpace(MeetingSpace toDelete) {
+		return deleteMeetingSpace((int)toDelete.getX(), (int)toDelete.getY(), toDelete.getFloorID());
+	}
+
+	public MeetingSpace findMeetingSpaceByName(String name) {
+		MeetingSpace [] temp = getAllMeetingSpace();
+		for(MeetingSpace ms : temp) {
+			if(ms.getName() == name || name.equals(ms.getName())) {
+				return ms;
+			}
+		}
+		return null;	
+	}
+	
+	public boolean isMeetingSpaceInDB(String name) {
+		return (findMeetingSpaceByName(name) != null) ? true : false;
 	}
 }
