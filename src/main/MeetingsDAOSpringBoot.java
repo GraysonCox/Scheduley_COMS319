@@ -45,6 +45,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		loadMeetings();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void loadMeetings() {
 		JSONArray result = new JSONArray();
 		try {
@@ -79,6 +80,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public int insertMeeting(Meeting newMeeting) {
+		int returnCode = -1;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPut putRequest = new HttpPut(BASE_URL + "/meetings/create");
@@ -100,10 +102,9 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 			String res = EntityUtils.toString(httpResponse.getEntity());
 			JSONParser parser = new JSONParser();
 			JSONObject obj = (JSONObject) parser.parse(res);
-			int status = Integer.valueOf(obj.get("status").toString());
+			returnCode = Integer.valueOf(obj.get("status").toString());
 			httpResponse.close();
 			httpClient.close();
-			return status;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch(IOException e) {
@@ -111,7 +112,8 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} 
-		return -1;
+		loadMeetings(); //update instance variable to match DB
+		return returnCode;
 	}
 	
 
@@ -125,6 +127,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public int deleteMeeting(String name) {
+		int returnCode = -1;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPost postRequest = new HttpPost(BASE_URL + "/meetings/delete");
@@ -139,10 +142,9 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 			String res = EntityUtils.toString(httpResponse.getEntity());
 			JSONParser parser = new JSONParser();
 			JSONObject obj = (JSONObject) parser.parse(res);
-			int status = Integer.valueOf(obj.get("status").toString());
+			returnCode = Integer.valueOf(obj.get("status").toString());
 			httpResponse.close();
 			httpClient.close();
-			return status;
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch(IOException e) {
@@ -150,10 +152,10 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} 
-		return -1;
+		loadMeetings(); //update instance variable to match DB
+		return returnCode;
 	}
 
-	@SuppressWarnings("unchecked")
 	private JSONArray getAllMeetings_JSONArray() {
 		return meetings;
 	}

@@ -2,7 +2,6 @@ package main;
 
 public abstract class DAOFactory {
 	
-	
 	public static final int JDBC = 1;
 	public static final int SPRING_BOOT = 2;
 	

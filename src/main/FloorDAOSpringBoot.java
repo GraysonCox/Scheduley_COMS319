@@ -1,10 +1,6 @@
 package main;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -19,8 +15,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import javafx.scene.image.Image;
 
 public class FloorDAOSpringBoot implements FloorDAO {
 	private Floor floors[];
@@ -56,7 +50,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 				else {
 					System.out.println("DEBUG HERE");//I have no excuse for this
 				}
-				Floor ms = new Floor(name, url);
+				Floor ms = new Floor(name, url); 
 				ms.setFloorID((int) id);
 				arr[i] = ms;
 			}
