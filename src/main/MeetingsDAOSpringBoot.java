@@ -33,7 +33,7 @@ import org.json.simple.parser.ParseException;
 public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	private JSONArray meetings;
 	
-	private static final String  MEETING_NAME = "meetingName";
+	private static final String MEETING_NAME = "meetingName";
 	private static final String DATE_TIME = "dateTime";
 	private static final String DURATION = "duration";
 	private static final String MEETING_SPACE_ID = "location";

@@ -17,6 +17,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class FloorDAOSpringBoot implements FloorDAO {
+	
+	private static final String BASE_URL = "http://proj-319-080.misc.iastate.edu:8080";
+	private static final String MEDIA_TYPE = "application/json";
+	
 	private Floor floors[];
 	
 	public FloorDAOSpringBoot() {
@@ -27,8 +31,8 @@ public class FloorDAOSpringBoot implements FloorDAO {
 		Floor[] arr = null;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpGet getRequest = new HttpGet("http://proj-319-080.misc.iastate.edu:8080/floor/search/all");
-			getRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			HttpGet getRequest = new HttpGet(BASE_URL + "/floor/search/all");
+			getRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 
 			CloseableHttpResponse httpResponse = httpClient.execute(getRequest);
 			String res = EntityUtils.toString(httpResponse.getEntity());
@@ -42,7 +46,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 				String name = (String) temp.get("floorName");
 				String url = (String) temp.get("imgURL");
 				
-				
+				//Really have to figure this out
 				if(!url.equals("main/floorplan1.jpg")) {
 					System.out.println("Current floor " + name + ", url: " +url);
 					url = "main/MrScheduley.png";
@@ -94,12 +98,12 @@ public class FloorDAOSpringBoot implements FloorDAO {
 		int code = 500;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPut putRequest = new HttpPut("http://proj-319-080.misc.iastate.edu:8080/floor/create");
+			HttpPut putRequest = new HttpPut(BASE_URL + "/floor/create");
 			JSONObject json = new JSONObject();
 			json.put("floorName", floor.getName());
 			json.put("imgURL", floor.getImageURL());
 			String jsonString = json.toString();
-			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 			putRequest.setEntity(new StringEntity(jsonString));
 
 			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
@@ -123,11 +127,11 @@ public class FloorDAOSpringBoot implements FloorDAO {
 		int code = 500;
 		try {
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost postRequest = new HttpPost("http://proj-319-080.misc.iastate.edu:8080/floor/delete");
+			HttpPost postRequest = new HttpPost(BASE_URL + "/floor/delete");
 			JSONObject json = new JSONObject();
 			json.put("floorID", ID);
 			String jsonString = json.toString();
-			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 			postRequest.setEntity(new StringEntity(jsonString));
 
 			CloseableHttpResponse httpResponse = httpClient.execute(postRequest);
