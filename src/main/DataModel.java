@@ -56,6 +56,10 @@ public class DataModel {
 		
 	}
 	
+	public UserProfile getCurrentUser() {
+		return currentUser;
+	}
+	
 	public void addMeetingSpace(MeetingSpace m) {
 		meetingSpaceDataSource.addMeetingSpace(m);
 		loadData();

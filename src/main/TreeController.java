@@ -95,9 +95,7 @@ public class TreeController implements Initializable {
 		floorHashMap.clear();
 		
 		TreeItem<String> newFloorTreeItem, newMeetingSpaceTreeItem;
-		Floor f;
-        for (int i = 1; i <= model.getFloorList().size(); i++) {
-        	f = model.getFloorList().get(i);
+        for (Floor f : model.getFloorList()) {
         	newFloorTreeItem = new TreeItem<String>("");
         	newFloorTreeItem.valueProperty().bindBidirectional(f.nameProperty());
         	floorHashMap.put(newFloorTreeItem, f);

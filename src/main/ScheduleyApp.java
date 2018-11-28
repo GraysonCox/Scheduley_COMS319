@@ -1,5 +1,5 @@
 package main;
-	
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -12,6 +12,7 @@ import javafx.util.Duration;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -31,19 +32,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
-
 public class ScheduleyApp extends Application {
 	DataModel model;
-	
+
 	VBox root = new VBox();
-	
+
 	AnchorPane basisRoot = new AnchorPane();
-	Pane basis, tree, schedule;
-	
+	Pane menuBar, basis, tree, schedule;
+
+	MenuBarController menuBarController;
+	BasisController basisController;
+	TreeController treeController;
+	ScheduleController scheduleController;
+
 	TranslateTransition openTree, closeTree, openSchedule, closeSchedule;
-	
+
 	private boolean loginSuccessful;
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Scheduley");
@@ -71,60 +76,66 @@ public class ScheduleyApp extends Application {
 		hbBtn.getChildren().add(btn);
 		grid.add(hbBtn, 1, 4);
 		final Text actionTarget = new Text();
-        grid.add(actionTarget, 1, 6);
-        pwBox.setOnKeyPressed( event ->{
-            if(event.getCode() == KeyCode.ENTER) {
-        		btn.fire();
-        	}
-        });
+		grid.add(actionTarget, 1, 6);
+		pwBox.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				btn.fire();
+			}
+		});
 		btn.setOnAction(e -> {
 			UserDAOMySQL dataSource = new UserDAOMySQL(new ServerConnection());
 			loginSuccessful = dataSource.verifyUser(userTextField.getText(), pwBox.getText());
 			if (loginSuccessful) {
 				try {
 					VBox.setVgrow(basisRoot, Priority.ALWAYS);
-					
+
+					FXMLLoader menuBarLoader = new FXMLLoader(getClass().getResource("MenuBar.fxml"));
+					menuBar = menuBarLoader.load();
+					menuBarController = menuBarLoader.getController();
+
 					FXMLLoader basisLoader = new FXMLLoader(getClass().getResource("Basis.fxml"));
 					basis = basisLoader.load();
-			        BasisController basisController = basisLoader.getController();
-					
-			        FXMLLoader treeLoader = new FXMLLoader(getClass().getResource("Tree.fxml"));
-			        tree = treeLoader.load();
-			        TreeController treeController = treeLoader.getController();
-			        
-			        FXMLLoader scheduleLoader = new FXMLLoader(getClass().getResource("Schedule.fxml"));
-			        schedule = scheduleLoader.load();
-			        ScheduleController scheduleController = scheduleLoader.getController();
-			        
-			        AnchorPane.setTopAnchor(basis, 0.0);
-			        AnchorPane.setBottomAnchor(basis, 0.0);
-			        AnchorPane.setLeftAnchor(basis, 30.0);
-			        AnchorPane.setTopAnchor(tree, 0.0);
-			        AnchorPane.setLeftAnchor(tree, -170.0);
-			        AnchorPane.setBottomAnchor(tree, 0.0);
-			        AnchorPane.setLeftAnchor(schedule, 30.0);
-			        AnchorPane.setRightAnchor(schedule, 0.0);
-			        AnchorPane.setBottomAnchor(schedule, -440.0);
-			        
-			        
-			        basisRoot.getChildren().addAll(basis, tree, schedule);
-			        root.getChildren().add(basisRoot);
-			        
-			        openTree = new TranslateTransition(new Duration(350), basisRoot);
+					basisController = basisLoader.getController();
+
+					FXMLLoader treeLoader = new FXMLLoader(getClass().getResource("Tree.fxml"));
+					tree = treeLoader.load();
+					treeController = treeLoader.getController();
+
+					FXMLLoader scheduleLoader = new FXMLLoader(getClass().getResource("Schedule.fxml"));
+					schedule = scheduleLoader.load();
+					scheduleController = scheduleLoader.getController();
+
+					AnchorPane.setTopAnchor(basis, 0.0);
+					AnchorPane.setBottomAnchor(basis, 0.0);
+					AnchorPane.setLeftAnchor(basis, 30.0);
+					AnchorPane.setTopAnchor(tree, 0.0);
+					AnchorPane.setLeftAnchor(tree, -170.0);
+					AnchorPane.setBottomAnchor(tree, 0.0);
+					AnchorPane.setLeftAnchor(schedule, 30.0);
+					AnchorPane.setRightAnchor(schedule, 0.0);
+					AnchorPane.setBottomAnchor(schedule, -440.0);
+
+					basisRoot.getChildren().addAll(basis, tree, schedule);
+					root.getChildren().addAll(menuBar, basisRoot);
+
+					openTree = new TranslateTransition(new Duration(350), basisRoot);
 					openTree.setToX(0);
 					closeTree = new TranslateTransition(new Duration(350), basisRoot);
 					treeController.treeButton.setOnAction(event -> doTreeTransition());
-					
+
 					openSchedule = new TranslateTransition(new Duration(350), schedule);
 					openSchedule.setToY(0);
 					closeSchedule = new TranslateTransition(new Duration(350), schedule);
 					scheduleController.scheduleButton.setOnAction(event -> doScheduleTransition());
-			        
-			        model = new DataModel(dataSource.findUser(userTextField.getText()));
-			        treeController.initModel(model);
+					
+					menuBarController.newMeetingSpaceButton.setOnAction(event -> basisController.createMeetingSpace());
+					menuBarController.newFloorButton.setOnAction(event -> this.createFloor());
+
+					model = new DataModel(dataSource.findUser(userTextField.getText()));
+					treeController.initModel(model);
 					basisController.initModel(model);
 					scheduleController.initModel(model);
-						        
+
 					primaryStage.setTitle("Scheduley");
 					primaryStage.setScene(new Scene(root));
 					primaryStage.setMaximized(true);
@@ -138,20 +149,16 @@ public class ScheduleyApp extends Application {
 				actionTarget.setText("Invalid login");
 			}
 		});
-		
+
 		primaryStage.setScene(scene);
 		primaryStage.setMaximized(false);
-        primaryStage.show();
+		primaryStage.show();
 	}
-	
+
 	private void initAdminTools() {
-		
+
 	}
-	
-	private void createMeetingSpace() {
-		
-	}
-	
+
 	private void createFloor() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Choose Image");
@@ -166,7 +173,7 @@ public class ScheduleyApp extends Application {
 			model.addFloor(new Floor("New floor", s));
 		}
 	}
-	
+
 	private void doTreeTransition() {
 		if (basisRoot.getTranslateX() != 0) {
 			openTree.play();
@@ -175,7 +182,7 @@ public class ScheduleyApp extends Application {
 			closeTree.play();
 		}
 	}
-	
+
 	private void doScheduleTransition() {
 		if (schedule.getTranslateY() != 0) {
 			openSchedule.play();
@@ -184,7 +191,7 @@ public class ScheduleyApp extends Application {
 			closeSchedule.play();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
