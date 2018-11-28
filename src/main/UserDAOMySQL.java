@@ -20,9 +20,13 @@ public class UserDAOMySQL implements UserDAO{
 	
 	private static final String DEFAULT_PASSWORD = "group29";
 	
-	private static ServerConnection dao;
+	private static JDBC_DAOFactory dao;
 	
-	public UserDAOMySQL(ServerConnection conn) {
+	public UserDAOMySQL() {
+		dao = new JDBC_DAOFactory();
+	}
+	
+	public UserDAOMySQL(JDBC_DAOFactory conn) {
 		dao = conn;
 	}
 	

@@ -26,7 +26,7 @@ public class Meeting extends AbstractRectangleIcon {
 	}
 	
 	public Meeting(String name) {
-		this(name, null, 0, 0);
+		this(name, new Timestamp(System.currentTimeMillis()), 0, 0);
 	}
 	
 	public void setName(String name) {

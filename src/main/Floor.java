@@ -18,7 +18,6 @@ public class Floor extends Pane {
 
 	
 	public Floor(String name, String URL) {
-		
 		this.name = new SimpleStringProperty(name);
 		this.imageURL = URL;
 		meetingSpaces = new ArrayList<MeetingSpace>();
