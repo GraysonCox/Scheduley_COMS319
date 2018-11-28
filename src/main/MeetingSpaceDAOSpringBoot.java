@@ -18,6 +18,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
+	
+	//When a new person is added, this isn't updated
 	private MeetingSpace meetingSpaces[];
 
 	public MeetingSpaceDAOSpringBoot() {
@@ -81,6 +83,9 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 		return result;
 	}
 
+	/**
+	 * Returns 200 on success
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public int addMeetingSpace(MeetingSpace meetingSpace) {
@@ -148,6 +153,10 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 		return deleteMeetingSpace((int)toDelete.getX(), (int)toDelete.getY(), toDelete.getFloorID());
 	}
 
+	
+	/*
+	 * This method won't work properly if someone is added. since meetingSpaces is not updated
+	 */
 	public MeetingSpace findMeetingSpaceByName(String name) {
 		for(MeetingSpace ms : meetingSpaces) {
 			if(ms.getName() == name || name.equals(ms.getName())) {

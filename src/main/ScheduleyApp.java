@@ -78,8 +78,9 @@ public class ScheduleyApp extends Application {
         	}
         });
 		btn.setOnAction(e -> {
-			UserDAOMySQL dataSource = new UserDAOMySQL(new ServerConnection());
-			loginSuccessful = dataSource.verifyUser(userTextField.getText(), pwBox.getText());
+			DAOFactory userDB = DAOFactory.getDAOFactory(DAOFactory.JDBC); //NEW Implementing the DAO properly
+			UserDAO dataSource = userDB.getUserDAO(); //NEW 
+			loginSuccessful = dataSource.verifyUser(userTextField.getText(), pwBox.getText()); //ORIGINAL
 			if (loginSuccessful) {
 				try {
 					VBox.setVgrow(basisRoot, Priority.ALWAYS);

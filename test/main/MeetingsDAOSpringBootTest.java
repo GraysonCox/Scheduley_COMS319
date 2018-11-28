@@ -5,19 +5,23 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class MeetingsDAOSpringBootTest {
+	
+	public static MeetingsDAOSpringBoot meetingsDAOSB;
+	public static Timestamp ts;
 
-	@BeforeEach
-	void setUp() {
+	@BeforeAll
+	public static void setUp() {
+		meetingsDAOSB = new MeetingsDAOSpringBoot();
+		ts = new Timestamp(System.currentTimeMillis());
 	}
 	
 	@Test
-	void getAllMeetingsTest_Success() {
-		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
-		Meeting[] actual = curr.getAllMeetings();
+	public void getAllMeetingsTest_Success() {
+		Meeting[] actual = meetingsDAOSB.getAllMeetings();
 		Meeting[] expected = new Meeting[2];
 		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting");
 		Meeting two = new Meeting("g7 meeting");
@@ -29,60 +33,51 @@ public class MeetingsDAOSpringBootTest {
 	}
 	
 	@Test 
-	void getMeetingByNameTest_Success() {
-		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
-		Meeting actual = curr.getMeetingByName("g7 meeting");
+	public void getMeetingByNameTest_Success() {
+		Meeting actual = meetingsDAOSB.getMeetingByName("g7 meeting");
 		Meeting expected = new Meeting("g7 meeting");
 		Assert.assertTrue(actual.equals(expected));
 	}
 	
 	@Test
-	void insertMeetingTest_Success() {
-		Timestamp ts = new Timestamp(System.currentTimeMillis());
+	public void insertMeetingTest_Success() {
 		Meeting newMeeting = new Meeting("Esoteric Order of Dagon's bi-montly bingo", ts, 120, 23);
-		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
-		int actual = curr.insertMeeting(newMeeting);
+		int actual = meetingsDAOSB.insertMeeting(newMeeting);
 		Assert.assertEquals(200, actual);
 		
-		curr.deleteMeeting(newMeeting.getName());
+		meetingsDAOSB.deleteMeeting(newMeeting.getName());
 	}
 	
 	@Test
-	void deleteMeeting_Success() {
-		Timestamp ts = new Timestamp(System.currentTimeMillis());
+	public void deleteMeeting_Success() {
 		Meeting newMeeting = new Meeting("Esoteric Order of Dagon's bi-montly bingo", ts, 120, 23);
-		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
-		curr.insertMeeting(newMeeting);
+		meetingsDAOSB.insertMeeting(newMeeting);
 		
 		String meetingToDelete = "Esoteric Order of Dagon's bi-montly bingo";
-		int actual = curr.deleteMeeting(meetingToDelete);
+		int actual = meetingsDAOSB.deleteMeeting(meetingToDelete);
 		Assert.assertEquals(200, actual);
 	}
 	
 	@Test 
-	void deleteMeeting_Fail() {
-		Timestamp ts = new Timestamp(System.currentTimeMillis());
+	public void deleteMeeting_Fail() {
 		Meeting newMeeting = new Meeting("Esoteric Order of Dagon's bi-montly bingo", ts, 120, 23);
-		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
-		curr.insertMeeting(newMeeting);
+		meetingsDAOSB.insertMeeting(newMeeting);
 		
 		String meetingToDelete = "Esoteric Order of Dagon's bi-montly bingo";
-		int actual = curr.deleteMeeting(meetingToDelete);
+		int actual = meetingsDAOSB.deleteMeeting(meetingToDelete);
 		Assert.assertEquals(200, actual);
 	}
 	
 	@Test
-	void insertMeetingTest_Fail() {
-		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
-		int actual = curr.deleteMeeting("Not a real Meeting");
+	public void insertMeetingTest_Fail() {
+		int actual = meetingsDAOSB.deleteMeeting("Not a real Meeting");
 		Assert.assertEquals(400, actual);
 	}
 	
 	@Test
-	void getMeetingsByID_Success() {
-		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
-		Meeting[] actual = curr.getMeetingsByMeetingSpaceID(3);
-		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", null, 60, 23);
+	public void getMeetingsByID_Success() {
+		Meeting[] actual = meetingsDAOSB.getMeetingsByMeetingSpaceID(3);
+		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", ts, 60, 23);
 		Meeting[] expected = new Meeting[2];
 		expected[0] = one;
 		for(int i = 0; i < actual.length; i++) {
@@ -91,12 +86,12 @@ public class MeetingsDAOSpringBootTest {
 	}
 	
 	@Test
-	void getAllMeetingsByWeekTest_Success() {
-		MeetingsDAOSpringBoot curr = new MeetingsDAOSpringBoot();
+	public void getAllMeetingsByWeekTest_Success() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		LocalDateTime dateTime = LocalDateTime.parse("2018-11-16 12:30", formatter);
-		Meeting[] actual = curr.getAllMeetingsByWeek(3, dateTime);
-		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", null, 60, 23);
+		Meeting[] actual = meetingsDAOSB.getAllMeetingsByWeek(3, dateTime);
+		Timestamp input = Timestamp.valueOf(dateTime);
+		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", input, 60, 23);
 		Assert.assertTrue(one.equals((Meeting) actual[0]));
 	}
 }

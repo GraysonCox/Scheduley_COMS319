@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import main.ServerConnection;
+import main.DAOFactory;
 import main.UserDAOMySQL;
 import main.UserProfile;
 import main.UserType;
@@ -18,8 +18,7 @@ public class UserDAOMySQLTest {
 	
 	@BeforeEach
 	void setUp() {
-		ServerConnection conn = new ServerConnection();
-		dataSource = new UserDAOMySQL(conn);
+		dataSource = new UserDAOMySQL();
 	}
 	
 	@Test
@@ -34,6 +33,11 @@ public class UserDAOMySQLTest {
 		dataSource.deleteUser("tomDodge@tom.com");	
 	}
 	
+	/**
+	 * This Test only tests the first 4 users. Since we would have to update this test every single time
+	 * there are new users added to the DB. 
+	 * @throws SQLException
+	 */
 	@Test
 	void findAllUserTest() throws SQLException {
 		ArrayList<UserProfile> users = dataSource.findAllUsers();
@@ -49,7 +53,10 @@ public class UserDAOMySQLTest {
 		for(UserProfile u : users) {
 			System.out.println(u.getEmail());
 		}
-		Assert.assertTrue(expectedUsers.equals(users));
+		
+		for(int i = 0; i < expectedUsers.size(); i++) {
+			Assert.assertTrue(expectedUsers.get(i).equals(users.get(i)));
+		}
 	}
 
 	

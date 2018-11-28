@@ -54,7 +54,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 					url = "main/MrScheduley.png";
 				}
 				else {
-					System.out.println("DEBUG HERE");
+					System.out.println("DEBUG HERE");//I have no excuse for this
 				}
 				Floor ms = new Floor(name, url);
 				ms.setFloorID((int) id);
