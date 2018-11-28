@@ -1,5 +1,9 @@
 package main;
 
+import java.sql.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableMapValue;
@@ -11,17 +15,23 @@ import main.Floor;
 import main.MeetingSpace;
 
 public class DataModel {
-	UserProfile currentUser;
+	private UserProfile currentUser;
+	
+	
 	
 	private final ObservableList<MeetingSpace> meetingSpaceList = FXCollections.observableArrayList();
 	private final ObservableMap<Integer, Floor> floorMap = FXCollections.observableHashMap();
-
+	
 	private final ObjectProperty<MeetingSpace> currentMeetingSpace = new SimpleObjectProperty<>(null);
 	private final ObjectProperty<Floor> currentFloor = new SimpleObjectProperty<>(null);
+	
+	private final ObjectProperty<LocalDate> sundayDisplayedProperty;
 	
 	public DataModel(UserProfile user) {
 		currentUser = user;
 		loadData();
+		LocalDate currentDate = new Date(System.currentTimeMillis()).toLocalDate(); // Temporary object to help initialize dateOfSundayDisplayedProperty
+		sundayDisplayedProperty = new SimpleObjectProperty<LocalDate>(currentDate.minusDays((currentDate.getDayOfWeek().ordinal() + 1) % 7));
 		System.out.println("" + floorMap + meetingSpaceList); // For debugging
 	}
 	
@@ -88,5 +98,21 @@ public class DataModel {
 
     public ObservableMap<Integer, Floor> getFloorMap() {
         return floorMap;
+    }
+    
+    public ObjectProperty<LocalDate> sundayDisplayedProperty() {
+    	return sundayDisplayedProperty;
+    }
+    
+    public LocalDate getSundayDisplayed() {
+    	return sundayDisplayedProperty.get();
+    }
+    
+    public void setSundayDisplayed(LocalDate sundayDisplayed) {
+    	if (sundayDisplayed.getDayOfWeek() == DayOfWeek.SUNDAY) {
+    		sundayDisplayedProperty.set(sundayDisplayed);
+    	} else {
+    		throw new IllegalArgumentException("Given LocalDate is not a Sunday.");
+    	}
     }
 }

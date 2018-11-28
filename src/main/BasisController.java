@@ -1,15 +1,11 @@
 package main;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -26,20 +22,14 @@ public class BasisController implements Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		ContextMenu contextMenu = new ContextMenu();
-		MenuItem newMeetingSpaceMenuItem = new MenuItem("New Meeting Space");
-		newMeetingSpaceMenuItem.setOnAction(e -> onNewMeetingSpace());
-		contextMenu.getItems().add(newMeetingSpaceMenuItem);
-		pane.setOnContextMenuRequested(e -> {
-			contextMenu.show(pane.getScene().getWindow(), e.getX(), e.getY());
-		});
 	}
 	
-	public void initModel(DataModel m) {
-		if (model != null) {
+	public void initModel(DataModel model) {
+		if (this.model != null) {
             throw new IllegalStateException("Model can only be initialized once");
+        } else {
+        	this.model = model;
         }
-        model = m;
         model.currentMeetingSpaceProperty().addListener((ob, oldFloor, newFloor) -> {
         });
         model.currentFloorProperty().addListener((ob, oldFloor, newFloor) -> {
@@ -67,7 +57,7 @@ public class BasisController implements Initializable {
         }
 	}
 	
-	public void onNewMeetingSpace() {
+	public void createMeetingSpace() {
 		pane.setOnMousePressed(e -> {
             x1 = e.getX();
             y1 = e.getY();
@@ -96,6 +86,7 @@ public class BasisController implements Initializable {
 			pane.setOnMousePressed(null);
 			pane.setOnMouseDragged(null);
 			pane.setOnMouseReleased(null);
+			System.out.println(tempRect.getX() + ", " + tempRect.getY() + ", " + tempRect.getWidth() + ", " + tempRect.getHeight());
 			MeetingSpace newMeetingSpace = new MeetingSpace(
 					"New meeting space",
 					tempRect.getX(),

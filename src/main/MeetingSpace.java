@@ -4,26 +4,36 @@ import org.json.simple.JSONArray;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class MeetingSpace extends Rectangle {
+public class MeetingSpace extends AbstractRectangleIcon {
 	private StringProperty name;
 	private Floor floor;
 	private int floor_id;
 	private int uniqueID;
 	private JSONArray meetingsAtThisLocation;
 	
+	private ObservableList<Meeting> meetingSpaceList = FXCollections.observableArrayList();
+	
 	public MeetingSpace(String name, double x, double y, double w, double h, int floor_id) {
 		super(x, y, w, h);
 		this.name = new SimpleStringProperty(name);
 		this.floor_id = floor_id;
-		setFill(new Color(0, 0, 0.75, 0.25));
-        setStroke(Color.BLACK);
-        floor = null;
-        setOnMouseEntered(e -> setFill(new Color(0.75, 0, 0, 0.25)));
-        setOnMouseExited(e -> setFill(new Color(0, 0, 0.75, 0.25)));
-        meetingsAtThisLocation = new JSONArray();
+	}
+	
+	public void addMeeting(Meeting m) {
+		meetingSpaceList.add(m);
+	}
+	
+	public void removeMeeting(Meeting m) {
+		meetingSpaceList.remove(m);
+	}
+	
+	public ObservableList<Meeting> getMeetingList() {
+		return meetingSpaceList;
 	}
 	
 	public Floor getFloor() {
@@ -64,12 +74,6 @@ public class MeetingSpace extends Rectangle {
 	
 	public int getUniqueID() {
 		return uniqueID;
-	}
-	
-	@SuppressWarnings("unchecked")
-	//TODO
-	public void addMeeting(Meeting newMeeting) {
-		meetingsAtThisLocation.add(newMeeting);
 	}
 	
 	public JSONArray getAllMeetings() {

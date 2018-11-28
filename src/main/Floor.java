@@ -13,6 +13,9 @@ public class Floor extends Pane {
 	public StringProperty name;
 	public final ImageView image; //public for testing purposes TODO: change to private
 	private ArrayList<MeetingSpace> meetingSpaces;
+	private String imageURL;
+    private int floorID;
+
 	
 	public Floor(String name, String URL) {
 		this.name = new SimpleStringProperty(name);
@@ -22,7 +25,6 @@ public class Floor extends Pane {
 	}
 	
 	public void addMeetingSpace(MeetingSpace m) {
-		m.setFloor(this);
 		meetingSpaces.add(m);
 	}
 	
@@ -45,6 +47,19 @@ public class Floor extends Pane {
 	public void setName(String name) {
 		this.name.set(name);;
 	}
+	
+	public String getImageURL() {
+        return imageURL;
+    }
+    
+    public void setFloorID(int id) {
+        this.floorID = id;
+    }
+    
+    public int getFloorID() {
+        return floorID;
+    }
+
 	
 	public String toString() {
 		return name.get();
