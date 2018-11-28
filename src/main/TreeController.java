@@ -4,11 +4,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-
 import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.TextFieldTreeCell;
@@ -19,13 +20,20 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class TreeController implements Initializable {
 	
 	private DataModel model;
-	
+
 	@FXML
 	private TreeView<String> tree;
-	
-	private HashMap<TreeItem<String>, Floor> floorHashMap = new HashMap<TreeItem<String>, Floor>(); // Maps each Floor to a TreeItem
-	private HashMap<TreeItem<String>, MeetingSpace> meetingSpaceHashMap = new HashMap<TreeItem<String>, MeetingSpace>(); // Maps each MeetingSpace to a TreeItem
 
+	private HashMap<TreeItem<String>, Floor> floorHashMap = new HashMap<TreeItem<String>, Floor>(); // Maps each Floor
+																									// to a TreeItem
+	private HashMap<TreeItem<String>, MeetingSpace> meetingSpaceHashMap = new HashMap<TreeItem<String>, MeetingSpace>(); // Maps
+	
+	@FXML
+	public Button treeButton;
+	
+	@FXML
+	private ContextMenu adminContextMenu;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tree.setRoot(new TreeItem<String>(null));
@@ -38,8 +46,14 @@ public class TreeController implements Initializable {
 	public void initModel(DataModel model) {
 		if (this.model != null) {
             throw new IllegalStateException("Model can only be initialized once");
+        } else {
+        	this.model = model;
         }
-        this.model = model;
+		
+		if (true /* currentUser.getUserType() != ADMIN */) {
+			tree.setContextMenu(null);
+		}
+		
         tree.getSelectionModel().selectedItemProperty().addListener((ob, oldItem, newItem) -> {
         	if (newItem != null) {
         		if (isFloor(newItem)) {
@@ -98,27 +112,6 @@ public class TreeController implements Initializable {
         		newFloorTreeItem.getChildren().add(newMeetingSpaceTreeItem);
         	}
         }
-	}
-	
-	@FXML
-	public void onNewMeetingSpace() {
-		
-	}
-	
-	@FXML
-	public void onNewFloor() {
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Choose Image");
-		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
-		String s = null;
-		try {
-			s = fileChooser.showOpenDialog(tree.getScene().getWindow()).toURI().toURL().toString(); // Converts URL of image file to a string
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-		}
-		if (s != null) {
-			model.addFloor(new Floor("New floor", s));
-		}
 	}
 	
 	@FXML

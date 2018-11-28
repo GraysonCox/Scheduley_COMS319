@@ -1,5 +1,6 @@
 package main;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -10,17 +11,17 @@ import javafx.scene.layout.Pane;
 public class Floor extends Pane {
 	public StringProperty name;
 	public final ImageView image; //public for testing purposes TODO: change to private
-	private String imageURL;
-	private int floorID;
-	
 	private ArrayList<MeetingSpace> meetingSpaces;
+	private String imageURL;
+    private int floorID;
+
 	
 	public Floor(String name, String URL) {
 		this.name = new SimpleStringProperty(name);
 		this.imageURL = URL;
 		meetingSpaces = new ArrayList<MeetingSpace>();
 		image = null;
-		
+
 		//NOT DONE, nothing after this works
 		/*
 		ClassLoader k = getClass().getClassLoader();
@@ -33,7 +34,6 @@ public class Floor extends Pane {
 	}
 	
 	public void addMeetingSpace(MeetingSpace m) {
-		m.setFloor(this);
 		meetingSpaces.add(m);
 	}
 	
@@ -57,20 +57,22 @@ public class Floor extends Pane {
 		this.name.set(name);;
 	}
 	
+	public String getImageURL() {
+        return imageURL;
+    }
+    
+    public void setFloorID(int id) {
+        this.floorID = id;
+    }
+    
+    public int getFloorID() {
+        return floorID;
+    }
+
+	
 	public String toString() {
 		return name.get();
 	}
 	
-	public String getImageURL() {
-		return imageURL;
-	}
-	
-	public void setFloorID(int id) {
-		this.floorID = id;
-	}
-	
-	public int getFloorID() {
-		return floorID;
-	}
-	
 }
+

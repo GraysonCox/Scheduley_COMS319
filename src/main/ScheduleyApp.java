@@ -1,18 +1,28 @@
 package main;
 	
 import java.io.IOException;
+import java.net.MalformedURLException;
 
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.util.Duration;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -23,6 +33,15 @@ import javafx.geometry.Pos;
 
 
 public class ScheduleyApp extends Application {
+	DataModel model;
+	
+	VBox root = new VBox();
+	
+	AnchorPane basisRoot = new AnchorPane();
+	Pane basis, tree, schedule;
+	
+	TranslateTransition openTree, closeTree, openSchedule, closeSchedule;
+	
 	private boolean loginSuccessful;
 	
 	@Override
@@ -63,29 +82,53 @@ public class ScheduleyApp extends Application {
 			loginSuccessful = dataSource.verifyUser(userTextField.getText(), pwBox.getText());
 			if (loginSuccessful) {
 				try {
-					UserProfile currentUser = dataSource.findUser(userTextField.getText());
+					VBox.setVgrow(basisRoot, Priority.ALWAYS);
 					
-					BorderPane root = new BorderPane();
-			        FXMLLoader treeLoader = new FXMLLoader(getClass().getResource("Tree.fxml"));
-			        root.setLeft(treeLoader.load());
-			        TreeController treeController = treeLoader.getController();
-
-			        FXMLLoader basisLoader = new FXMLLoader(getClass().getResource("Basis.fxml"));
-			        root.setCenter(basisLoader.load());
+					FXMLLoader basisLoader = new FXMLLoader(getClass().getResource("Basis.fxml"));
+					basis = basisLoader.load();
 			        BasisController basisController = basisLoader.getController();
+					
+			        FXMLLoader treeLoader = new FXMLLoader(getClass().getResource("Tree.fxml"));
+			        tree = treeLoader.load();
+			        TreeController treeController = treeLoader.getController();
 			        
 			        FXMLLoader scheduleLoader = new FXMLLoader(getClass().getResource("Schedule.fxml"));
-			        root.setRight(scheduleLoader.load());
+			        schedule = scheduleLoader.load();
 			        ScheduleController scheduleController = scheduleLoader.getController();
-
-			        DataModel model = new DataModel(currentUser);
-			        treeController.initModel(model);
-			        basisController.initModel(model);
-			        scheduleController.initModel(model);
 			        
-			        primaryStage.setTitle("Scheduley");
-			        primaryStage.setScene(new Scene(root));
-			        primaryStage.setMaximized(true);
+			        AnchorPane.setTopAnchor(basis, 0.0);
+			        AnchorPane.setBottomAnchor(basis, 0.0);
+			        AnchorPane.setLeftAnchor(basis, 30.0);
+			        AnchorPane.setTopAnchor(tree, 0.0);
+			        AnchorPane.setLeftAnchor(tree, -170.0);
+			        AnchorPane.setBottomAnchor(tree, 0.0);
+			        AnchorPane.setLeftAnchor(schedule, 30.0);
+			        AnchorPane.setRightAnchor(schedule, 0.0);
+			        AnchorPane.setBottomAnchor(schedule, -440.0);
+			        
+			        
+			        basisRoot.getChildren().addAll(basis, tree, schedule);
+			        root.getChildren().add(basisRoot);
+			        
+			        openTree = new TranslateTransition(new Duration(350), basisRoot);
+					openTree.setToX(0);
+					closeTree = new TranslateTransition(new Duration(350), basisRoot);
+					treeController.treeButton.setOnAction(event -> doTreeTransition());
+					
+					openSchedule = new TranslateTransition(new Duration(350), schedule);
+					openSchedule.setToY(0);
+					closeSchedule = new TranslateTransition(new Duration(350), schedule);
+					scheduleController.scheduleButton.setOnAction(event -> doScheduleTransition());
+			        
+			        model = new DataModel(dataSource.findUser(userTextField.getText()));
+			        treeController.initModel(model);
+					basisController.initModel(model);
+					scheduleController.initModel(model);
+						        
+					primaryStage.setTitle("Scheduley");
+					primaryStage.setScene(new Scene(root));
+					primaryStage.setMaximized(true);
+					primaryStage.show();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -99,6 +142,47 @@ public class ScheduleyApp extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setMaximized(false);
         primaryStage.show();
+	}
+	
+	private void initAdminTools() {
+		
+	}
+	
+	private void createMeetingSpace() {
+		
+	}
+	
+	private void createFloor() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Choose Image");
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+		String s = null;
+		try {
+			s = fileChooser.showOpenDialog(root.getScene().getWindow()).toURI().toURL().toString();
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
+		if (s != null) {
+			model.addFloor(new Floor("New floor", s));
+		}
+	}
+	
+	private void doTreeTransition() {
+		if (basisRoot.getTranslateX() != 0) {
+			openTree.play();
+		} else {
+			closeTree.setToX(170);
+			closeTree.play();
+		}
+	}
+	
+	private void doScheduleTransition() {
+		if (schedule.getTranslateY() != 0) {
+			openSchedule.play();
+		} else {
+			closeSchedule.setToY(-400);
+			closeSchedule.play();
+		}
 	}
 	
 	public static void main(String[] args) {
