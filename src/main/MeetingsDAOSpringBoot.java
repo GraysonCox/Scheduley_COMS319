@@ -45,28 +45,39 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		loadMeetings();
 	}
 	
+	/**
+	 * Get all from DB
+	 */
 	@SuppressWarnings("unchecked")
 	public void loadMeetings() {
 		JSONArray result = new JSONArray();
 		try {
+			//Create Client (Same for all DAO's)
 			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+			//The get Request (Ending will be diff for each DAO's)
 			HttpGet putRequest = new HttpGet(BASE_URL + "/meetings/search/all");
+			//Setting Header (Same for all DAO's)
 			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 			
+			//execute request (Same for all DAO's)
 			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
 
+			//get response (Same)
 			InputStream responseContent = httpResponse.getEntity().getContent();
-			JSONParser jsonParser = new JSONParser();
-			JSONArray tempArr = (JSONArray)jsonParser.parse(new InputStreamReader(responseContent, "UTF-8"));
+			JSONParser jsonParser = new JSONParser();//Same
+			JSONArray tempArr = (JSONArray)jsonParser.parse(new InputStreamReader(responseContent, "UTF-8"));//Same
 			
+			//Specific for all classes. Deciphering the JSONArray into the current DAO
 			for(int i = 0; i < tempArr.size(); i ++) {
 				JSONObject obj = (JSONObject) tempArr.get(i);
 				Timestamp ts = parseTime((String) obj.get(DATE_TIME));
 				Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
 				result.add(temp);
 			}
+			//close what you open
 			httpResponse.close();
 			httpClient.close();
+			//Catch
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch(IOException e) {

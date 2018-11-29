@@ -6,9 +6,9 @@
             -something is still wrong with the floor constructor
             -we still need to figure out how we are storing images.
         -Minor updates to MeetingSpaceDAO
-            -issue: when something is added to the DB, the instance variable for the dao is not updated with the new item.
+            -issue: when something is added to the DB, the instance variable for the dao is not updated with the new item. (FIXED)
         -Minor updates to MeetingDAO
-            - "
+            - " (FIXED)
         
             
                 

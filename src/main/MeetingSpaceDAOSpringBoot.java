@@ -1,6 +1,8 @@
 package main;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.apache.http.HttpHeaders;
@@ -25,6 +27,9 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 		loadMeetingSpaces();
 	}
 	
+	/**
+	 * Get all from DB
+	 */
 	public void loadMeetingSpaces() {
 		MeetingSpace[] arr = null;
 		try {
@@ -33,9 +38,9 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 			getRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 			
 			CloseableHttpResponse httpResponse = httpClient.execute(getRequest);
-			String res = EntityUtils.toString(httpResponse.getEntity());
+			InputStream responseContent = httpResponse.getEntity().getContent(); //new
 			JSONParser parser = new JSONParser();
-			JSONArray result = (JSONArray) parser.parse(res);
+			JSONArray result = (JSONArray)parser.parse(new InputStreamReader(responseContent, "UTF-8")); //new
 			arr = new MeetingSpace[result.size()];
 			
 			for(int i=0; i<result.size(); i++) {

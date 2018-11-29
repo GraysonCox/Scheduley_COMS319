@@ -27,6 +27,9 @@ public class FloorDAOSpringBoot implements FloorDAO {
 		loadFloors();
 	}
 
+	/**
+	 * This is basically just get all from DB
+	 */
 	public void loadFloors() {
 		Floor[] arr = null;
 		try {
