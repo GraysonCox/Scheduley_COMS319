@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="532.0" prefWidth="498.0" spacing="10.0" style="-fx-background-radius: 25px; -fx-background-color: lightgrey;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="main.NewMeetingFormController">
+<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="532.0" prefWidth="498.0" spacing="10.0" style="-fx-background-radius: 25px; -fx-background-color: lightgrey;" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.NewMeetingFormController">
    <children>
       <AnchorPane>
          <children>
@@ -24,7 +24,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Button onAction="#hide" layoutX="454.0" layoutY="1.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="X" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button layoutX="454.0" layoutY="1.0" mnemonicParsing="false" onAction="#hide" style="-fx-background-color: transparent;" text="X" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
       </AnchorPane>
       <Separator prefWidth="200.0" />
@@ -37,10 +37,11 @@
          <children>
             <Label contentDisplay="RIGHT" text="Start time:">
                <graphic>
-                  <Spinner fx:id="hourSpinner" />
+                  <Spinner fx:id="hourSpinner" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
                </graphic>
             </Label>
-            <Spinner fx:id="minuteSpinner" />
+            <Spinner fx:id="minuteSpinner" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" />
+            <ChoiceBox fx:id="ampmChoiceBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" />
          </children>
       </HBox>
       <Label contentDisplay="RIGHT" text="Duration:">

@@ -121,6 +121,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		loadFloors();//Update the instance variable to the new table
 		return code;
 	}
 

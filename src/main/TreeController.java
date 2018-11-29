@@ -50,7 +50,7 @@ public class TreeController implements Initializable {
         	this.model = model;
         }
 		
-		if (true /* currentUser.getUserType() != ADMIN */) {
+		if (this.model.getCurrentUser().getUserType() != UserType.ADMIN) {
 			tree.setContextMenu(null);
 		}
 		
@@ -90,6 +90,9 @@ public class TreeController implements Initializable {
 	 * 
 	 */
 	public void update() {
+		for (TreeItem<String> t : tree.getRoot().getChildren()) {
+			t.getChildren().clear();
+		}
 		tree.getRoot().getChildren().clear();
 		meetingSpaceHashMap.clear();
 		floorHashMap.clear();
@@ -113,7 +116,13 @@ public class TreeController implements Initializable {
 	@FXML
 	public void onRename() {
 		tree.setEditable(true);
-		tree.edit(tree.getSelectionModel().getSelectedItem());
+		TreeItem<String> t = tree.getSelectionModel().getSelectedItem();
+		tree.edit(t);
+		if (isFloor(t)) {
+			// Rename the Floor
+		} else {
+			// Rename the MeetingSpace
+		}
 		tree.setEditable(false);
 	}
 	
@@ -122,7 +131,7 @@ public class TreeController implements Initializable {
 		TreeItem<String> t = tree.getSelectionModel().getSelectedItem();
 		if (t != null) {
     		if (isFloor(t)) {
-    			//this.model.removeFloor(floorHashMap.get(t));
+    			this.model.removeFloor(floorHashMap.get(t));
     		} else {
     			this.model.removeMeetingSpace(meetingSpaceHashMap.get(t));
     		}
