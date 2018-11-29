@@ -41,7 +41,15 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	private static final String BASE_URL = "http://proj-319-080.misc.iastate.edu:8080";
 	private static final String MEDIA_TYPE = "application/json";
 	
+	//NEW
+	private static final String MEETINGS_TABLE_ALL = "/meetings/search/all";
+	private static final String MEETINGS_TABLE_INSERT = "/meetings/create";
+	private static final String MEETINGS_TABLE_DELETE = "/meetings/delete";
+	
+	private SpringBoot_DAOFactory dao;
+	
 	public MeetingsDAOSpringBoot() {
+		dao = new SpringBoot_DAOFactory();
 		loadMeetings();
 	}
 	
@@ -50,79 +58,35 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadMeetings() {
+		JSONArray jsonArrFromDB = dao.getJSONArrayFromDB(MEETINGS_TABLE_ALL);
+		//deciphering JSONArray
 		JSONArray result = new JSONArray();
-		try {
-			//Create Client (Same for all DAO's)
-			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			//The get Request (Ending will be diff for each DAO's)
-			HttpGet putRequest = new HttpGet(BASE_URL + "/meetings/search/all");
-			//Setting Header (Same for all DAO's)
-			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
-			
-			//execute request (Same for all DAO's)
-			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
-
-			//get response (Same)
-			InputStream responseContent = httpResponse.getEntity().getContent();
-			JSONParser jsonParser = new JSONParser();//Same
-			JSONArray tempArr = (JSONArray)jsonParser.parse(new InputStreamReader(responseContent, "UTF-8"));//Same
-			
-			//Specific for all classes. Deciphering the JSONArray into the current DAO
-			for(int i = 0; i < tempArr.size(); i ++) {
-				JSONObject obj = (JSONObject) tempArr.get(i);
-				Timestamp ts = parseTime((String) obj.get(DATE_TIME));
-				Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
-				result.add(temp);
-			}
-			//close what you open
-			httpResponse.close();
-			httpClient.close();
-			//Catch
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} 
+		for(int i = 0; i < jsonArrFromDB.size(); i ++) {
+			JSONObject obj = (JSONObject) jsonArrFromDB.get(i);
+			Timestamp ts = parseTime((String) obj.get(DATE_TIME));
+			Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
+			result.add(temp);
+		}
 		meetings = result;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public int insertMeeting(Meeting newMeeting) {
-		int returnCode = -1;
-		try {
-			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPut putRequest = new HttpPut(BASE_URL + "/meetings/create");
-			JSONObject jsnObj = new JSONObject();
-			jsnObj.put(MEETING_NAME, newMeeting.getName());
-			char[] c = newMeeting.getStartTime().toString().toCharArray();
-			char[] d = Arrays.copyOfRange(c, 0, 19);
-			d[10] = 'T';
-			String inputTime = new String(d);
-			jsnObj.put(DATE_TIME, inputTime);
-			jsnObj.put(DURATION, newMeeting.getDuration());
-			jsnObj.put(MEETING_SPACE_ID, newMeeting.getMeetingSpaceID());
-	
-		    String jsonString = jsnObj.toString();
-			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
-			putRequest.setEntity(new StringEntity(jsonString));
-			
-			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
-			String res = EntityUtils.toString(httpResponse.getEntity());
-			JSONParser parser = new JSONParser();
-			JSONObject obj = (JSONObject) parser.parse(res);
-			returnCode = Integer.valueOf(obj.get("status").toString());
-			httpResponse.close();
-			httpClient.close();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} 
+		//Create Object to put into DB
+		JSONObject jsnObj = new JSONObject();
+		jsnObj.put(MEETING_NAME, newMeeting.getName());
+		char[] c = newMeeting.getStartTime().toString().toCharArray();//probably a better way to handle the time
+		char[] d = Arrays.copyOfRange(c, 0, 19);// "
+		d[10] = 'T';// "
+		String inputTime = new String(d);// "
+		jsnObj.put(DATE_TIME, inputTime);
+		jsnObj.put(DURATION, newMeeting.getDuration());
+		jsnObj.put(MEETING_SPACE_ID, newMeeting.getMeetingSpaceID());
+
+	    String jsonString = jsnObj.toString();
+	    int returnCode = dao.insertIntoDB(MEETINGS_TABLE_INSERT, jsonString);
+	    
 		loadMeetings(); //update instance variable to match DB
 		return returnCode;
 	}
@@ -138,31 +102,11 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public int deleteMeeting(String name) {
-		int returnCode = -1;
-		try {
-			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost postRequest = new HttpPost(BASE_URL + "/meetings/delete");
-			JSONObject jsnObj = new JSONObject();
-			jsnObj.put(MEETING_NAME, name);
+		JSONObject jsnObj = new JSONObject();
+		jsnObj.put(MEETING_NAME, name);
+	    String jsonString = jsnObj.toString();//need better name
 
-		    String jsonString = jsnObj.toString();
-			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
-			postRequest.setEntity(new StringEntity(jsonString));
-			
-			CloseableHttpResponse httpResponse = httpClient.execute(postRequest);
-			String res = EntityUtils.toString(httpResponse.getEntity());
-			JSONParser parser = new JSONParser();
-			JSONObject obj = (JSONObject) parser.parse(res);
-			returnCode = Integer.valueOf(obj.get("status").toString());
-			httpResponse.close();
-			httpClient.close();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} 
+	    int returnCode = dao.deleteFromDB(MEETINGS_TABLE_DELETE, jsonString);
 		loadMeetings(); //update instance variable to match DB
 		return returnCode;
 	}
@@ -199,6 +143,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		return result;
 	}
 
+	//TODO?
 	@SuppressWarnings("unchecked")
 	@Override
 	public Meeting getMeetingByName(String name) {

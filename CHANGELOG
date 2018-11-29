@@ -11,4 +11,6 @@
             - " (FIXED)
         
             
-                
+11/29
+	-Made SpringBoot getAllFromDB.
+		-Meetings is now using it.
