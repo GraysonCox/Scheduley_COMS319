@@ -12,8 +12,10 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -48,10 +50,16 @@ public class NewMeetingFormController implements Initializable {
 	private ChoiceBox<MeetingSpace> meetingSpaceChoiceBox;
 	
 	@FXML
+	private MenuButton inviteesMenu;
+	
+	@FXML
 	private TextField meetingNameTextField;
 	
 	@FXML
 	private TextArea descriptionTextArea;
+	
+	@FXML
+	private TextArea emailAddresses;
 	
 	@FXML
 	private Button submitButton;
@@ -80,6 +88,9 @@ public class NewMeetingFormController implements Initializable {
 			meetingSpaceChoiceBox.getItems().addAll(newFloor.getMeetingSpaces());
 		});
 		
+		for (UserProfile u : this.model.getAllUsers()) {
+			inviteesMenu.getItems().add(new CheckMenuItem(u.getName()));
+		}
 	}
 	
 	public void show() {
@@ -100,5 +111,11 @@ public class NewMeetingFormController implements Initializable {
 		Timestamp startTimestamp = new Timestamp(startTime.toEpochSecond()*1000);
 		Meeting newMeeting = new Meeting(meetingNameTextField.getText(), startTimestamp, (int)durationSlider.getValue(), meetingSpaceChoiceBox.getValue().getUniqueID());
 		model.addMeeting(newMeeting);
+		
+		EmailSender email = new EmailSender("Meeting Invitation",
+				"Meeting name: " + newMeeting.getName()
+				
+				
+				);
 	}
 }

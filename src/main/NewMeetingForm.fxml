@@ -30,38 +30,48 @@
                </children>
             </AnchorPane>
             <Separator prefWidth="200.0" />
-            <Label contentDisplay="RIGHT" text="Date:">
-               <graphic>
-                  <DatePicker fx:id="datePicker" />
-               </graphic>
-            </Label>
-            <HBox spacing="10.0">
+            <HBox>
                <children>
-                  <Label contentDisplay="RIGHT" text="Start time:">
-                     <graphic>
-                        <Spinner fx:id="hourSpinner" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
-                     </graphic>
-                  </Label>
-                  <Spinner fx:id="minuteSpinner" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" />
-                  <ChoiceBox fx:id="ampmChoiceBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" />
+                  <VBox spacing="10.0">
+                     <children>
+                        <Label contentDisplay="RIGHT" text="Date:">
+                           <graphic>
+                              <DatePicker fx:id="datePicker" />
+                           </graphic>
+                        </Label>
+                        <HBox spacing="10.0">
+                           <children>
+                              <Label contentDisplay="RIGHT" text="Start time:">
+                                 <graphic>
+                                    <Spinner fx:id="hourSpinner" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
+                                 </graphic>
+                              </Label>
+                              <Spinner fx:id="minuteSpinner" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" />
+                              <ChoiceBox fx:id="ampmChoiceBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" />
+                           </children>
+                        </HBox>
+                        <Label contentDisplay="RIGHT" text="Duration:">
+                           <graphic>
+                              <Slider fx:id="durationSlider" majorTickUnit="10.0" minorTickCount="5" showTickMarks="true" snapToTicks="true" />
+                           </graphic>
+                        </Label>
+                        <Separator prefWidth="200.0" />
+                        <Label contentDisplay="RIGHT" text="Floor:">
+                           <graphic>
+                              <ChoiceBox fx:id="floorChoiceBox" prefWidth="150.0" />
+                           </graphic>
+                        </Label>
+                        <Label contentDisplay="RIGHT" text="Meeting space:">
+                           <graphic>
+                              <ChoiceBox fx:id="meetingSpaceChoiceBox" prefWidth="150.0" />
+                           </graphic>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <ChoiceBox prefWidth="150.0" />
                </children>
             </HBox>
-            <Label contentDisplay="RIGHT" text="Duration:">
-               <graphic>
-                  <Slider fx:id="durationSlider" majorTickUnit="10.0" minorTickCount="5" showTickMarks="true" snapToTicks="true" />
-               </graphic>
-            </Label>
-            <Separator prefWidth="200.0" />
-            <Label contentDisplay="RIGHT" text="Floor:">
-               <graphic>
-                  <ChoiceBox fx:id="floorChoiceBox" prefWidth="150.0" />
-               </graphic>
-            </Label>
-            <Label contentDisplay="RIGHT" text="Meeting space:">
-               <graphic>
-                  <ChoiceBox fx:id="meetingSpaceChoiceBox" prefWidth="150.0" />
-               </graphic>
-            </Label>
             <Separator prefWidth="200.0" />
             <Label contentDisplay="RIGHT" text="Name of meeting:">
                <graphic>

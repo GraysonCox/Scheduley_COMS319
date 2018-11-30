@@ -1,6 +1,7 @@
 package main;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
@@ -13,10 +14,12 @@ public class DataModel {
 	private UserProfile currentUser;
 	
 	private final DAOFactory springBootDBFactory = DAOFactory.getDAOFactory(DAOFactory.SPRING_BOOT);
+	private final DAOFactory JDBCFactory = DAOFactory.getDAOFactory(DAOFactory.JDBC);
 	
 	private final FloorDAO floorDataSource = springBootDBFactory.getFloorDAO();
 	private final MeetingSpaceDAO meetingSpaceDataSource = springBootDBFactory.getMeetingSpaceDAO();
 	private final MeetingsDAO meetingDataSource = springBootDBFactory.getMeetingsDAO();
+	private final UserDAO userDataSource = JDBCFactory.getUserDAO();
 	
 	private final ObservableList<MeetingSpace> meetingSpaceList = FXCollections.observableArrayList();
 	private final ObservableList<Floor> floorList = FXCollections.observableArrayList();
@@ -58,6 +61,16 @@ public class DataModel {
 	
 	public UserProfile getCurrentUser() {
 		return currentUser;
+	}
+	
+	public UserProfile[] getAllUsers() {
+		try {
+			return userDataSource.findAllUsers().toArray(new UserProfile[0]);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public void addMeeting(Meeting m) {
