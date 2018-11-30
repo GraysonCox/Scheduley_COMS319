@@ -54,30 +54,12 @@ private DataModel model;
         	this.model = model;
         }
         
-        EventHandler<MouseEvent> onMouseClickedCurrentMeetingSpace = new EventHandler<MouseEvent>() {
-    		@Override
-    		public void handle(MouseEvent event) {
-    			root.setVisible(true);
-    		}
-        };
-        
         this.model.currentMeetingSpaceProperty().addListener((ob, oldMeetingSpace, newMeetingSpace) -> {
-        	try {
-        		oldMeetingSpace.removeEventFilter(MouseEvent.MOUSE_CLICKED, onMouseClickedCurrentMeetingSpace);
-        	} catch (NullPointerException exception) {} // Because first MeetingSpace to be clicked will not have an EventFilter
-
-        	root.setVisible(true);
         	meetingSpaceNameLabel.textProperty().unbind();
         	meetingSpaceNameLabel.textProperty().bind(newMeetingSpace.nameProperty());
         	floorLabel.textProperty().unbind();
         	floorLabel.textProperty().bind(newMeetingSpace.getFloor().nameProperty());
-        	rectangleGroup.getChildren().clear();
-        	/** 
-        	 * TODO: Make this method retrieve meetings from the actual database and 
-        	 * show only the meetings for the currently selected week.
-        	 */
-        	rectangleGroup.getChildren().addAll(newMeetingSpace.getMeetingList());
-        	newMeetingSpace.addEventFilter(MouseEvent.MOUSE_CLICKED, onMouseClickedCurrentMeetingSpace);
+        	showMeetingsInCurrentWeek();
         });
         
         sundayLabel.setText(model.getSundayDisplayed().toString());
@@ -103,13 +85,27 @@ private DataModel model;
         	chosenDate = null;
         });
 	}
+	
+	public void showMeetingsInCurrentWeek() {
+		rectangleGroup.getChildren().clear();
+		Meeting[] arr = model.getMeetingsByMeetingSpaceID(model.getCurrentMeetingSpace().getUniqueID());
+		for (Meeting m : arr) {
+			if (m.getStartTime().toLocalDateTime().isAfter(model.getSundayDisplayed().atStartOfDay())) {
+				if (m.getStartTime().toLocalDateTime().isBefore(model.getSundayDisplayed().plusDays(7).atStartOfDay())) {
+					rectangleGroup.getChildren().add(m);
+				}
+			}
+		}
+	}
 
 	public void onPreviousWeek() {
 		model.setSundayDisplayed(model.getSundayDisplayed().minusDays(7));
+		showMeetingsInCurrentWeek();
 	}
 
 	public void onNextWeek() {
 		model.setSundayDisplayed(model.getSundayDisplayed().plusDays(7));
+		showMeetingsInCurrentWeek();
 	}
 
 	public void onClose() {

@@ -5,9 +5,6 @@ import org.json.simple.JSONObject;
 
 public class FloorDAOSpringBoot implements FloorDAO {
 	
-	private static final String BASE_URL = "http://proj-319-080.misc.iastate.edu:8080";
-	private static final String MEDIA_TYPE = "application/json";
-	
 	private static final String FLOOR_TABLE_ALL = "/floor/search/all";
 	private static final String FLOOR_TABLE_INSERT = "/floor/create";
 	private static final String FLOOR_TABLE_DELETE = "/floor/delete";
@@ -26,6 +23,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 	 */
 	public void loadFloors() {
 		Floor[] arr = null;
+		
 		JSONArray jsonArrayFromDB = dao.getJSONArrayFromDB(FLOOR_TABLE_ALL);
 		arr = new Floor[jsonArrayFromDB.size()];
 		
@@ -78,13 +76,14 @@ public class FloorDAOSpringBoot implements FloorDAO {
 	@Override
 	public int addFloor(Floor floor) {
 		int code = 500;
-		
+
 		JSONObject json = new JSONObject();
 		json.put("floorName", floor.getName());
 		json.put("imgURL", floor.getImageURL());
 		String jsonString = json.toString();
 		
 		code = dao.insertIntoDB(FLOOR_TABLE_INSERT, jsonString);
+		loadFloors();
 		return code;
 	}
 
@@ -98,7 +97,8 @@ public class FloorDAOSpringBoot implements FloorDAO {
 	String jsonString = json.toString();
 	
 	code = dao.deleteFromDB(FLOOR_TABLE_DELETE, jsonString);
-
+	
+	loadFloors();
 	return code;
 	}
 }

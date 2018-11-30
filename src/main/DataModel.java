@@ -40,9 +40,11 @@ public class DataModel {
 	public void loadData() {
 		floorList.clear();
 		meetingSpaceList.clear();
+		floorDataSource.loadFloors();
+		meetingSpaceDataSource.loadMeetingSpaces();
 		floorList.addAll(floorDataSource.getAllFloors()); // Retrieve all Floors
 		Floor tempFloor;
-		for (MeetingSpace m : meetingSpaceDataSource.getAllMeetingSpace()) { // For every MeetingSpace, use its floorID to add a point to its Floor object
+		for (MeetingSpace m : meetingSpaceDataSource.getAllMeetingSpace()) { // For every MeetingSpace, use its floorID to add a pointer to its Floor object
 			tempFloor = floorDataSource.getFloorByID(m.getFloorID());
 			if (tempFloor != null) { // Add to list if it has valid floorID
 				m.setFloor(tempFloor);
@@ -58,6 +60,14 @@ public class DataModel {
 	
 	public UserProfile getCurrentUser() {
 		return currentUser;
+	}
+	
+	public void addMeeting(Meeting m) {
+		meetingDataSource.insertMeeting(m);
+	}
+	
+	public Meeting[] getMeetingsByMeetingSpaceID(int ID) {
+		return meetingDataSource.getMeetingsByMeetingSpaceID(ID);
 	}
 	
 	public void addMeetingSpace(MeetingSpace m) {

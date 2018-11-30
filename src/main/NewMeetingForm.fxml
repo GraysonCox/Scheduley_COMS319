@@ -15,65 +15,70 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="532.0" prefWidth="498.0" spacing="10.0" style="-fx-background-radius: 25px; -fx-background-color: lightgrey;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="main.NewMeetingFormController">
+<VBox fx:id="root" alignment="CENTER" prefHeight="532.0" prefWidth="601.0" style="-fx-background-color: rgba(255,255,255,0.75);" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.NewMeetingFormController">
    <children>
-      <AnchorPane>
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="532.0" prefWidth="498.0" spacing="10.0" style="-fx-background-radius: 25px; -fx-background-color: lightgrey;">
          <children>
-            <Label contentDisplay="CENTER" text="Plan a meeting" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Button onAction="#hide" layoutX="454.0" layoutY="1.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="X" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-         </children>
-      </AnchorPane>
-      <Separator prefWidth="200.0" />
-      <Label contentDisplay="RIGHT" text="Date:">
-         <graphic>
-            <DatePicker fx:id="datePicker" />
-         </graphic>
-      </Label>
-      <HBox spacing="10.0">
-         <children>
-            <Label contentDisplay="RIGHT" text="Start time:">
+            <AnchorPane>
+               <children>
+                  <Label contentDisplay="CENTER" text="Plan a meeting" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="454.0" layoutY="1.0" mnemonicParsing="false" onAction="#hide" style="-fx-background-color: transparent;" text="X" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <Separator prefWidth="200.0" />
+            <Label contentDisplay="RIGHT" text="Date:">
                <graphic>
-                  <Spinner fx:id="hourSpinner" />
+                  <DatePicker fx:id="datePicker" />
                </graphic>
             </Label>
-            <Spinner fx:id="minuteSpinner" />
+            <HBox spacing="10.0">
+               <children>
+                  <Label contentDisplay="RIGHT" text="Start time:">
+                     <graphic>
+                        <Spinner fx:id="hourSpinner" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
+                     </graphic>
+                  </Label>
+                  <Spinner fx:id="minuteSpinner" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" />
+                  <ChoiceBox fx:id="ampmChoiceBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" />
+               </children>
+            </HBox>
+            <Label contentDisplay="RIGHT" text="Duration:">
+               <graphic>
+                  <Slider fx:id="durationSlider" majorTickUnit="10.0" minorTickCount="5" showTickMarks="true" snapToTicks="true" />
+               </graphic>
+            </Label>
+            <Separator prefWidth="200.0" />
+            <Label contentDisplay="RIGHT" text="Floor:">
+               <graphic>
+                  <ChoiceBox fx:id="floorChoiceBox" prefWidth="150.0" />
+               </graphic>
+            </Label>
+            <Label contentDisplay="RIGHT" text="Meeting space:">
+               <graphic>
+                  <ChoiceBox fx:id="meetingSpaceChoiceBox" prefWidth="150.0" />
+               </graphic>
+            </Label>
+            <Separator prefWidth="200.0" />
+            <Label contentDisplay="RIGHT" text="Name of meeting:">
+               <graphic>
+                  <TextField fx:id="meetingNameTextField" />
+               </graphic>
+            </Label>
+            <TextArea fx:id="descriptionTextArea" prefHeight="200.0" promptText="Meeting description (Optional)" />
+            <Separator prefWidth="200.0" />
+            <VBox alignment="CENTER">
+               <children>
+                  <Button fx:id="submitButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#onSubmit" style="-fx-background-color: skyblue;" text="Submit" textFill="WHITE" />
+               </children>
+            </VBox>
          </children>
-      </HBox>
-      <Label contentDisplay="RIGHT" text="Duration:">
-         <graphic>
-            <Slider fx:id="durationSlider" majorTickUnit="10.0" minorTickCount="5" showTickMarks="true" snapToTicks="true" />
-         </graphic>
-      </Label>
-      <Separator prefWidth="200.0" />
-      <Label contentDisplay="RIGHT" text="Floor:">
-         <graphic>
-            <ChoiceBox fx:id="floorChoiceBox" prefWidth="150.0" />
-         </graphic>
-      </Label>
-      <Label contentDisplay="RIGHT" text="Meeting space:">
-         <graphic>
-            <ChoiceBox fx:id="meetingSpaceChoiceBox" prefWidth="150.0" />
-         </graphic>
-      </Label>
-      <Separator prefWidth="200.0" />
-      <Label contentDisplay="RIGHT" text="Name of meeting:">
-         <graphic>
-            <TextField fx:id="meetingNameTextField" />
-         </graphic>
-      </Label>
-      <TextArea fx:id="descriptionTextArea" prefHeight="200.0" promptText="Meeting description (Optional)" />
-      <Separator prefWidth="200.0" />
-      <VBox alignment="CENTER">
-         <children>
-            <Button fx:id="submitButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: skyblue;" text="Submit" textFill="WHITE" />
-         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
       </VBox>
    </children>
-   <padding>
-      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-   </padding>
 </VBox>

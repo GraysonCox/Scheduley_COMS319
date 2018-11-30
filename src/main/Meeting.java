@@ -3,6 +3,8 @@ package main;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import javafx.scene.control.Tooltip;
+
 public class Meeting extends AbstractRectangleIcon {
 
 	private String name;
@@ -23,6 +25,8 @@ public class Meeting extends AbstractRectangleIcon {
 		this.startTime = startTime;
 		this.duration = duration;
 		this.meetingSpaceID = meetingSpaceID; // TODO: Add this meeting to its MeetingSpace
+		Tooltip tooltip = new Tooltip(name);
+		Tooltip.install(this, new Tooltip(name));
 	}
 	
 	public Meeting(String name) {

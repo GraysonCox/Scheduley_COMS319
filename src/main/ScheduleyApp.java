@@ -19,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -31,8 +32,9 @@ import javafx.util.Duration;
 
 public class ScheduleyApp extends Application {
 	DataModel model;
-
-	VBox root = new VBox();
+	
+	StackPane root = new StackPane();
+	VBox subRoot = new VBox();
 
 	AnchorPane basisRoot = new AnchorPane();
 	Pane menuBar, basis, tree, schedule, newMeetingForm;
@@ -120,8 +122,9 @@ public class ScheduleyApp extends Application {
 					AnchorPane.setTopAnchor(newMeetingForm, 0.0);
 					AnchorPane.setLeftAnchor(newMeetingForm, 30.0);
 
-					basisRoot.getChildren().addAll(basis, tree, schedule, newMeetingForm);
-					root.getChildren().addAll(menuBar, basisRoot);
+					basisRoot.getChildren().addAll(basis, tree, schedule);
+					subRoot.getChildren().addAll(menuBar, basisRoot);
+					root.getChildren().addAll(subRoot, newMeetingForm);
 
 					openTree = new TranslateTransition(new Duration(350), basisRoot);
 					openTree.setToX(0);
