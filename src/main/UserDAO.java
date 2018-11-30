@@ -9,6 +9,7 @@ public interface UserDAO {
 	
 	void insertUser(UserProfile newUser) throws SQLException;
 	void insertUser(String email, String name, UserType userType) throws SQLException;
+	void insertUser(String email, String name, String userType) throws SQLException;
 	void updateUser(String email);
 	void deleteUser(String email) throws SQLException;
 	boolean verifyUser(String email, String password);

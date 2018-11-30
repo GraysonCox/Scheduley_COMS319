@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="main.MenuBarController">
+	<children>
+		<MenuBar nodeOrientation="RIGHT_TO_LEFT"
+			style="-fx-background-color: skyblue;" AnchorPane.leftAnchor="0.0"
+			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+			<menus>
+				<Menu fx:id="adminTools" text="Admin Tools">
+					<items>
+						<Menu text="New">
+							<items>
+								<MenuItem fx:id="newMeetingSpaceButton"
+									text="Meeting space" />
+								<MenuItem fx:id="newFloorButton" text="Floor" />
+							</items>
+						</Menu>
+						<MenuItem text="Manage users" />
+					</items>
+				</Menu>
+				<Menu text="Meetings">
+					<items>
+						<MenuItem fx:id="newMeetingButton" text="Plan a meeting" />
+					</items>
+				</Menu>
+
+			</menus>
+		</MenuBar>
+	</children>
+</AnchorPane>
+

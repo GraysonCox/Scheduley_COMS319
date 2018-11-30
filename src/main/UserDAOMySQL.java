@@ -9,20 +9,24 @@ import java.util.ArrayList;
 
 public class UserDAOMySQL implements UserDAO{
 	
-	private static final String GET_ALL_USERS = "SELECT * FROM Users;";
+	private static final String GET_ALL_USERS = "SELECT * FROM users;";
 	
-	private static final String INSERT_NEW_USER = "INSERT into Users(email, password, name, userType)" 
+	private static final String INSERT_NEW_USER = "INSERT into users(email, name, password, user_type)" 
 			+ "VALUES(?, ?, ?, ?)";
 	
-	private static final String UPDATE_USER = "UPDATE Users set ";
+	private static final String UPDATE_USER = "UPDATE users set ";
 	
-	private static final String DELETE_USER = "DELETE FROM Users WHERE email = ?;";
+	private static final String DELETE_USER = "DELETE FROM users WHERE email = ?;";
 	
 	private static final String DEFAULT_PASSWORD = "group29";
 	
-	private static ServerConnection dao;
+	private static JDBC_DAOFactory dao;
 	
-	public UserDAOMySQL(ServerConnection conn) {
+	public UserDAOMySQL() {
+		dao = new JDBC_DAOFactory();
+	}
+	
+	public UserDAOMySQL(JDBC_DAOFactory conn) {
 		dao = conn;
 	}
 	
@@ -41,8 +45,10 @@ public class UserDAOMySQL implements UserDAO{
 			while (rs.next()) {
 				String email = rs.getString("email");	
 				String name = rs.getString("name");
-				int type = rs.getInt("userType");
+				int id = rs.getInt("user_id");
+				String type = rs.getString("user_type");
 				UserProfile temp = new UserProfile(email, name, type);
+				temp.setUniqueID(id);
 				users.add(temp);
 			}
 		} finally {
@@ -64,6 +70,13 @@ public class UserDAOMySQL implements UserDAO{
 		UserProfile newUser = new UserProfile(email, name, userType);
 		insertUser(newUser);
 	}
+	
+	@Override
+	public void insertUser(String email, String name, String userType) throws SQLException {
+		UserProfile newUser = new UserProfile(email, name, userType);
+		insertUser(newUser);
+		
+	}
 
 	@Override
 	public void insertUser(UserProfile newUser) throws SQLException {
@@ -72,11 +85,10 @@ public class UserDAOMySQL implements UserDAO{
 		try {
 			dbConnection = dao.getConnection();
 			pStatement = dbConnection.prepareStatement(INSERT_NEW_USER);
-			
 			pStatement.setString(1, newUser.getEmail());
-			pStatement.setString(2, DEFAULT_PASSWORD);
-			pStatement.setString(3, newUser.getName());
-			pStatement.setInt(4, newUser.getUserType());
+			pStatement.setString(2, newUser.getName());
+			pStatement.setString(3, DEFAULT_PASSWORD);
+			pStatement.setString(4, newUser.getUserType().toString());
 			pStatement.executeUpdate();	
 			
 		}finally {

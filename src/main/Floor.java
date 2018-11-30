@@ -1,31 +1,51 @@
 package main;
 
+import java.util.ArrayList;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
 
 public class Floor extends Pane {
 	public StringProperty name;
-	public final ImageView image; //public for testing purposes TODO: change to private
-	private Group rectGroup;
+	public ImageView image; //public for testing purposes TODO: change to private
 	
-	public Floor(Image image) {
-		name = new SimpleStringProperty();
-		this.image = new ImageView(image);
-		rectGroup = new Group();
-		getChildren().addAll(this.image, rectGroup);
+	private ArrayList<MeetingSpace> meetingSpaces;
+	private String imageURL;
+    private int floorID;
+
+	
+	public Floor(String name, String URL) {
+		this.name = new SimpleStringProperty(name);
+		this.imageURL = URL;
+		meetingSpaces = new ArrayList<MeetingSpace>();
+		image = new ImageView(new Image(URL));
+		getChildren().add(this.image);
+		
+		
+		
+		//NOT DONE, nothing after this works
+		/*
+		ClassLoader k = getClass().getClassLoader();
+		String imageLocation = k.getResource(URL).getFile();
+		Image tempImg = new Image(imageLocation);
+		this.image = new ImageView(tempImg);
+		*/
+		
 	}
 	
 	public void addMeetingSpace(MeetingSpace m) {
-		rectGroup.getChildren().add(m);
+		meetingSpaces.add(m);
 	}
 	
 	public void removeMeetingSpace(MeetingSpace m) {
-		rectGroup.getChildren().remove(m);
+		meetingSpaces.remove(m);
+	}
+	
+	public MeetingSpace[] getMeetingSpaces() {
+		return meetingSpaces.toArray(new MeetingSpace[0]);
 	}
 	
 	public StringProperty nameProperty() {
@@ -40,7 +60,21 @@ public class Floor extends Pane {
 		this.name.set(name);;
 	}
 	
+	public String getImageURL() {
+        return imageURL;
+    }
+    
+    public void setFloorID(int id) {
+        this.floorID = id;
+    }
+    
+    public int getFloorID() {
+        return floorID;
+    }
+	
 	public String toString() {
 		return name.get();
 	}
+	
 }
+

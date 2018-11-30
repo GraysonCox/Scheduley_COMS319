@@ -1,0 +1,14 @@
+11/28
+    -250794dc3dc0ea1f31850560a3941ab38545fb76 commit by Will Sartin
+        -Implemented a DAOFactory. It now works with the UserDBTable so far Hope to get it working with the rest of the DAO's tonight.
+            -In a perfect world I would have time to remove the JDBC, and just have one class extend DAOFactory, but we probably won't get there 
+        -Fixed all the tests for the DAO's excluding the FloorDAO
+            -something is still wrong with the floor constructor
+            -we still need to figure out how we are storing images.
+        -Minor updates to MeetingSpaceDAO
+            -issue: when something is added to the DB, the instance variable for the dao is not updated with the new item. (FIXED)
+        -Minor updates to MeetingDAO
+            - " (FIXED)
+        
+            
+                

@@ -34,9 +34,4 @@ public class EmailSenderTest {
 		assertEquals("The class is no longer cancelled.", email1.getBody());
 		
 	}
-	
-	
-	
-	
-
 }

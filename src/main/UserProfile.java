@@ -7,6 +7,7 @@ package main;
  */
 public class UserProfile {
 	
+	private int uniqueID;
 	private String email;
 	private String name;
 	private String password;
@@ -56,8 +57,20 @@ public class UserProfile {
 		return password;
 	}
 	
-	public int getUserType() {
+	public int getUserTypeInt() {
 		return userType.ordinal();
+	}
+	
+	public UserType getUserType() {
+		return userType;
+	}
+	
+	public void setUniqueID(int id) {
+		uniqueID = id;
+	}
+	
+	public int getUniqueID() {
+		return uniqueID;
 	}
 	
 	@Override
