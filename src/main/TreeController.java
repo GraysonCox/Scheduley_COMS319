@@ -90,9 +90,6 @@ public class TreeController implements Initializable {
 	 * 
 	 */
 	public void update() {
-		for (TreeItem<String> t : tree.getRoot().getChildren()) {
-			t.getChildren().clear();
-		}
 		tree.getRoot().getChildren().clear();
 		meetingSpaceHashMap.clear();
 		floorHashMap.clear();
@@ -114,19 +111,6 @@ public class TreeController implements Initializable {
 	}
 	
 	@FXML
-	public void onRename() {
-		tree.setEditable(true);
-		TreeItem<String> t = tree.getSelectionModel().getSelectedItem();
-		tree.edit(t);
-		if (isFloor(t)) {
-			// Rename the Floor
-		} else {
-			// Rename the MeetingSpace
-		}
-		tree.setEditable(false);
-	}
-	
-	@FXML
 	public void onDelete() {
 		TreeItem<String> t = tree.getSelectionModel().getSelectedItem();
 		if (t != null) {
@@ -136,6 +120,7 @@ public class TreeController implements Initializable {
     			this.model.removeMeetingSpace(meetingSpaceHashMap.get(t));
     		}
     	}
+		update();
 	}
 	
 	private boolean isFloor(TreeItem<String> t) {

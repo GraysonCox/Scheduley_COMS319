@@ -41,6 +41,12 @@ private DataModel model;
 
 	@FXML
 	private DatePicker datePicker;
+	
+	@FXML
+	private Label meetingNameLabel, startTimeLabel, durationLabel;
+	
+	@FXML
+	private Button deleteMeetingButton;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -53,6 +59,10 @@ private DataModel model;
         } else {
         	this.model = model;
         }
+		
+		if (this.model.getCurrentUser().getUserType() != UserType.ADMIN) {
+			deleteMeetingButton.setDisable(true);
+		}
         
         this.model.currentMeetingSpaceProperty().addListener((ob, oldMeetingSpace, newMeetingSpace) -> {
         	meetingSpaceNameLabel.textProperty().unbind();
@@ -60,6 +70,16 @@ private DataModel model;
         	floorLabel.textProperty().unbind();
         	floorLabel.textProperty().bind(newMeetingSpace.getFloor().nameProperty());
         	showMeetingsInCurrentWeek();
+        	
+        	meetingNameLabel.setText("");
+        	startTimeLabel.setText("");
+        	durationLabel.setText("");
+        });
+        
+        this.model.currentMeetingProperty().addListener((ob, oldMeeting, newMeeting) -> {
+        	meetingNameLabel.setText(newMeeting.getName());
+        	startTimeLabel.setText(newMeeting.getStartTime().toString());
+        	durationLabel.setText(newMeeting.getDuration() + "");
         });
         
         sundayLabel.setText(model.getSundayDisplayed().toString());
@@ -92,6 +112,7 @@ private DataModel model;
 		for (Meeting m : arr) {
 			if (m.getStartTime().toLocalDateTime().isAfter(model.getSundayDisplayed().atStartOfDay())) {
 				if (m.getStartTime().toLocalDateTime().isBefore(model.getSundayDisplayed().plusDays(7).atStartOfDay())) {
+					m.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> model.setCurrentMeeting(m));
 					rectangleGroup.getChildren().add(m);
 				}
 			}
@@ -110,5 +131,9 @@ private DataModel model;
 
 	public void onClose() {
 		root.setVisible(false);
+	}
+	
+	public void deleteMeeting() {
+		model.removeMeeting(model.getCurrentMeeting());
 	}
 }

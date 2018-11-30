@@ -16,6 +16,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javafx.scene.image.Image;
+
 public class FloorDAOSpringBoot implements FloorDAO {
 	
 	private static final String BASE_URL = "http://proj-319-080.misc.iastate.edu:8080";
@@ -49,7 +51,9 @@ public class FloorDAOSpringBoot implements FloorDAO {
 				String url = (String) temp.get("imgURL");
 				
 				//Really have to figure this out
-				if(!url.equals("main/floorplan1.jpg")) {
+				try {
+					Image img = new Image(url);
+				} catch (Exception e) {
 					url = "main/MrScheduley.png";
 				}
 				Floor ms = new Floor(name, url); 
@@ -148,6 +152,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		loadFloors();
 		return code;
 	}
 	

@@ -33,7 +33,7 @@ import javafx.util.Duration;
 
 public class ScheduleyApp extends Application {
 	DataModel model;
-	
+
 	StackPane root = new StackPane();
 	VBox subRoot = new VBox();
 
@@ -55,7 +55,7 @@ public class ScheduleyApp extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Scheduley");
 		loginScreen();
-		
+
 		try {
 			VBox.setVgrow(basisRoot, Priority.ALWAYS);
 
@@ -66,7 +66,7 @@ public class ScheduleyApp extends Application {
 			FXMLLoader basisLoader = new FXMLLoader(getClass().getResource("Basis.fxml"));
 			basis = basisLoader.load();
 			basisController = basisLoader.getController();
-			
+
 			FXMLLoader treeLoader = new FXMLLoader(getClass().getResource("Tree.fxml"));
 			tree = treeLoader.load();
 			treeController = treeLoader.getController();
@@ -74,11 +74,11 @@ public class ScheduleyApp extends Application {
 			FXMLLoader scheduleLoader = new FXMLLoader(getClass().getResource("Schedule.fxml"));
 			schedule = scheduleLoader.load();
 			scheduleController = scheduleLoader.getController();
-			
+
 			FXMLLoader newMeetingFormLoader = new FXMLLoader(getClass().getResource("NewMeetingForm.fxml"));
 			newMeetingForm = newMeetingFormLoader.load();
 			newMeetingFormController = newMeetingFormLoader.getController();
-			
+
 			FXMLLoader manageUsersPaneLoader = new FXMLLoader(getClass().getResource("ManageUsersPane.fxml"));
 			manageUsersPane = manageUsersPaneLoader.load();
 			manageUsersPaneController = manageUsersPaneLoader.getController();
@@ -108,7 +108,7 @@ public class ScheduleyApp extends Application {
 			openSchedule.setToY(0);
 			closeSchedule = new TranslateTransition(new Duration(350), schedule);
 			scheduleController.scheduleButton.setOnAction(event -> doScheduleTransition());
-			
+
 			menuBarController.newMeetingSpaceButton.setOnAction(event -> basisController.createMeetingSpace());
 			menuBarController.newFloorButton.setOnAction(event -> this.createFloor());
 			menuBarController.newMeetingButton.setOnAction(event -> newMeetingFormController.show());
@@ -128,9 +128,9 @@ public class ScheduleyApp extends Application {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		primaryStage.setMaximized(true);
-		
+
 	}
 
 	@SuppressWarnings("unused")
@@ -139,21 +139,13 @@ public class ScheduleyApp extends Application {
 	}
 
 	private void createFloor() {
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Choose Image");
-		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
-		String s = null;
-		try {
-			s = fileChooser.showOpenDialog(root.getScene().getWindow()).toURI().toURL().toString();
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-		}
+		TextInputDialog urlDialog = new TextInputDialog("Image URL");
+		urlDialog.showAndWait();
+		String url = urlDialog.getResult();
 		TextInputDialog t = new TextInputDialog("Name of floor");
 		t.showAndWait();
 		String name = t.getResult();
-		if (s != null) {
-			model.addFloor(new Floor(name, s));
-		}
+		model.addFloor(new Floor(name, url));
 	}
 
 	private void doTreeTransition() {
@@ -173,7 +165,7 @@ public class ScheduleyApp extends Application {
 			closeSchedule.play();
 		}
 	}
-	
+
 	public void loginScreen() {
 		Stage temp = new Stage();
 		temp.setTitle("Log in");
@@ -206,15 +198,15 @@ public class ScheduleyApp extends Application {
 			if (event.getCode() == KeyCode.ENTER) {
 				btn.fire();
 			}
-		});		
+		});
 		btn.setOnAction(e -> {
-			DAOFactory userDB = DAOFactory.getDAOFactory(DAOFactory.JDBC); 
+			DAOFactory userDB = DAOFactory.getDAOFactory(DAOFactory.JDBC);
 			UserDAO dataSource = userDB.getUserDAO();
 			loginSuccessful = dataSource.verifyUser(userTextField.getText(), pwBox.getText());
-			if(loginSuccessful){
+			if (loginSuccessful) {
 				model = new DataModel(dataSource.findUser(userTextField.getText()));
 				temp.close();
-			}else {
+			} else {
 				actionTarget.setFill(Color.FIREBRICK);
 				actionTarget.setText("Invalid login");
 			}

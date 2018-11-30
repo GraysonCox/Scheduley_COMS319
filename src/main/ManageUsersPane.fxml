@@ -12,81 +12,100 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" prefHeight="532.0" prefWidth="601.0" style="-fx-background-color: rgba(255,255,255,0.75);" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.ManageUsersPaneController">
-   <children>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="347.0" prefWidth="498.0" spacing="10.0" style="-fx-background-radius: 25px; -fx-background-color: lightgrey;">
-         <children>
-            <AnchorPane>
-               <children>
-                  <Label contentDisplay="CENTER" text="Manage Users" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Button layoutX="454.0" layoutY="1.0" mnemonicParsing="false" onAction="#hide" style="-fx-background-color: transparent;" text="X" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-            </AnchorPane>
-            <Separator prefWidth="200.0" />
-            <Accordion>
-              <panes>
-                <TitledPane animated="false" text="Add User">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <VBox prefHeight="200.0" prefWidth="478.0">
-                                 <children>
-                                    <Label contentDisplay="RIGHT" text="Name:">
-                                       <graphic>
-                                          <TextField fx:id="nameTextField" />
-                                       </graphic>
-                                    </Label>
-                                    <Label contentDisplay="RIGHT" text="Email:">
-                                       <graphic>
-                                          <TextField fx:id="addUserEmailTextField" />
-                                       </graphic>
-                                    </Label>
-                                    <Label contentDisplay="RIGHT" text="Label">
-                                       <graphic>
-                                          <ChoiceBox fx:id="userTypeChoiceBox" prefWidth="150.0" />
-                                       </graphic>
-                                    </Label>
-                                    <Button onAction="#addUser" mnemonicParsing="false" text="Add User" />
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </TitledPane>
-                <TitledPane animated="false" text="Delete User">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <VBox prefHeight="200.0" prefWidth="100.0">
-                                 <children>
-                                    <Label text="Label">
-                                       <graphic>
-                                          <TextField fx:id="deleteUserEmailTextField" promptText="User email" />
-                                       </graphic>
-                                    </Label>
-                                    <Button mnemonicParsing="false" onAction="#deleteUser" text="Delete User" />
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </TitledPane>
-              </panes>
-            </Accordion>
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </VBox>
-   </children>
+<VBox fx:id="root" alignment="CENTER" prefHeight="532.0"
+	prefWidth="601.0" style="-fx-background-color: rgba(255,255,255,0.75);"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="main.ManageUsersPaneController">
+	<children>
+		<VBox maxHeight="-Infinity" maxWidth="-Infinity"
+			minHeight="-Infinity" minWidth="-Infinity" prefHeight="347.0"
+			prefWidth="498.0" spacing="10.0"
+			style="-fx-background-radius: 25px; -fx-background-color: lightgrey;">
+			<children>
+				<AnchorPane>
+					<children>
+						<Label contentDisplay="CENTER" text="Manage Users"
+							AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+							AnchorPane.topAnchor="0.0">
+							<font>
+								<Font size="18.0" />
+							</font>
+						</Label>
+						<Button layoutX="454.0" layoutY="1.0"
+							mnemonicParsing="false" onAction="#hide"
+							style="-fx-background-color: transparent;" text="X"
+							AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+					</children>
+				</AnchorPane>
+				<Separator prefWidth="200.0" />
+				<Accordion>
+					<panes>
+						<TitledPane animated="false" text="Add User">
+							<content>
+								<AnchorPane minHeight="0.0" minWidth="0.0"
+									prefHeight="180.0" prefWidth="200.0">
+									<children>
+										<VBox prefHeight="200.0" prefWidth="478.0">
+											<children>
+												<Label contentDisplay="RIGHT" text="Name:">
+													<graphic>
+														<TextField fx:id="nameTextField" />
+													</graphic>
+												</Label>
+												<Label contentDisplay="RIGHT" text="Email:">
+													<graphic>
+														<TextField fx:id="addUserEmailTextField" />
+													</graphic>
+												</Label>
+												<Label contentDisplay="RIGHT" text="Label">
+													<graphic>
+														<ChoiceBox fx:id="userTypeChoiceBox"
+															prefWidth="150.0" />
+													</graphic>
+												</Label>
+												<Button onAction="#addUser" mnemonicParsing="false"
+													text="Add User" />
+											</children>
+											<padding>
+												<Insets bottom="10.0" left="10.0" right="10.0"
+													top="10.0" />
+											</padding>
+										</VBox>
+									</children>
+								</AnchorPane>
+							</content>
+						</TitledPane>
+						<TitledPane animated="false" text="Delete User">
+							<content>
+								<AnchorPane minHeight="0.0" minWidth="0.0"
+									prefHeight="180.0" prefWidth="200.0">
+									<children>
+										<VBox prefHeight="200.0" prefWidth="100.0">
+											<children>
+												<Label text="Label">
+													<graphic>
+														<TextField fx:id="deleteUserEmailTextField"
+															promptText="User email" />
+													</graphic>
+												</Label>
+												<Button mnemonicParsing="false"
+													onAction="#deleteUser" text="Delete User" />
+											</children>
+											<padding>
+												<Insets bottom="10.0" left="10.0" right="10.0"
+													top="10.0" />
+											</padding>
+										</VBox>
+									</children>
+								</AnchorPane>
+							</content>
+						</TitledPane>
+					</panes>
+				</Accordion>
+			</children>
+			<padding>
+				<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+			</padding>
+		</VBox>
+	</children>
 </VBox>

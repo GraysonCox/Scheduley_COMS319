@@ -24,6 +24,7 @@ public class DataModel {
 	private final ObservableList<MeetingSpace> meetingSpaceList = FXCollections.observableArrayList();
 	private final ObservableList<Floor> floorList = FXCollections.observableArrayList();
 
+	private final ObjectProperty<Meeting> currentMeeting = new SimpleObjectProperty<>(null);
 	private final ObjectProperty<MeetingSpace> currentMeetingSpace = new SimpleObjectProperty<>(null);
 	private final ObjectProperty<Floor> currentFloor = new SimpleObjectProperty<>(null);
 
@@ -95,6 +96,22 @@ public class DataModel {
 
 	public Meeting[] getMeetingsByMeetingSpaceID(int ID) {
 		return meetingDataSource.getMeetingsByMeetingSpaceID(ID);
+	}
+	
+	public ObjectProperty<Meeting> currentMeetingProperty() {
+		return currentMeeting;
+	}
+
+	public final Meeting getCurrentMeeting() {
+		return currentMeeting.get();
+	}
+
+	public final void setCurrentMeeting(Meeting meeting) {
+		currentMeeting.set(meeting);
+	}
+	
+	public void removeMeeting(Meeting meeting) {
+		meetingDataSource.deleteMeeting(meeting.getName());
 	}
 
 	public void addMeetingSpace(MeetingSpace m) {

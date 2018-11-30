@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" prefHeight="532.0" prefWidth="601.0" style="-fx-background-color: rgba(255,255,255,0.75);" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.NewMeetingFormController">
+<VBox fx:id="root" alignment="CENTER" prefHeight="532.0" prefWidth="601.0" style="-fx-background-color: rgba(255,255,255,0.75);" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.NewMeetingFormController">
    <children>
       <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="532.0" prefWidth="498.0" spacing="10.0" style="-fx-background-radius: 25px; -fx-background-color: lightgrey;">
          <children>
