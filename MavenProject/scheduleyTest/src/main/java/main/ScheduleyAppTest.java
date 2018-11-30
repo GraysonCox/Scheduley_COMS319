@@ -58,7 +58,8 @@ public class ScheduleyAppTest extends ApplicationTest {
 	final String date = "12/8/2018";
 	final String timeOfDay = "PM";
 	
-	
+	final String floors = "floor 19";
+	final String rooms = "THUEJOW";
 	
 	final String username = "admin";
 	final String password = "admin";
@@ -252,7 +253,6 @@ public class ScheduleyAppTest extends ApplicationTest {
 	}
 	
 	
-	
 	@Test
 	public void testFailedLoginGUI() {
 		
@@ -370,7 +370,21 @@ public class ScheduleyAppTest extends ApplicationTest {
 		
 		write(date);
 		
+	}
+	
+	
+	@Test
+	public void testingTreeGUI()
+	{
+		testLoginGUI();
 		
+		moveTo("#treeButton");
+		clickOn("#treeButton");
+		
+		moveTo(floors);
+		clickOn(floors);
+		moveTo(rooms);
+		clickOn(rooms);
 	}
 	
 	
