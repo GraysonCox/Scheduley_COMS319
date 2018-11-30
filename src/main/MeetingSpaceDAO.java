@@ -1,11 +1,10 @@
 package main;
 
-import org.json.simple.JSONArray;
-
 public interface MeetingSpaceDAO {
 	
 	public MeetingSpace[] getAllMeetingSpace();
 	public MeetingSpace[] getMeetingSpaceByFloor(int floorID);
 	public int addMeetingSpace(MeetingSpace meetingSpace);
-	public int deleteMeetingSpace(int x, int y, int floor);
+	public int deleteMeetingSpace(MeetingSpace toDelete);
+	public boolean isMeetingSpaceInDB(String name);
 }

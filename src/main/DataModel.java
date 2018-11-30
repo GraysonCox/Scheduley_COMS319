@@ -6,20 +6,17 @@ import java.time.LocalDate;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableMapValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
-import javafx.scene.image.Image;
-import main.Floor;
-import main.MeetingSpace;
 
 public class DataModel {
 	private UserProfile currentUser;
 	
-	private final FloorDAOSpringBoot floorDataSource = new FloorDAOSpringBoot();
-	private final MeetingSpaceDAOSpringBoot meetingSpaceDataSource = new MeetingSpaceDAOSpringBoot();
-	private final MeetingsDAOSpringBoot meetingDataSource = new MeetingsDAOSpringBoot();
+	private final DAOFactory springBootDBFactory = DAOFactory.getDAOFactory(DAOFactory.SPRING_BOOT);
+	
+	private final FloorDAO floorDataSource = springBootDBFactory.getFloorDAO();
+	private final MeetingSpaceDAO meetingSpaceDataSource = springBootDBFactory.getMeetingSpaceDAO();
+	private final MeetingsDAO meetingDataSource = springBootDBFactory.getMeetingsDAO();
 	
 	private final ObservableList<MeetingSpace> meetingSpaceList = FXCollections.observableArrayList();
 	private final ObservableList<Floor> floorList = FXCollections.observableArrayList();
@@ -38,10 +35,11 @@ public class DataModel {
 	}
 	
 	public void loadData() {
+		for (Floor f : floorList) {
+			f.clearMeetingSpaces();
+		}
 		floorList.clear();
 		meetingSpaceList.clear();
-		floorDataSource.loadFloors();
-		meetingSpaceDataSource.loadMeetingSpaces();
 		floorList.addAll(floorDataSource.getAllFloors()); // Retrieve all Floors
 		Floor tempFloor;
 		for (MeetingSpace m : meetingSpaceDataSource.getAllMeetingSpace()) { // For every MeetingSpace, use its floorID to add a pointer to its Floor object

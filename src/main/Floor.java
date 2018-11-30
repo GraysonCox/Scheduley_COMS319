@@ -44,6 +44,10 @@ public class Floor extends Pane {
 		meetingSpaces.remove(m);
 	}
 	
+	public void clearMeetingSpaces() {
+		meetingSpaces.clear();
+	}
+	
 	public MeetingSpace[] getMeetingSpaces() {
 		return meetingSpaces.toArray(new MeetingSpace[0]);
 	}

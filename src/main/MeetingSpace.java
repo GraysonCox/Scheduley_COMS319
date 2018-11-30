@@ -6,9 +6,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Tooltip;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 public class MeetingSpace extends AbstractRectangleIcon {
 	private StringProperty name;
@@ -24,7 +21,6 @@ public class MeetingSpace extends AbstractRectangleIcon {
 		this.name = new SimpleStringProperty(name);
 		this.floor_id = floor_id;
 		this.floor = null;
-		Tooltip.install(this, new Tooltip(name));
 	}
 	
 	public void addMeeting(Meeting m) {
