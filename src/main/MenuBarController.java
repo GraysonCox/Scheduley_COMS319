@@ -16,6 +16,9 @@ public class MenuBarController implements Initializable {
 
 	@FXML
 	private Menu adminTools;
+	
+	@FXML
+	public MenuItem manageUsersButton;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

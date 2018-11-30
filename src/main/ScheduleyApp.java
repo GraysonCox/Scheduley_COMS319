@@ -37,13 +37,14 @@ public class ScheduleyApp extends Application {
 	VBox subRoot = new VBox();
 
 	AnchorPane basisRoot = new AnchorPane();
-	Pane menuBar, basis, tree, schedule, newMeetingForm;
+	Pane menuBar, basis, tree, schedule, newMeetingForm, manageUsersPane;
 
 	MenuBarController menuBarController;
 	BasisController basisController;
 	TreeController treeController;
 	ScheduleController scheduleController;
 	NewMeetingFormController newMeetingFormController;
+	ManageUsersPaneController manageUsersPaneController;
 
 	TranslateTransition openTree, closeTree, openSchedule, closeSchedule;
 
@@ -109,6 +110,10 @@ public class ScheduleyApp extends Application {
 					FXMLLoader newMeetingFormLoader = new FXMLLoader(getClass().getResource("NewMeetingForm.fxml"));
 					newMeetingForm = newMeetingFormLoader.load();
 					newMeetingFormController = newMeetingFormLoader.getController();
+					
+					FXMLLoader manageUsersPaneLoader = new FXMLLoader(getClass().getResource("ManageUsersPane.fxml"));
+					manageUsersPane = manageUsersPaneLoader.load();
+					manageUsersPaneController = manageUsersPaneLoader.getController();
 
 					AnchorPane.setTopAnchor(basis, 0.0);
 					AnchorPane.setBottomAnchor(basis, 0.0);
@@ -124,7 +129,7 @@ public class ScheduleyApp extends Application {
 
 					basisRoot.getChildren().addAll(basis, tree, schedule);
 					subRoot.getChildren().addAll(menuBar, basisRoot);
-					root.getChildren().addAll(subRoot, newMeetingForm);
+					root.getChildren().addAll(subRoot, newMeetingForm, manageUsersPane);
 
 					openTree = new TranslateTransition(new Duration(350), basisRoot);
 					openTree.setToX(0);
@@ -139,6 +144,7 @@ public class ScheduleyApp extends Application {
 					menuBarController.newMeetingSpaceButton.setOnAction(event -> basisController.createMeetingSpace());
 					menuBarController.newFloorButton.setOnAction(event -> this.createFloor());
 					menuBarController.newMeetingButton.setOnAction(event -> newMeetingFormController.show());
+					menuBarController.manageUsersButton.setOnAction(event -> manageUsersPaneController.show());
 
 					model = new DataModel(dataSource.findUser(userTextField.getText()));
 					menuBarController.initModel(model);
@@ -146,6 +152,7 @@ public class ScheduleyApp extends Application {
 					basisController.initModel(model);
 					scheduleController.initModel(model);
 					newMeetingFormController.initModel(model);
+					manageUsersPaneController.initModel(model);
 					
 
 					primaryStage.setTitle("Scheduley");
