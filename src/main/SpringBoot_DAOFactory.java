@@ -28,23 +28,15 @@ public class SpringBoot_DAOFactory extends DAOFactory{
 	public SpringBoot_DAOFactory() {
 		
 	}
-	
-	//This could return a JSONArray, and the methods in the specific DAO turns that into the object it wants.
-	//	-This idea sounds pretty good. I'll just have to see how well i can 
-	public JSONArray getJSONArrayFromDB(String table) {
+
+	public JSONArray getJSONArrayFromDB(String urlExtension) {
 		JSONArray result = new JSONArray();
 		try {
-			//Create or Use ClientDelegate **TRY to understand this better
 			httpClient = HttpClientBuilder.create().build();
-			//Get request BASE + specific ending (take as arg)
-			HttpGet getRequest = new HttpGet(BASE_URL + table);
-			//set Header
+			HttpGet getRequest = new HttpGet(BASE_URL + urlExtension);
 			getRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
-			//execute request
 			CloseableHttpResponse httpResponse = httpClient.execute(getRequest);
-			//input stream that holds response
 			InputStream responseContent = httpResponse.getEntity().getContent();
-			//parse received data
 			JSONParser jsonParser = new JSONParser();
 			//turn into JSONArr
 			result = (JSONArray)jsonParser.parse(new InputStreamReader(responseContent, "UTF-8"));
@@ -57,27 +49,24 @@ public class SpringBoot_DAOFactory extends DAOFactory{
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		//return JSONArr for specifc DAO to decipher
 		return result;
 	}
 	
 	public int insertIntoDB(String urlExtension, String inputToDB) {
 		int returnCode = -1; //failure
 		try {
-			httpClient = HttpClientBuilder.create().build(); //same
-			HttpPut putRequest = new HttpPut(BASE_URL + urlExtension); //same base + extension
+			httpClient = HttpClientBuilder.create().build();
+			HttpPut putRequest = new HttpPut(BASE_URL + urlExtension); 
 
 			putRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 			putRequest.setEntity(new StringEntity(inputToDB));
 			
-			//execute request
 			CloseableHttpResponse httpResponse = httpClient.execute(putRequest);
 			
-			//decipher status code returned
 			String res = EntityUtils.toString(httpResponse.getEntity());
 			JSONParser parser = new JSONParser(); 
 			JSONObject obj = (JSONObject) parser.parse(res);
-			returnCode = Integer.valueOf(obj.get("status").toString());//translate
+			returnCode = Integer.valueOf(obj.get("status").toString());
 			httpResponse.close();
 			httpClient.close();
 		} catch(IOException e) {
@@ -89,10 +78,10 @@ public class SpringBoot_DAOFactory extends DAOFactory{
 	}
 	
 	public int deleteFromDB(String urlExtension, String removeFromDB) {
-		int returnCode = -1;//return code (Status) //some have this as 500? research
+		int returnCode = -1;
 		try {
-			httpClient = HttpClientBuilder.create().build();//same client
-			HttpPost postRequest = new HttpPost(BASE_URL + urlExtension);//Post base + extension
+			httpClient = HttpClientBuilder.create().build();
+			HttpPost postRequest = new HttpPost(BASE_URL + urlExtension);
 			
 			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
 			postRequest.setEntity(new StringEntity(removeFromDB));
@@ -112,12 +101,6 @@ public class SpringBoot_DAOFactory extends DAOFactory{
 		} 
 		return returnCode;
 	}
-	
-	public JSONArray getObjectByNameFromDB() {
-		//TODO?
-		return null;
-	}
-	
 	
 	/**
 	 * I guess I could probably hack the two Factories together
@@ -141,5 +124,4 @@ public class SpringBoot_DAOFactory extends DAOFactory{
 	public FloorDAO getFloorDAO() {
 		return new FloorDAOSpringBoot();
 	}
-
 }

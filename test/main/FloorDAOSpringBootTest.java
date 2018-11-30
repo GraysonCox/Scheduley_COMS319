@@ -16,6 +16,8 @@ class FloorDAOSpringBootTest {
 	@Test
 	void getAllFloors_Name() {
 		Floor[] expected = new Floor[3];
+		
+		
 		expected[0] = new Floor("floor 13", "main/MrScheduley.png");
 		expected[1] = new Floor("floor 29", "main/MrScheduley.png");
 		expected[2] = new Floor("floor 69", "main/MrScheduley.png");

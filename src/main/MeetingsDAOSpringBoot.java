@@ -1,45 +1,24 @@
 package main;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
- * I interact with the DB through the JSONArray methods, because it is so much easier with them, and then
- * the Meeting[] methods use them to get a JSONArray and convert them to a Meeting[]. 
- * 
- * The user will use the Meeting[] methods, they currently do not have access to the JSONArray methods.
  * @author watis
  *
  */
 public class MeetingsDAOSpringBoot implements MeetingsDAO {
-	private JSONArray meetings;
+	private JSONArray meetingsJSON; //Floor and MSDAO both have their object array...?
+	private Meeting[] meetings;
 	
 	private static final String MEETING_NAME = "meetingName";
 	private static final String DATE_TIME = "dateTime";
 	private static final String DURATION = "duration";
 	private static final String MEETING_SPACE_ID = "location";
-	
-	private static final String BASE_URL = "http://proj-319-080.misc.iastate.edu:8080";
-	private static final String MEDIA_TYPE = "application/json";
 	
 	//NEW
 	private static final String MEETINGS_TABLE_ALL = "/meetings/search/all";
@@ -61,13 +40,16 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		JSONArray jsonArrFromDB = dao.getJSONArrayFromDB(MEETINGS_TABLE_ALL);
 		//deciphering JSONArray
 		JSONArray result = new JSONArray();
+		Meeting[] result2 = new Meeting[jsonArrFromDB.size()];//adding
 		for(int i = 0; i < jsonArrFromDB.size(); i ++) {
 			JSONObject obj = (JSONObject) jsonArrFromDB.get(i);
 			Timestamp ts = parseTime((String) obj.get(DATE_TIME));
 			Meeting temp = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
+			result2[i] = temp;
 			result.add(temp);
 		}
-		meetings = result;
+		meetings = result2;
+		meetingsJSON = result;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -111,17 +93,13 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		return returnCode;
 	}
 
-	private JSONArray getAllMeetings_JSONArray() {
-		return meetings;
-	}
 
 	@SuppressWarnings("unchecked")
 	private JSONArray getMeetingsByMeetingsSpaceID_JSONArray(int meetingSpaceID) {
-		JSONArray allMeetings = getAllMeetings_JSONArray();
 		JSONArray result = new JSONArray();
-		for(int i = 0; i < allMeetings.size(); i++) {
-			if(((Meeting) allMeetings.get(i)).getMeetingSpaceID() == meetingSpaceID) {
-				result.add(allMeetings.get(i));
+		for(int i = 0; i < meetingsJSON.size(); i++) {
+			if(((Meeting) meetingsJSON.get(i)).getMeetingSpaceID() == meetingSpaceID) {
+				result.add(meetingsJSON.get(i));
 			}
 		}
 		return result;
@@ -143,36 +121,13 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 		return result;
 	}
 
-	//TODO?
-	@SuppressWarnings("unchecked")
-	@Override
 	public Meeting getMeetingByName(String name) {
-		Meeting result = null;
-		try {
-			CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost postRequest = new HttpPost(BASE_URL + "/meetings/search/name");
-			JSONObject json = new JSONObject();
-			json.put(MEETING_NAME, name);
-		    String jsonString = json.toString();
-			postRequest.setHeader(HttpHeaders.CONTENT_TYPE, MEDIA_TYPE);
-			postRequest.setEntity(new StringEntity(jsonString));
-			
-			CloseableHttpResponse httpResponse = httpClient.execute(postRequest);
-			String res = EntityUtils.toString(httpResponse.getEntity());
-			JSONParser parser = new JSONParser();
-			JSONObject obj = (JSONObject) parser.parse(res);
-			Timestamp ts = parseTime((String) obj.get(DATE_TIME));
-			result = new Meeting((String)obj.get(MEETING_NAME), ts, Integer.valueOf(obj.get(DURATION).toString()), Integer.valueOf(obj.get(MEETING_SPACE_ID).toString()));
-			httpResponse.close();
-			httpClient.close();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} 	
-		return result;
+		for(Meeting m : meetings) {
+			if(m.getName() == name || name.equals(m.getName())) {
+				return m;
+			}
+		}
+		return null;
 	}
 	
 	private Timestamp parseTime(String time) {
@@ -184,9 +139,7 @@ public class MeetingsDAOSpringBoot implements MeetingsDAO {
 
 	@Override
 	public Meeting[] getAllMeetings() {
-		JSONArray tempArr = getAllMeetings_JSONArray();
-		Meeting[] result = JSONArrayToMeetingArray(tempArr);
-		return result;
+		return meetings;
 	}
 
 	@Override

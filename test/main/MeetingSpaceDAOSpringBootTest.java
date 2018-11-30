@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 public class MeetingSpaceDAOSpringBootTest {
 	
-	public static MeetingSpaceDAOSpringBoot meetingSpaceDAOSB;
+	public static DAOFactory springBootDBFactory;
+	public static MeetingSpaceDAO meetingSpaceDAO;
 	
 	public static MeetingSpace creativeSpace;
 	public static MeetingSpace lab;
@@ -16,7 +17,8 @@ public class MeetingSpaceDAOSpringBootTest {
 
 	@BeforeAll
 	public static void setUp() {
-		meetingSpaceDAOSB = new MeetingSpaceDAOSpringBoot();
+		springBootDBFactory = DAOFactory.getDAOFactory(DAOFactory.SPRING_BOOT);
+		meetingSpaceDAO = springBootDBFactory.getMeetingSpaceDAO();
 		
 		creativeSpace = new MeetingSpace("Meetings/Creative Space", 88, 40, 213, 113, 671);
 		creativeSpace.setUniqueID(5);
@@ -49,7 +51,7 @@ public class MeetingSpaceDAOSpringBootTest {
 		expected[3] = breakArea;
 		expected[4] = retreat;
 		
-		MeetingSpace[] actual = meetingSpaceDAOSB.getAllMeetingSpace();
+		MeetingSpace[] actual = meetingSpaceDAO.getAllMeetingSpace();
 		
 		for(int i = 0; i < expected.length; i++) {
 			Assert.assertTrue(expected[i].equals(actual[i]));
@@ -64,7 +66,7 @@ public class MeetingSpaceDAOSpringBootTest {
 		expected[2] = breakArea;
 		expected[3] = retreat;
 		
-		MeetingSpace[] actual = meetingSpaceDAOSB.getMeetingSpaceByFloor(1);
+		MeetingSpace[] actual = meetingSpaceDAO.getMeetingSpaceByFloor(1);
 		
 		for(int i = 0; i < expected.length; i++) {
 			Assert.assertTrue(expected[i].equals(actual[i]));
@@ -73,29 +75,29 @@ public class MeetingSpaceDAOSpringBootTest {
 	
 	@Test
 	public void isMeetingSpaceInDB_Success() {
-		Assert.assertTrue(meetingSpaceDAOSB.isMeetingSpaceInDB(creativeSpace.getName()));
+		Assert.assertTrue(meetingSpaceDAO.isMeetingSpaceInDB(creativeSpace.getName()));
 	}
 	
 	@Test
 	public void addMeetingSpace_Success() {
 		MeetingSpace toAdd = new MeetingSpace("Dean Office", 30, 50, 100, 40, 1);
-		int actualResult = meetingSpaceDAOSB.addMeetingSpace(toAdd);
+		int actualResult = meetingSpaceDAO.addMeetingSpace(toAdd);
 		int expectedResult = 200; //This method returns 200 upon success
-		Assert.assertTrue(meetingSpaceDAOSB.isMeetingSpaceInDB(toAdd.getName())); //this method won't work if a new person is added
+		Assert.assertTrue(meetingSpaceDAO.isMeetingSpaceInDB(toAdd.getName())); //this method won't work if a new person is added
 		Assert.assertEquals(expectedResult, actualResult);
 		//clean up
-		meetingSpaceDAOSB.deleteMeetingSpace(toAdd);
+		meetingSpaceDAO.deleteMeetingSpace(toAdd);
 	}
 	
 	@Test
 	public void deleteMeetingSpace_Success() {
 		//add something to delete
 		MeetingSpace toAdd = new MeetingSpace("Dean Office", 30, 50, 100, 40, 1);
-		meetingSpaceDAOSB.addMeetingSpace(toAdd);
+		meetingSpaceDAO.addMeetingSpace(toAdd);
 		
-		int actualResult = meetingSpaceDAOSB.deleteMeetingSpace(30, 50, 1);
+		int actualResult = meetingSpaceDAO.deleteMeetingSpace(toAdd);
 		int expectedResult = 200; 
 		Assert.assertEquals(expectedResult, actualResult);
-		Assert.assertFalse(meetingSpaceDAOSB.isMeetingSpaceInDB(toAdd.getName()));
+		Assert.assertFalse(meetingSpaceDAO.isMeetingSpaceInDB(toAdd.getName()));
 	}
 }
