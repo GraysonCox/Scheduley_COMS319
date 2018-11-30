@@ -248,7 +248,6 @@ public class ScheduleyAppTest extends ApplicationTest {
 		moveTo("Sign in");
 		clickOn("Sign in");
 		//WaitForAsyncUtils.waitForFxEvents();
-		sleep(1000); //for slight delay when called in other methods
 			
 	}
 	
@@ -290,8 +289,6 @@ public class ScheduleyAppTest extends ApplicationTest {
 	public void testingMeetings() {
 		testLoginGUI();
 		
-		//verifyThat(TREE_CONTEXT, NodeMatchers.isNotNull());
-		//sleep(1000);
 		
 		moveTo("Meetings");
 		clickOn("Meetings");
@@ -302,7 +299,6 @@ public class ScheduleyAppTest extends ApplicationTest {
 		WaitForAsyncUtils.waitForFxEvents();
 		
 		moveTo(meetingForm);
-		sleep(1000);
 		
 		moveTo("#datePicker"); //meeting date
 		sleep(1000);
@@ -312,13 +308,11 @@ public class ScheduleyAppTest extends ApplicationTest {
 		
 		moveTo("#hourSpinner"); //hour
 		clickOn("#hourSpinner");
-		sleep(1000);
 		
 		moveTo("#minuteSpinner"); //minute
 		clickOn("#minuteSpinner");
 		clickOn("#minuteSpinner");
 		clickOn("#minuteSpinner"); //x3
-		sleep(1000);
 		
 		moveTo("#ampmChoiceBox"); //am or pm
 		clickOn("#ampmChoiceBox");
@@ -339,7 +333,6 @@ public class ScheduleyAppTest extends ApplicationTest {
 		moveTo("Thien's Happy Space");
 		clickOn("Thien's Happy Space");
 		
-		
 		moveTo("#meetingNameTextField"); //meeting name
 		clickOn("#meetingNameTextField");
 		write("StandUp");
@@ -351,16 +344,32 @@ public class ScheduleyAppTest extends ApplicationTest {
 		moveTo("#submitButton");
 		clickOn("#submitButton");
 		
+		//moveTo("X");
+		//clickOn("X");
 		
-		//verifyThat("#newMeetingButton", hasText("Plan a meeting"));
-		//sleep(1000);
-
+	}
+	
+	final String meeting = "Meeting Space Name";
+	final String floor = "Floor Name";
+	
+	@Test
+	public void testingScheduleGUI()
+	{
+		testLoginGUI();
 		
+		moveTo("#scheduleButton");
+		clickOn("#scheduleButton");
 		
-		/*
-		ListView floorView = find(TREE_VIEW);
-		WaitForAsyncUtils.waitForFxEvents();
-		assertEquals(3, floorView.getItems().size());     */
+		verifyThat("#meetingSpaceNameLabel", hasText(meeting));
+		verifyThat("#floorLabel", hasText(floor));
+		
+		moveTo("#schedulePane");
+		
+		moveTo("#datePicker");
+		clickOn("#datePicker");
+		
+		write(date);
+		
 		
 	}
 	
