@@ -47,11 +47,11 @@ public class EmailSender {
 	public void send(String email) {
 
 		try {
-			Message message = new MimeMessage(session);
+			MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("from@no-spam.com"));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
 			message.setSubject(subject);
-			message.setText(body);
+			message.setText(body, "utf-8", "html");
 
 			Transport.send(message);
 			System.out.println("sent to " + email);
@@ -69,17 +69,15 @@ public class EmailSender {
 
 		for (int i = 0; i < emails.length; i++) {
 			try {
-				if (emails[i] != "admin") {
-					Message message = new MimeMessage(session);
-					message.setFrom(new InternetAddress("from@no-spam.com"));
-					message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emails[i]));
-					message.setSubject(subject);
-					message.setText(body);
-					Transport.send(message);
-					System.out.println("sent to " + emails[i]);
-				}
-
+				MimeMessage message = new MimeMessage(session);
+				message.setFrom(new InternetAddress("from@no-spam.com"));
+				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emails[i]));
+				message.setSubject(subject);
+				message.setText(body, "utf-8", "html");
 				
+
+				Transport.send(message);
+				System.out.println("sent to "+emails[i]);
 			} catch (MessagingException e) {
 				throw new RuntimeException(e);
 			}
