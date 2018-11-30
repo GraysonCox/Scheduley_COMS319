@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -87,8 +88,11 @@ public class BasisController implements Initializable {
 			pane.setOnMouseDragged(null);
 			pane.setOnMouseReleased(null);
 			System.out.println(tempRect.getX() + ", " + tempRect.getY() + ", " + tempRect.getWidth() + ", " + tempRect.getHeight());
+			TextInputDialog t = new TextInputDialog("Name of meeting space");
+			t.showAndWait();
+			String name = t.getResult();
 			MeetingSpace newMeetingSpace = new MeetingSpace(
-					"New meeting space",
+					name,
 					tempRect.getX(),
 					tempRect.getY(),
 					tempRect.getWidth(),

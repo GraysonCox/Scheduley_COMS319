@@ -42,7 +42,6 @@ public class FloorDAOSpringBoot implements FloorDAO {
 			JSONParser parser = new JSONParser();
 			JSONArray result = (JSONArray) parser.parse(res);
 			arr = new Floor[result.size()];
-			System.out.println("Given array size: " + result.size());
 			for (int i = 0; i < result.size(); i++) {
 				JSONObject temp = (JSONObject) result.get(i);
 				long id = (long) temp.get("floorID");
@@ -51,11 +50,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 				
 				//Really have to figure this out
 				if(!url.equals("main/floorplan1.jpg")) {
-					System.out.println("Current floor " + name + ", url: " +url);
 					url = "main/MrScheduley.png";
-				}
-				else {
-					System.out.println("DEBUG HERE");//I have no excuse for this
 				}
 				Floor ms = new Floor(name, url); 
 				ms.setFloorID((int) id);
@@ -73,6 +68,9 @@ public class FloorDAOSpringBoot implements FloorDAO {
 	
 	@Override
 	public Floor[] getAllFloors() {
+		for(Floor f : floors) {
+			f.initImage();
+		}
 		return floors;
 	}
 
@@ -151,5 +149,9 @@ public class FloorDAOSpringBoot implements FloorDAO {
 			e.printStackTrace();
 		}
 		return code;
+	}
+	
+	public boolean isFloorInDB(String name) {
+		return (getFloorByName(name) != null) ? true : false;
 	}
 }

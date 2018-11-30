@@ -22,26 +22,6 @@ public class MeetingsDAOSpringBootTest {
 		ts = new Timestamp(System.currentTimeMillis());
 	}
 	
-	/**
-	 * meetings are held alphabetically for some reason. WIll need to find a better way to test this
-	 */
-	@Test
-	public void getAllMeetingsTest_Success() {
-		Meeting[] actual = meetingsDAO.getAllMeetings();
-		Meeting[] expected = new Meeting[2];
-		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting");
-		Meeting two = new Meeting("g7 meeting");
-		expected[0] = one;
-		expected[1] = two;
-		int j = 0;
-		for(int i = 0; i < actual.length; i++) {
-			System.out.println(i);
-			if(actual[i].getMeetingSpaceID() < 24) {
-				Assert.assertTrue(expected[j++].equals(actual[i]));
-			}
-		}
-	}
-	
 	@Test 
 	public void getMeetingByNameTest_Success() {
 		Meeting actual = meetingsDAO.getMeetingByName("g7 meeting");
@@ -103,6 +83,13 @@ public class MeetingsDAOSpringBootTest {
 		Timestamp input = Timestamp.valueOf(dateTime);
 		Meeting one = new Meeting("Flat Earth Society #29's Secret Meeting", input, 60, 23);
 		Assert.assertTrue(one.equals((Meeting) actual[0]));
+	}
+	
+	@Test
+	public void getAllMeetingsTest_Success() {
+		Meeting[] actual = meetingsDAO.getAllMeetings();
+		Assert.assertTrue(actual.length == 11);
+		
 	}
 	
 }

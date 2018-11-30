@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -37,28 +38,152 @@ public class ScheduleyApp extends Application {
 	VBox subRoot = new VBox();
 
 	AnchorPane basisRoot = new AnchorPane();
-	Pane menuBar, basis, tree, schedule, newMeetingForm;
+	Pane menuBar, basis, tree, schedule, newMeetingForm, manageUsersPane;
 
 	MenuBarController menuBarController;
 	BasisController basisController;
 	TreeController treeController;
 	ScheduleController scheduleController;
 	NewMeetingFormController newMeetingFormController;
+	ManageUsersPaneController manageUsersPaneController;
 
 	TranslateTransition openTree, closeTree, openSchedule, closeSchedule;
 
-	private boolean loginSuccessful;
+	private static boolean loginSuccessful;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Scheduley");
+		loginScreen();
+		
+		try {
+			VBox.setVgrow(basisRoot, Priority.ALWAYS);
+
+			FXMLLoader menuBarLoader = new FXMLLoader(getClass().getResource("MenuBar.fxml"));
+			menuBar = menuBarLoader.load();
+			menuBarController = menuBarLoader.getController();
+
+			FXMLLoader basisLoader = new FXMLLoader(getClass().getResource("Basis.fxml"));
+			basis = basisLoader.load();
+			basisController = basisLoader.getController();
+			
+			FXMLLoader treeLoader = new FXMLLoader(getClass().getResource("Tree.fxml"));
+			tree = treeLoader.load();
+			treeController = treeLoader.getController();
+
+			FXMLLoader scheduleLoader = new FXMLLoader(getClass().getResource("Schedule.fxml"));
+			schedule = scheduleLoader.load();
+			scheduleController = scheduleLoader.getController();
+			
+			FXMLLoader newMeetingFormLoader = new FXMLLoader(getClass().getResource("NewMeetingForm.fxml"));
+			newMeetingForm = newMeetingFormLoader.load();
+			newMeetingFormController = newMeetingFormLoader.getController();
+			
+			FXMLLoader manageUsersPaneLoader = new FXMLLoader(getClass().getResource("ManageUsersPane.fxml"));
+			manageUsersPane = manageUsersPaneLoader.load();
+			manageUsersPaneController = manageUsersPaneLoader.getController();
+
+			AnchorPane.setTopAnchor(basis, 0.0);
+			AnchorPane.setBottomAnchor(basis, 0.0);
+			AnchorPane.setLeftAnchor(basis, 30.0);
+			AnchorPane.setTopAnchor(tree, 0.0);
+			AnchorPane.setLeftAnchor(tree, -170.0);
+			AnchorPane.setBottomAnchor(tree, 0.0);
+			AnchorPane.setLeftAnchor(schedule, 30.0);
+			AnchorPane.setRightAnchor(schedule, 0.0);
+			AnchorPane.setBottomAnchor(schedule, -440.0);
+			AnchorPane.setTopAnchor(newMeetingForm, 0.0);
+			AnchorPane.setLeftAnchor(newMeetingForm, 30.0);
+
+			basisRoot.getChildren().addAll(basis, tree, schedule);
+			subRoot.getChildren().addAll(menuBar, basisRoot);
+			root.getChildren().addAll(subRoot, newMeetingForm, manageUsersPane);
+
+			openTree = new TranslateTransition(new Duration(350), basisRoot);
+			openTree.setToX(0);
+			closeTree = new TranslateTransition(new Duration(350), basisRoot);
+			treeController.treeButton.setOnAction(event -> doTreeTransition());
+
+			openSchedule = new TranslateTransition(new Duration(350), schedule);
+			openSchedule.setToY(0);
+			closeSchedule = new TranslateTransition(new Duration(350), schedule);
+			scheduleController.scheduleButton.setOnAction(event -> doScheduleTransition());
+			
+			menuBarController.newMeetingSpaceButton.setOnAction(event -> basisController.createMeetingSpace());
+			menuBarController.newFloorButton.setOnAction(event -> this.createFloor());
+			menuBarController.newMeetingButton.setOnAction(event -> newMeetingFormController.show());
+			menuBarController.manageUsersButton.setOnAction(event -> manageUsersPaneController.show());
+
+			menuBarController.initModel(model);
+			treeController.initModel(model);
+			basisController.initModel(model);
+			scheduleController.initModel(model);
+			newMeetingFormController.initModel(model);
+			manageUsersPaneController.initModel(model);
+
+			primaryStage.setTitle("Scheduley");
+			primaryStage.setScene(new Scene(root));
+			primaryStage.setMaximized(true);
+			primaryStage.show();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		primaryStage.setMaximized(true);
+		
+	}
+
+	@SuppressWarnings("unused")
+	private void initAdminTools() {
+
+	}
+
+	private void createFloor() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Choose Image");
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+		String s = null;
+		try {
+			s = fileChooser.showOpenDialog(root.getScene().getWindow()).toURI().toURL().toString();
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
+		TextInputDialog t = new TextInputDialog("Name of floor");
+		t.showAndWait();
+		String name = t.getResult();
+		if (s != null) {
+			model.addFloor(new Floor(name, s));
+		}
+	}
+
+	private void doTreeTransition() {
+		if (basisRoot.getTranslateX() != 0) {
+			openTree.play();
+		} else {
+			closeTree.setToX(170);
+			closeTree.play();
+		}
+	}
+
+	private void doScheduleTransition() {
+		if (schedule.getTranslateY() != 0) {
+			openSchedule.play();
+		} else {
+			closeSchedule.setToY(-400);
+			closeSchedule.play();
+		}
+	}
+	
+	public void loginScreen() {
+		Stage temp = new Stage();
+		temp.setTitle("Log in");
 		GridPane grid = new GridPane();
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
 		Scene scene = new Scene(grid, 300, 275);
-		primaryStage.setScene(scene);
+		temp.setScene(scene);
 		Text scenetitle = new Text("Welcome");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		grid.add(scenetitle, 0, 0, 2, 1);
@@ -81,128 +206,23 @@ public class ScheduleyApp extends Application {
 			if (event.getCode() == KeyCode.ENTER) {
 				btn.fire();
 			}
-		});
+		});		
 		btn.setOnAction(e -> {
-			DAOFactory userDB = DAOFactory.getDAOFactory(DAOFactory.JDBC); //NEW Implementing the DAO properly
-			UserDAO dataSource = userDB.getUserDAO(); //NEW 
-			loginSuccessful = dataSource.verifyUser(userTextField.getText(), pwBox.getText()); //ORIGINAL
-			if (loginSuccessful) {
-				try {
-					VBox.setVgrow(basisRoot, Priority.ALWAYS);
-
-					FXMLLoader menuBarLoader = new FXMLLoader(getClass().getResource("MenuBar.fxml"));
-					menuBar = menuBarLoader.load();
-					menuBarController = menuBarLoader.getController();
-
-					FXMLLoader basisLoader = new FXMLLoader(getClass().getResource("Basis.fxml"));
-					basis = basisLoader.load();
-					basisController = basisLoader.getController();
-
-					FXMLLoader treeLoader = new FXMLLoader(getClass().getResource("Tree.fxml"));
-					tree = treeLoader.load();
-					treeController = treeLoader.getController();
-
-					FXMLLoader scheduleLoader = new FXMLLoader(getClass().getResource("Schedule.fxml"));
-					schedule = scheduleLoader.load();
-					scheduleController = scheduleLoader.getController();
-					
-					FXMLLoader newMeetingFormLoader = new FXMLLoader(getClass().getResource("NewMeetingForm.fxml"));
-					newMeetingForm = newMeetingFormLoader.load();
-					newMeetingFormController = newMeetingFormLoader.getController();
-
-					AnchorPane.setTopAnchor(basis, 0.0);
-					AnchorPane.setBottomAnchor(basis, 0.0);
-					AnchorPane.setLeftAnchor(basis, 30.0);
-					AnchorPane.setTopAnchor(tree, 0.0);
-					AnchorPane.setLeftAnchor(tree, -170.0);
-					AnchorPane.setBottomAnchor(tree, 0.0);
-					AnchorPane.setLeftAnchor(schedule, 30.0);
-					AnchorPane.setRightAnchor(schedule, 0.0);
-					AnchorPane.setBottomAnchor(schedule, -440.0);
-					AnchorPane.setTopAnchor(newMeetingForm, 0.0);
-					AnchorPane.setLeftAnchor(newMeetingForm, 30.0);
-
-					basisRoot.getChildren().addAll(basis, tree, schedule);
-					subRoot.getChildren().addAll(menuBar, basisRoot);
-					root.getChildren().addAll(subRoot, newMeetingForm);
-
-					openTree = new TranslateTransition(new Duration(350), basisRoot);
-					openTree.setToX(0);
-					closeTree = new TranslateTransition(new Duration(350), basisRoot);
-					treeController.treeButton.setOnAction(event -> doTreeTransition());
-
-					openSchedule = new TranslateTransition(new Duration(350), schedule);
-					openSchedule.setToY(0);
-					closeSchedule = new TranslateTransition(new Duration(350), schedule);
-					scheduleController.scheduleButton.setOnAction(event -> doScheduleTransition());
-					
-					menuBarController.newMeetingSpaceButton.setOnAction(event -> basisController.createMeetingSpace());
-					menuBarController.newFloorButton.setOnAction(event -> this.createFloor());
-					menuBarController.newMeetingButton.setOnAction(event -> newMeetingFormController.show());
-
-					model = new DataModel(dataSource.findUser(userTextField.getText()));
-					menuBarController.initModel(model);
-					treeController.initModel(model);
-					basisController.initModel(model);
-					scheduleController.initModel(model);
-					newMeetingFormController.initModel(model);
-					
-
-					primaryStage.setTitle("Scheduley");
-					primaryStage.setScene(new Scene(root));
-					primaryStage.setMaximized(true);
-					primaryStage.show();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				primaryStage.setMaximized(true);
-			} else {
+			DAOFactory userDB = DAOFactory.getDAOFactory(DAOFactory.JDBC); 
+			UserDAO dataSource = userDB.getUserDAO();
+			loginSuccessful = dataSource.verifyUser(userTextField.getText(), pwBox.getText());
+			if(loginSuccessful){
+				model = new DataModel(dataSource.findUser(userTextField.getText()));
+				temp.close();
+			}else {
 				actionTarget.setFill(Color.FIREBRICK);
 				actionTarget.setText("Invalid login");
 			}
 		});
 
-		primaryStage.setScene(scene);
-		primaryStage.setMaximized(false);
-		primaryStage.show();
-	}
+		temp.setMaximized(false);
+		temp.showAndWait();
 
-	@SuppressWarnings("unused")
-	private void initAdminTools() {
-
-	}
-
-	private void createFloor() {
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Choose Image");
-		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
-		String s = null;
-		try {
-			s = fileChooser.showOpenDialog(root.getScene().getWindow()).toURI().toURL().toString();
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-		}
-		if (s != null) {
-			model.addFloor(new Floor("New floor", s));
-		}
-	}
-
-	private void doTreeTransition() {
-		if (basisRoot.getTranslateX() != 0) {
-			openTree.play();
-		} else {
-			closeTree.setToX(170);
-			closeTree.play();
-		}
-	}
-
-	private void doScheduleTransition() {
-		if (schedule.getTranslateY() != 0) {
-			openSchedule.play();
-		} else {
-			closeSchedule.setToY(-400);
-			closeSchedule.play();
-		}
 	}
 
 	public static void main(String[] args) {

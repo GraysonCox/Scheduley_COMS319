@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -27,40 +28,37 @@ import javafx.scene.layout.VBox;
 
 public class NewMeetingFormController implements Initializable {
 	private DataModel model;
-	
+
 	@FXML
 	private VBox root;
-	
+
 	@FXML
 	private DatePicker datePicker;
-	
+
 	@FXML
 	private Spinner<Integer> hourSpinner, minuteSpinner;
-	
+
 	@FXML
 	private ChoiceBox<String> ampmChoiceBox;
-	
+
 	@FXML
-	private Slider durationSlider;
-	
+	private Spinner<Integer> durationSpinner;
+
 	@FXML
 	private ChoiceBox<Floor> floorChoiceBox;
-	
+
 	@FXML
 	private ChoiceBox<MeetingSpace> meetingSpaceChoiceBox;
-	
-	@FXML
-	private MenuButton inviteesMenu;
-	
+
 	@FXML
 	private TextField meetingNameTextField;
-	
+
 	@FXML
 	private TextArea descriptionTextArea;
-	
+
 	@FXML
-	private TextArea emailAddresses;
-	
+	private TextField emailAddressTextField;
+
 	@FXML
 	private Button submitButton;
 
@@ -72,64 +70,80 @@ public class NewMeetingFormController implements Initializable {
 		minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
 		minuteSpinner.getValueFactory().setWrapAround(true);
 		ampmChoiceBox.getItems().addAll("AM", "PM");
-		root.setOnMouseClicked(e -> hide());
+		durationSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3600, 15));
 	}
-	
+
 	public void initModel(DataModel model) {
 		if (this.model != null) {
 			throw new IllegalStateException("Model can only be initialized once");
 		} else {
 			this.model = model;
 		}
-		
+
 		floorChoiceBox.getItems().addAll(this.model.getFloorList());
 		floorChoiceBox.getSelectionModel().selectedItemProperty().addListener((ob, oldFloor, newFloor) -> {
 			meetingSpaceChoiceBox.getItems().clear();
 			meetingSpaceChoiceBox.getItems().addAll(newFloor.getMeetingSpaces());
 		});
-		
-		for (UserProfile u : this.model.getAllUsers()) {
-			inviteesMenu.getItems().add(new CheckMenuItem(u.getName()));
-		}
 	}
-	
+
 	public void show() {
 		root.setVisible(true);
 	}
-	
+
 	public void hide() {
 		root.setVisible(false);
 	}
 	
+	public UserProfile[] getInvitees() {
+		ArrayList<String> arr = new ArrayList<String>();
+		String s = emailAddressTextField.getText();
+		s.replace(" ", "");
+		for (int i = s.length() - 1; i >= 0; i--) {
+			if (s.charAt(i) == ',') {
+				arr.add(s.substring(i + 1));
+				s = s.substring(0, i);
+				System.out.println(s);
+			} else if (i == 0) {
+				arr.add(s);
+			}
+		}
+		ArrayList<UserProfile> users = new ArrayList<UserProfile>();
+		UserProfile up;
+		for (String email : arr) {
+			up = model.getUserByEmail(email);
+			if (up != null) {
+				users.add(up);
+			}
+		}
+		System.out.println(users);
+		return users.toArray(new UserProfile[0]);
+	}
+
 	public void onSubmit() {
 		ZoneId z = ZoneId.systemDefault();
 		LocalDate ld = datePicker.getValue();
-		ZonedDateTime startTime = ld.atStartOfDay(z).plusHours(hourSpinner.getValue()).plusMinutes(minuteSpinner.getValue());
+		ZonedDateTime startTime = ld.atStartOfDay(z).plusHours(hourSpinner.getValue())
+				.plusMinutes(minuteSpinner.getValue());
 		if (ampmChoiceBox.getValue() == "PM") {
-			startTime.plusHours(12);
+			startTime = startTime.plusHours(12);
 		}
-		Timestamp startTimestamp = new Timestamp(startTime.toEpochSecond()*1000);
-		Meeting newMeeting = new Meeting(meetingNameTextField.getText(), startTimestamp, (int)durationSlider.getValue(), meetingSpaceChoiceBox.getValue().getUniqueID());
+		Timestamp startTimestamp = new Timestamp(startTime.toEpochSecond() * 1000);
+		Meeting newMeeting = new Meeting(meetingNameTextField.getText(), startTimestamp,
+				durationSpinner.getValue(), meetingSpaceChoiceBox.getValue().getUniqueID());
 		model.addMeeting(newMeeting);
-		
-		EmailSender emailSender = new EmailSender("","");
-		emailSender.setSubject("[Scheduley App] Meeting Notice: "+meetingNameTextField);
-		for(String email : arr) { // change arr
-			UserDAOMySQL urdaomsql = new UserDAOMySQL();
-			UserProfile up = urdaomsql.findUser(email);
-			emailSender.setBody(System.lineSeparator()
-					+ "Dear " + up.getName() + "," + System.lineSeparator() + System.lineSeparator()
-					+ "<b>A meeting has been scheduled.</b>" + System.lineSeparator() + System.lineSeparator()
-					+ "You are receiving this email because a meeting has been scheduled with you as an attendee." + System.lineSeparator()
-					+ "Details for the meeting are included below." + System.lineSeparator() + System.lineSeparator()
-					+ "<b>Meeting: </b>" + meetingNameTextField + System.lineSeparator()
-					+ "<b>Date: </b>" + datePicker.getValue() + System.lineSeparator()
-					+ "<b>Time: </b>" + hourSpinner.getValue() + ":" + minuteSpinner.getValue() + System.lineSeparator()
-					+ "<b>Location: </b>" + this.model.getMeetingsByMeetingSpaceID(newMeeting.getMeetingSpaceID()) + System.lineSeparator() + System.lineSeparator()
-					+ "Contact your manager if you have any questions." + System.lineSeparator() + System.lineSeparator() + System.lineSeparator()
-					+ "<i>NOTE: This is an automated message. DO NOT reply to this email.</i>"
-					);
-			emailSender.send(email);
+
+		EmailSender emailSender = new EmailSender("", "");
+		emailSender.setSubject("[Scheduley App] Meeting Notice: " + meetingNameTextField.getText());
+
+		for (UserProfile up : getInvitees()) { // change arr
+			EmailHTMLBody body = new EmailHTMLBody(up.getName(), newMeeting.getName(), descriptionTextArea.getText(),
+					datePicker.getValue().toString(), hourSpinner.getValue() + ": " + minuteSpinner.getValue() + " " + ampmChoiceBox.getValue(),
+					meetingSpaceChoiceBox.getValue().getName() + ", " + floorChoiceBox.getValue().getName());
+			emailSender.setBody(body.getHTMLBody());
+			if (!up.getEmail().equals("admin")) {
+				emailSender.send(up.getEmail());
+			}
 		}
 	}
 }

@@ -18,7 +18,6 @@
 			<contextMenu>
 				<ContextMenu fx:id="adminContextMenu">
 					<items>
-						<MenuItem onAction="#onRename" text="Rename" />
 						<MenuItem onAction="#onDelete" text="Delete" />
 					</items>
 				</ContextMenu>
