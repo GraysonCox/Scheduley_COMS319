@@ -1,5 +1,6 @@
 package main;
 
+import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 

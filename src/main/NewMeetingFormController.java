@@ -20,6 +20,7 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 public class NewMeetingFormController implements Initializable {
@@ -63,6 +64,7 @@ public class NewMeetingFormController implements Initializable {
 		minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
 		minuteSpinner.getValueFactory().setWrapAround(true);
 		ampmChoiceBox.getItems().addAll("AM", "PM");
+		root.setOnMouseClicked(e -> hide());
 	}
 	
 	public void initModel(DataModel model) {
@@ -92,6 +94,9 @@ public class NewMeetingFormController implements Initializable {
 		ZoneId z = ZoneId.systemDefault();
 		LocalDate ld = datePicker.getValue();
 		ZonedDateTime startTime = ld.atStartOfDay(z).plusHours(hourSpinner.getValue()).plusMinutes(minuteSpinner.getValue());
+		if (ampmChoiceBox.getValue() == "PM") {
+			startTime.plusHours(12);
+		}
 		Timestamp startTimestamp = new Timestamp(startTime.toEpochSecond()*1000);
 		Meeting newMeeting = new Meeting(meetingNameTextField.getText(), startTimestamp, (int)durationSlider.getValue(), meetingSpaceChoiceBox.getValue().getUniqueID());
 		model.addMeeting(newMeeting);

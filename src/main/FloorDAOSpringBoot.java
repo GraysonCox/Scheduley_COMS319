@@ -52,7 +52,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 				//Really have to figure this out
 				if(!url.equals("main/floorplan1.jpg")) {
 					System.out.println("Current floor " + name + ", url: " +url);
-					url = "main/MrScheduley.png";
+					url = "https://scontent-ort2-2.xx.fbcdn.net/v/t1.0-9/23434852_1455572864550607_8636846455118941309_n.jpg?_nc_cat=105&_nc_ht=scontent-ort2-2.xx&oh=afd6ff354275d1512924de2e5be1f20a&oe=5CB11D2E";
 				}
 				else {
 					System.out.println("DEBUG HERE");//I have no excuse for this
