@@ -161,11 +161,11 @@ public class MeetingSpaceDAOSpringBoot implements MeetingSpaceDAO {
 
 	public MeetingSpace findMeetingSpaceByName(String name) {
 		for(MeetingSpace ms : meetingSpaces) {
-			if(ms.getName() == name || name.equals(ms.getName())) {
+			if(ms.getName() == name || name.equalsIgnoreCase(ms.getName())) {
 				return ms;
 			}
 		}
-		return null;	
+		return null;
 	}
 	
 	public boolean isMeetingSpaceInDB(String name) {
