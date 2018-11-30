@@ -9,6 +9,10 @@ public class FloorDAOSpringBoot implements FloorDAO {
 	private static final String FLOOR_TABLE_INSERT = "/floor/create";
 	private static final String FLOOR_TABLE_DELETE = "/floor/delete";
 	
+	private static final String FLOOR_ID = "floorID";
+	private static final String FLOOR_NAME = "floorName";
+	private static final String IMG_URL = "imgURL";
+	
 	private SpringBoot_DAOFactory dao;
 	
 	private Floor floors[];
@@ -29,9 +33,9 @@ public class FloorDAOSpringBoot implements FloorDAO {
 		
 		for (int i = 0; i < jsonArrayFromDB.size(); i++) {
 			JSONObject temp = (JSONObject) jsonArrayFromDB.get(i);
-			long id = (long) temp.get("floorID");
-			String name = (String) temp.get("floorName");
-			String url = (String) temp.get("imgURL");
+			long id = (long) temp.get(FLOOR_ID);
+			String name = (String) temp.get(FLOOR_NAME);
+			String url = (String) temp.get(IMG_URL);
 			
 			//Really have to figure this out
 			if(!url.equals("main/floorplan1.jpg")) {
@@ -78,8 +82,8 @@ public class FloorDAOSpringBoot implements FloorDAO {
 		int code = 500;
 
 		JSONObject json = new JSONObject();
-		json.put("floorName", floor.getName());
-		json.put("imgURL", floor.getImageURL());
+		json.put(FLOOR_NAME, floor.getName());
+		json.put(IMG_URL, floor.getImageURL());
 		String jsonString = json.toString();
 		
 		code = dao.insertIntoDB(FLOOR_TABLE_INSERT, jsonString);
@@ -93,7 +97,7 @@ public class FloorDAOSpringBoot implements FloorDAO {
 	int code = 500;
 	
 	JSONObject json = new JSONObject();
-	json.put("floorID", ID);
+	json.put(FLOOR_ID, ID);
 	String jsonString = json.toString();
 	
 	code = dao.deleteFromDB(FLOOR_TABLE_DELETE, jsonString);
