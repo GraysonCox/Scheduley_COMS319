@@ -52,7 +52,7 @@ public class ManageUsersPaneController implements Initializable {
 	}
 	
 	public void deleteUser() {
-		
+		model.deleteUser(deleteUserEmailTextField.getText());
 	}
 	
 	public void show() {
