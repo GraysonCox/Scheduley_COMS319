@@ -55,6 +55,9 @@ public class ScheduleyAppTest extends ApplicationTest {
 	final String meetingForm = "#root";
 	final String adminTools = "#adminTools";
 	
+	final String date = "12/8/2018";
+	final String timeOfDay = "PM";
+	
 	
 	
 	final String username = "admin";
@@ -250,7 +253,7 @@ public class ScheduleyAppTest extends ApplicationTest {
 	}
 	
 	
-	/*
+	
 	@Test
 	public void testFailedLoginGUI() {
 		
@@ -261,7 +264,7 @@ public class ScheduleyAppTest extends ApplicationTest {
 		
 	}
 	
-	*/
+	
 	@Test 
 	public void testingAdminTools() {
 		
@@ -284,15 +287,75 @@ public class ScheduleyAppTest extends ApplicationTest {
 	
 	
 	@Test
-	public void ensureTreeViewIsPopulated() {
+	public void testingMeetings() {
 		testLoginGUI();
 		
 		//verifyThat(TREE_CONTEXT, NodeMatchers.isNotNull());
 		//sleep(1000);
 		
+		moveTo("Meetings");
+		clickOn("Meetings");
 		sleep(1000);
+		moveTo("#newMeetingButton");
+		clickOn("#newMeetingButton");
+		
+		WaitForAsyncUtils.waitForFxEvents();
+		
+		moveTo(meetingForm);
+		sleep(1000);
+		
+		moveTo("#datePicker"); //meeting date
+		sleep(1000);
+		clickOn("#datePicker");
+		
+		write(date);
+		
+		moveTo("#hourSpinner"); //hour
+		clickOn("#hourSpinner");
+		sleep(1000);
+		
+		moveTo("#minuteSpinner"); //minute
+		clickOn("#minuteSpinner");
+		clickOn("#minuteSpinner");
+		clickOn("#minuteSpinner"); //x3
+		sleep(1000);
+		
+		moveTo("#ampmChoiceBox"); //am or pm
+		clickOn("#ampmChoiceBox");
+		moveTo(timeOfDay);
+		clickOn(timeOfDay);
+		
+		moveTo("#durationSlider"); //slider
+		clickOn("#durationSlider");
+		
+		moveTo("#floorChoiceBox");  //which floor
+		clickOn("#floorChoiceBox");
+		moveTo("floor 69");
+		clickOn("floor 69");
+		
 
-		verifyThat(TREE_VIEW, hasText("New"));
+		moveTo("#meetingSpaceChoiceBox");  //which meeting space
+		clickOn("#meetingSpaceChoiceBox");
+		moveTo("Thien's Happy Space");
+		clickOn("Thien's Happy Space");
+		
+		
+		moveTo("#meetingNameTextField"); //meeting name
+		clickOn("#meetingNameTextField");
+		write("StandUp");
+		
+		moveTo("#descriptionTextArea"); //description
+		clickOn("#descriptionTextArea");
+		write("This is a test of the GUI");
+		
+		moveTo("#submitButton");
+		clickOn("#submitButton");
+		
+		
+		//verifyThat("#newMeetingButton", hasText("Plan a meeting"));
+		//sleep(1000);
+
+		
 		
 		/*
 		ListView floorView = find(TREE_VIEW);
