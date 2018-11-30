@@ -62,6 +62,14 @@ public class DataModel {
 		return currentUser;
 	}
 	
+	public void addMeeting(Meeting m) {
+		meetingDataSource.insertMeeting(m);
+	}
+	
+	public Meeting[] getMeetingsByMeetingSpaceID(int ID) {
+		return meetingDataSource.getMeetingsByMeetingSpaceID(ID);
+	}
+	
 	public void addMeetingSpace(MeetingSpace m) {
 		meetingSpaceDataSource.addMeetingSpace(m);
 		loadData();

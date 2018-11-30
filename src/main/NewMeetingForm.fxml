@@ -70,7 +70,7 @@
       <Separator prefWidth="200.0" />
       <VBox alignment="CENTER">
          <children>
-            <Button fx:id="submitButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: skyblue;" text="Submit" textFill="WHITE" />
+            <Button fx:id="submitButton" onAction="#onSubmit" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: skyblue;" text="Submit" textFill="WHITE" />
          </children>
       </VBox>
    </children>

@@ -1,6 +1,12 @@
 package main;
 
 import java.net.URL;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -80,5 +86,14 @@ public class NewMeetingFormController implements Initializable {
 	
 	public void hide() {
 		root.setVisible(false);
+	}
+	
+	public void onSubmit() {
+		ZoneId z = ZoneId.systemDefault();
+		LocalDate ld = datePicker.getValue();
+		ZonedDateTime startTime = ld.atStartOfDay(z).plusHours(hourSpinner.getValue()).plusMinutes(minuteSpinner.getValue());
+		Timestamp startTimestamp = new Timestamp(startTime.toEpochSecond()*1000);
+		Meeting newMeeting = new Meeting(meetingNameTextField.getText(), startTimestamp, (int)durationSlider.getValue(), meetingSpaceChoiceBox.getValue().getUniqueID());
+		model.addMeeting(newMeeting);
 	}
 }
