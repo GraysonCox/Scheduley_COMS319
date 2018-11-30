@@ -73,6 +73,9 @@ public class FloorDAOSpringBoot implements FloorDAO {
 	
 	@Override
 	public Floor[] getAllFloors() {
+		for(Floor f : floors) {
+			f.initImage();
+		}
 		return floors;
 	}
 
@@ -151,5 +154,9 @@ public class FloorDAOSpringBoot implements FloorDAO {
 			e.printStackTrace();
 		}
 		return code;
+	}
+	
+	public boolean isFloorInDB(String name) {
+		return (getFloorByName(name) != null) ? true : false;
 	}
 }

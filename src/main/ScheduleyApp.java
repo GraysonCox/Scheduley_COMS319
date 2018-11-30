@@ -65,7 +65,7 @@ public class ScheduleyApp extends Application {
 			FXMLLoader basisLoader = new FXMLLoader(getClass().getResource("Basis.fxml"));
 			basis = basisLoader.load();
 			basisController = basisLoader.getController();
-
+			
 			FXMLLoader treeLoader = new FXMLLoader(getClass().getResource("Tree.fxml"));
 			tree = treeLoader.load();
 			treeController = treeLoader.getController();

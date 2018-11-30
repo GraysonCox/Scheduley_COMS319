@@ -21,21 +21,12 @@ public class Floor extends Pane {
 		this.name = new SimpleStringProperty(name);
 		this.imageURL = URL;
 		meetingSpaces = new ArrayList<MeetingSpace>();
-		image = new ImageView(new Image(URL));
-		getChildren().add(this.image);
-		
-		
-		
-		//NOT DONE, nothing after this works
-		/*
-		ClassLoader k = getClass().getClassLoader();
-		String imageLocation = k.getResource(URL).getFile();
-		Image tempImg = new Image(imageLocation);
-		this.image = new ImageView(tempImg);
-		*/
-		
 	}
 	
+	public void initImage() {
+		image = new ImageView(new Image(imageURL));
+		getChildren().add(this.image);
+	}
 	public void addMeetingSpace(MeetingSpace m) {
 		meetingSpaces.add(m);
 	}
