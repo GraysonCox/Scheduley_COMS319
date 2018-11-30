@@ -21,7 +21,7 @@
 								<MenuItem fx:id="newFloorButton" text="Floor" />
 							</items>
 						</Menu>
-						<MenuItem text="Manage users" />
+						<MenuItem fx:id="manageUsersButton" text="Manage users" />
 					</items>
 				</Menu>
 				<Menu text="Meetings">
