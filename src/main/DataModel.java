@@ -61,6 +61,10 @@ public class DataModel {
 	public UserProfile getCurrentUser() {
 		return currentUser;
 	}
+	
+	public UserProfile getUserByEmail(String email) {
+		return userDataSource.findUser(email);
+	}
 
 	public UserProfile[] getAllUsers() {
 		try {

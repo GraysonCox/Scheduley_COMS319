@@ -6,7 +6,6 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -14,7 +13,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.control.MenuButton?>
 
 <VBox fx:id="root" alignment="CENTER" prefHeight="532.0" prefWidth="601.0" style="-fx-background-color: rgba(255,255,255,0.75);" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.NewMeetingFormController">
    <children>
@@ -51,9 +49,9 @@
                               <ChoiceBox fx:id="ampmChoiceBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="60.0" />
                            </children>
                         </HBox>
-                        <Label contentDisplay="RIGHT" text="Duration:">
+                        <Label contentDisplay="RIGHT" text="Duration (minutes):">
                            <graphic>
-                              <Slider fx:id="durationSlider" majorTickUnit="10.0" minorTickCount="5" showTickMarks="true" snapToTicks="true" />
+                              <Spinner fx:id="durationSpinner" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
                            </graphic>
                         </Label>
                         <Separator prefWidth="200.0" />
@@ -70,7 +68,11 @@
                      </children>
                   </VBox>
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <MenuButton fx:id="inviteesMenu" prefWidth="150.0" />
+                  <Label alignment="TOP_LEFT" contentDisplay="BOTTOM" text="Users to invite:">
+                     <graphic>
+                        <TextField fx:id="emailAddressTextField" prefHeight="25.0" prefWidth="208.0" promptText="Separate with commas" />
+                     </graphic>
+                  </Label>
                </children>
             </HBox>
             <Separator prefWidth="200.0" />
