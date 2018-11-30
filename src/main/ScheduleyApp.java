@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -147,8 +148,11 @@ public class ScheduleyApp extends Application {
 		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		}
+		TextInputDialog t = new TextInputDialog("Name of floor");
+		t.showAndWait();
+		String name = t.getResult();
 		if (s != null) {
-			model.addFloor(new Floor("New floor", s));
+			model.addFloor(new Floor(name, s));
 		}
 	}
 

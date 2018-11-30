@@ -37,7 +37,6 @@ public class DataModel {
 																					// dateOfSundayDisplayedProperty
 		sundayDisplayedProperty = new SimpleObjectProperty<LocalDate>(
 				currentDate.minusDays((currentDate.getDayOfWeek().ordinal() + 1) % 7));
-		System.out.println("" + floorList + meetingSpaceList); // For debugging
 	}
 
 	public void loadData() {
