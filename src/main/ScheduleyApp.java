@@ -5,37 +5,36 @@ import java.net.MalformedURLException;
 
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.util.Duration;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class ScheduleyApp extends Application {
 	DataModel model;
-
-	VBox root = new VBox();
+	
+	StackPane root = new StackPane();
+	VBox subRoot = new VBox();
 
 	AnchorPane basisRoot = new AnchorPane();
 	Pane menuBar, basis, tree, schedule, newMeetingForm;
@@ -123,8 +122,9 @@ public class ScheduleyApp extends Application {
 					AnchorPane.setTopAnchor(newMeetingForm, 0.0);
 					AnchorPane.setLeftAnchor(newMeetingForm, 30.0);
 
-					basisRoot.getChildren().addAll(basis, tree, schedule, newMeetingForm);
-					root.getChildren().addAll(menuBar, basisRoot);
+					basisRoot.getChildren().addAll(basis, tree, schedule);
+					subRoot.getChildren().addAll(menuBar, basisRoot);
+					root.getChildren().addAll(subRoot, newMeetingForm);
 
 					openTree = new TranslateTransition(new Duration(350), basisRoot);
 					openTree.setToX(0);
@@ -167,6 +167,7 @@ public class ScheduleyApp extends Application {
 		primaryStage.show();
 	}
 
+	@SuppressWarnings("unused")
 	private void initAdminTools() {
 
 	}
