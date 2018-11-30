@@ -112,10 +112,24 @@ public class NewMeetingFormController implements Initializable {
 		Meeting newMeeting = new Meeting(meetingNameTextField.getText(), startTimestamp, (int)durationSlider.getValue(), meetingSpaceChoiceBox.getValue().getUniqueID());
 		model.addMeeting(newMeeting);
 		
-		EmailSender email = new EmailSender("Meeting Invitation",
-				"Meeting name: " + newMeeting.getName()
-				
-				
-				);
+		EmailSender emailSender = new EmailSender("","");
+		emailSender.setSubject("[Scheduley App] Meeting Notice: "+meetingNameTextField);
+		for(String email : arr) { // change arr
+			UserDAOMySQL urdaomsql = new UserDAOMySQL();
+			UserProfile up = urdaomsql.findUser(email);
+			emailSender.setBody(System.lineSeparator()
+					+ "Dear " + up.getName() + "," + System.lineSeparator() + System.lineSeparator()
+					+ "<b>A meeting has been scheduled.</b>" + System.lineSeparator() + System.lineSeparator()
+					+ "You are receiving this email because a meeting has been scheduled with you as an attendee." + System.lineSeparator()
+					+ "Details for the meeting are included below." + System.lineSeparator() + System.lineSeparator()
+					+ "<b>Meeting: </b>" + meetingNameTextField + System.lineSeparator()
+					+ "<b>Date: </b>" + datePicker.getValue() + System.lineSeparator()
+					+ "<b>Time: </b>" + hourSpinner.getValue() + ":" + minuteSpinner.getValue() + System.lineSeparator()
+					+ "<b>Location: </b>" + this.model.getMeetingsByMeetingSpaceID(newMeeting.getMeetingSpaceID()) + System.lineSeparator() + System.lineSeparator()
+					+ "Contact your manager if you have any questions." + System.lineSeparator() + System.lineSeparator() + System.lineSeparator()
+					+ "<i>NOTE: This is an automated message. DO NOT reply to this email.</i>"
+					);
+			emailSender.send(email);
+		}
 	}
 }
