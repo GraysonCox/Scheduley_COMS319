@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Test;
 
 class FloorDAOSpringBootTest {
 	
-	public static FloorDAOSpringBoot fdaosp;
+	public static DAOFactory springBootDBFactory;
+	public static FloorDAO floorDAO;
 
 	@BeforeAll
 	public static void setUp() throws Exception {
-		fdaosp = new FloorDAOSpringBoot();
+		springBootDBFactory = DAOFactory.getDAOFactory(DAOFactory.SPRING_BOOT);
+		floorDAO = springBootDBFactory.getFloorDAO();
 	}
 
 	@Test
@@ -22,34 +24,21 @@ class FloorDAOSpringBootTest {
 		expected[1] = new Floor("floor 29", "main/MrScheduley.png");
 		expected[2] = new Floor("floor 69", "main/MrScheduley.png");
 
-		Floor[] actual = fdaosp.getAllFloors();
-		for(int i=0; i<actual.length; i++) 
-			Assert.assertTrue(expected[i].getName().equalsIgnoreCase(actual[i].getName()));
-	}
-	
-	@Test
-	void getAllFloors_URL() {
-		Floor[] expected = new Floor[3];
-		expected[0] = new Floor("floor 13", "main/MrScheduley.png");
-		expected[1] = new Floor("floor 29", "main/MrScheduley.png");
-		expected[2] = new Floor("floor 69", "main/MrScheduley.png");
-		
-		Floor[] actual = fdaosp.getAllFloors();
-		for(int i=0; i<actual.length; i++) 
-			Assert.assertTrue(expected[i].getImageURL().equalsIgnoreCase(actual[i].getImageURL()));
+		floorDAO.getAllFloors();
+		for(int i=0; i<expected.length; i++) 
+			Assert.assertTrue(floorDAO.isFloorInDB(expected[i].getName()));
 	}
 
 	@Test
 	void getFloorByIDTest_Name() {
-		Floor f = fdaosp.getFloorByID(672);
-		Assert.assertTrue(f.getName().equalsIgnoreCase("floor 29"));
+		Floor f = floorDAO.getFloorByID(672);
+		Assert.assertTrue(f.getName().equalsIgnoreCase("floor 29") || f.getName() == "floor 29");
 	}
 	
 	@Test
 	void getFloorByIDTest_URL() {
-
-		Floor f = fdaosp.getFloorByID(672);
-		Assert.assertTrue(f.getImageURL().equalsIgnoreCase("myfiles/thisfloor/lava"));
+		Floor f = floorDAO.getFloorByID(672);
+		Assert.assertTrue(f.getImageURL().equalsIgnoreCase("main/MrScheduley.png"));
 	}
 	
 }
