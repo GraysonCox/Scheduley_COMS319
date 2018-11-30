@@ -106,30 +106,34 @@ public class NewMeetingFormController implements Initializable {
 		LocalDate ld = datePicker.getValue();
 		ZonedDateTime startTime = ld.atStartOfDay(z).plusHours(hourSpinner.getValue()).plusMinutes(minuteSpinner.getValue());
 		if (ampmChoiceBox.getValue() == "PM") {
-			startTime.plusHours(12);
+			startTime = startTime.plusHours(12);
 		}
 		Timestamp startTimestamp = new Timestamp(startTime.toEpochSecond()*1000);
 		Meeting newMeeting = new Meeting(meetingNameTextField.getText(), startTimestamp, (int)durationSlider.getValue(), meetingSpaceChoiceBox.getValue().getUniqueID());
 		model.addMeeting(newMeeting);
 		
 		EmailSender emailSender = new EmailSender("","");
-		emailSender.setSubject("[Scheduley App] Meeting Notice: "+meetingNameTextField);
-		for(String email : arr) { // change arr
-			UserDAOMySQL urdaomsql = new UserDAOMySQL();
-			UserProfile up = urdaomsql.findUser(email);
+		emailSender.setSubject("[Scheduley App] Meeting Notice: " + meetingNameTextField.getText());
+		
+		
+		UserProfile arr[] = model.getAllUsers();
+		
+		
+		for(UserProfile up : arr) { // change arr
 			emailSender.setBody(System.lineSeparator()
 					+ "Dear " + up.getName() + "," + System.lineSeparator() + System.lineSeparator()
-					+ "<b>A meeting has been scheduled.</b>" + System.lineSeparator() + System.lineSeparator()
+					+ "A meeting has been scheduled." + System.lineSeparator() + System.lineSeparator()
 					+ "You are receiving this email because a meeting has been scheduled with you as an attendee." + System.lineSeparator()
 					+ "Details for the meeting are included below." + System.lineSeparator() + System.lineSeparator()
-					+ "<b>Meeting: </b>" + meetingNameTextField + System.lineSeparator()
-					+ "<b>Date: </b>" + datePicker.getValue() + System.lineSeparator()
-					+ "<b>Time: </b>" + hourSpinner.getValue() + ":" + minuteSpinner.getValue() + System.lineSeparator()
-					+ "<b>Location: </b>" + this.model.getMeetingsByMeetingSpaceID(newMeeting.getMeetingSpaceID()) + System.lineSeparator() + System.lineSeparator()
+					+ "Meeting: " + meetingNameTextField.getText() + System.lineSeparator()
+					+ "Description: " + descriptionTextArea.getText() + System.lineSeparator()
+					+ "Date: " + datePicker.getValue() + System.lineSeparator()
+					+ "Time: " + hourSpinner.getValue() + ":" + minuteSpinner.getValue() + ampmChoiceBox.getValue() + System.lineSeparator()
+					+ "Location: " + meetingSpaceChoiceBox.getValue().getName() + ", " + floorChoiceBox.getValue().getName() + System.lineSeparator() + System.lineSeparator()
 					+ "Contact your manager if you have any questions." + System.lineSeparator() + System.lineSeparator() + System.lineSeparator()
-					+ "<i>NOTE: This is an automated message. DO NOT reply to this email.</i>"
+					+ "NOTE: This is an automated message. DO NOT reply to this email."
 					);
-			emailSender.send(email);
+			emailSender.send(up.getEmail());
 		}
 	}
 }

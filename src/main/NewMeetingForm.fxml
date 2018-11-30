@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.MenuButton?>
 
 <VBox fx:id="root" alignment="CENTER" prefHeight="532.0" prefWidth="601.0" style="-fx-background-color: rgba(255,255,255,0.75);" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.NewMeetingFormController">
    <children>
@@ -69,7 +70,7 @@
                      </children>
                   </VBox>
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <ChoiceBox prefWidth="150.0" />
+                  <MenuButton fx:id="inviteesMenu" prefWidth="150.0" />
                </children>
             </HBox>
             <Separator prefWidth="200.0" />
