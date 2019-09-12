@@ -8,11 +8,11 @@ By:  Grayon, Thien, Sebasation, & Will
 
 Implemented a DAOFactory design pattern to handle the object creation
 
-![uml diagram](/groupProject/img/DAOFactory_UML.jpg)
+![uml diagram](/resources/imgs/DAOFactory_UML.jpg)
 
 
 Followed MVC for the architecture.
 
-![really close to fully realizing this](/groupProject/img/MVC.jpg)
+![really close to fully realizing this](/resources/imgs/MVC.jpg)
 
 <insert great closing statements>x
